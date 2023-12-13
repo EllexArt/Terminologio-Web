@@ -4,7 +4,7 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": ">=8.1",
+        "php": ">=8.3",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "doctrine/doctrine-bundle": "^2.11",
@@ -90,7 +90,8 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "6.4.*"
+            "require": "6.4.*",
+            "docker" : true
         }
     },
     "require-dev": {
