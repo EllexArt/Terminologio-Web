@@ -2,7 +2,7 @@ version: '3'
 
 services:
   server-web:
-    container_name: server-web
+    container_name: terminologio
     image: server-web:latest
     build:
       dockerfile: Dockerfile
@@ -11,7 +11,7 @@ services:
 
 ###> doctrine/doctrine-bundle ###
   database:
-    container_name: database
+    container_name: database-terminologio
     image: 'mariadb:10.11.2'
     environment:
       MYSQL_ROOT_PASSWORD: password
