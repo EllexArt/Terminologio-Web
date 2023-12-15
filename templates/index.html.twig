@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Acceuil</title>
+</head>
+<body>
+    <h1>Bienvenue sur Terminologio !</h1>
+
+    {% block form %}
+        <form action='/connect' method="get">
+            <input type="submit" class="connect" value="Connexion">
+        </form>
+        <form action='/inscription' method="get">
+            <input type="submit" class="inscription" value="Inscription">
+        </form>
+    {% endblock %}
+</body>
+</html>

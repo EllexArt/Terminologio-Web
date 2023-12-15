@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion</title>
+</head>
+<body>
+    {% block form %}
+        <form action='' method="post">
+            <ul>
+                <li>
+                    <label for="pseudo">Nom d'utilisateur&nbsp;:</label>
+                    <input type="text" id="pseudo" name="user_name" />
+                </li>
+                <li>
+                    <label for="passwd">Mot de passe&nbsp;:</label>
+                    <input type="password" id="passwd" name="user_passwd" />
+                </li>
+            </ul>
+            <input type="submit" value="Se connecter" />
+        </form>
+    {% endblock %}
+</body>
+</html>
