@@ -3,12 +3,12 @@ version: '3'
 services:
   server-web:
     command: bash -c "cd /app
+      && composer install --no-interaction --no-autoloader
       && symfony server:stop
+      && symfony server:ca:install
       && symfony server:start"
     volumes:
       - .:/app
-      - /app/vendor
-      - /app/var
     ports:
       - "8000:8000"
 
