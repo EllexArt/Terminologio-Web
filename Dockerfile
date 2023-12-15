@@ -13,7 +13,7 @@ RUN docker-php-ext-install pdo_mysql opcache \
     && docker-php-ext-enable pdo_mysql opcache \
     && echo ServerName 0.0.0.0 >> /etc/apache2/apache2.conf \
     && mv composer.phar /usr/local/bin/composer \
-    && bash -c "cd /app && composer install"
+    && bash -c "cd /app && composer install && symfony server:ca:install"
 ###> recipes ###
 ###< recipes ###
 EXPOSE 8000
