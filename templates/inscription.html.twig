@@ -6,7 +6,7 @@
 </head>
 <body>
     {% block form %}
-        <form action='' method="post">
+        <form action='/signingIn' method="post">
             <ul>
                 <li>
                     <label for="pseudo">Nom d'utilisateur&nbsp;:</label>
@@ -25,7 +25,7 @@
                     <input type="password" id="passwd_confirm" name="user_passwd_confirm" />
                 </li>
             </ul>
-            <input type="submit" value="Se connecter" />
+            <input type="submit" value="S'inscrire" />
         </form>
     {% endblock %}
 </body>

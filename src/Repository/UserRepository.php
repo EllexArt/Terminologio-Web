@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -35,6 +36,33 @@ class UserRepository extends ServiceEntityRepository
 //            ->getResult()
 //        ;
 //    }
+
+    /**
+     * @return User
+     * Returns a User with the specified username
+     * @throws NonUniqueResultException
+     */
+    public function findOneByUsername($username) : ?User {
+        return $this->createQueryBuilder('u')
+                    ->andWhere('u.name = :name')
+                    ->setParameter('name', $username)
+                    ->getQuery()
+                    ->getOneOrNullResult();
+    }
+
+
+    /**
+     * @return User
+     * Returns a User with the specified mail
+     * @throws NonUniqueResultException
+     */
+    public function findOneByEmail($mail) : ?User {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.email = :mail')
+            ->setParameter('mail', $mail)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 
 //    public function findOneBySomeField($value): ?User
 //    {
