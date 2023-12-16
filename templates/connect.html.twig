@@ -6,11 +6,11 @@
 </head>
 <body>
     {% block form %}
-        <form action='' method="post">
+        <form action='/connecting' method="post">
             <ul>
                 <li>
-                    <label for="pseudo">Nom d'utilisateur&nbsp;:</label>
-                    <input type="text" id="pseudo" name="user_name" />
+                    <label for="pseudo_or_mail">Nom d'utilisateur ou Email&nbsp;:</label>
+                    <input type="text" id="pseudo_or_mail" name="user_identification" />
                 </li>
                 <li>
                     <label for="passwd">Mot de passe&nbsp;:</label>
