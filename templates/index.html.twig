@@ -8,10 +8,10 @@
     <h1>Bienvenue sur Terminologio !</h1>
 
     {% block form %}
-        <form action='/connect' method="get">
+        <form action='' method="get">
             <input type="submit" class="connect" value="Connexion">
         </form>
-        <form action='/inscription' method="get">
+        <form action='{{ path('app_register') }}' method="get">
             <input type="submit" class="inscription" value="Inscription">
         </form>
     {% endblock %}
