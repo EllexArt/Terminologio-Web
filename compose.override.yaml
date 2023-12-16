@@ -14,3 +14,10 @@ services:
 
 ###> doctrine/doctrine-bundle ###
 ###< doctrine/doctrine-bundle ###
+
+###> symfony/mailer ###
+  mailer:
+    container_name: mailer-terminologio
+    image: schickling/mailcatcher
+    ports: ["1025", "1080"]
+###< symfony/mailer ###
