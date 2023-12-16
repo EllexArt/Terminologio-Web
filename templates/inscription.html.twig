@@ -6,27 +6,7 @@
 </head>
 <body>
     {% block form %}
-        <form action='/signingIn' method="post">
-            <ul>
-                <li>
-                    <label for="pseudo">Nom d'utilisateur&nbsp;:</label>
-                    <input type="text" id="pseudo" name="user_name" />
-                </li>
-                <li>
-                    <label for="mail">E-mail&nbsp;:</label>
-                    <input type="email" id="mail" name="user_mail" />
-                </li>
-                <li>
-                    <label for="passwd">Mot de passe&nbsp;:</label>
-                    <input type="password" id="passwd" name="user_passwd" />
-                </li>
-                <li>
-                    <label for="passwd_confirm">Confirmer votre mot de passe&nbsp;:</label>
-                    <input type="password" id="passwd_confirm" name="user_passwd_confirm" />
-                </li>
-            </ul>
-            <input type="submit" value="S'inscrire" />
-        </form>
+        {{ form(form) }}
     {% endblock %}
 </body>
 </html>
