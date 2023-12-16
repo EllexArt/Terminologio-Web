@@ -3,12 +3,12 @@ version: '3'
 services:
   server-web:
     command: bash -c "cd /app
-      && cp -a /save/vendor .
-      && cp -a /save/var .
       && symfony server:stop
       && symfony server:start"
     volumes:
       - .:/app
+      - /app/var
+      - /app/vendor
     ports:
       - "8000:8000"
 

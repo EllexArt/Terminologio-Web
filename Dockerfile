@@ -14,11 +14,7 @@ WORKDIR /app
 COPY . /app
 RUN bash -c "cd /app && mv composer.phar /usr/local/bin/composer  \
     && composer install  \
-    && symfony server:ca:install \
-    && mkdir /save \
-    && mkdir /save/vendor && mkdir /save/var \
-    && mv vendor/* /save/vendor \
-    && mv var/* /save/var"
+    && symfony server:ca:install"
 ###> recipes ###
 ###< recipes ###
 EXPOSE 8000
