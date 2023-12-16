@@ -3,7 +3,6 @@
 namespace App\Service;
 
 use App\Entity\User;
-use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
@@ -23,13 +22,15 @@ class UserManagementService {
      */
     public function registerUser(string $userName, string $passwd, string $confirmPasswd, string $email) : void {
         if(strcmp($confirmPasswd, $passwd) != 0) {
-            throw new Exception('Confirm password and initial password are not the same');
+            error_log($passwd);
+            error_log(($confirmPasswd));
+            throw new \Exception('Confirm password and initial password are not the same');
         }
         if($this->entityManager->getRepository(User::class)->findOneByUsername($userName) != null) {
-            throw new Exception('This username is already used');
+            throw new \Exception('This username is already used');
         }
         if($this->entityManager->getRepository(User::class)->findOneByEmail($email) != null) {
-            throw new Exception('This email is already used');
+            throw new \Exception('This email is already used');
         }
         $user = new User();
         $user->setName($userName);
