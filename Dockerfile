@@ -13,7 +13,7 @@ RUN docker-php-ext-install pdo_mysql opcache \
 WORKDIR /app
 COPY . /app
 RUN bash -c "cd /app && mv composer.phar /usr/local/bin/composer  \
-    && composer install  \
+    && composer update  \
     && symfony server:ca:install"
 ###> recipes ###
 ###< recipes ###
