@@ -10,6 +10,7 @@ services:
       - .:/app
       - /app/var
       - /app/vendor
+      - /app/node_modules
     ports:
       - "8000:8000"
 

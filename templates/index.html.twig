@@ -7,13 +7,15 @@
 <body>
     <h1>Bienvenue sur Terminologio !</h1>
 
+    {% if not is_granted('ROLE_USER') %}
     {% block form %}
-        <form action='' method="get">
+        <form action='{{ path('app_login') }}' method="get">
             <input type="submit" class="connect" value="Connexion">
         </form>
         <form action='{{ path('app_register') }}' method="get">
             <input type="submit" class="inscription" value="Inscription">
         </form>
     {% endblock %}
+    {% endif %}
 </body>
 </html>
