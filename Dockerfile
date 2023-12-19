@@ -3,8 +3,6 @@ RUN apt-get -y update && apt-get -y install \
     git \
     zip \
     unzip \
-    nodejs \
-    npm \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get -y autoremove
 RUN curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | bash \
