@@ -25,6 +25,9 @@ class Concept
     #[ORM\JoinColumn(nullable: false)]
     private ?Language $defaultLanguage = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $title = null;
+
     public function __construct()
     {
         $this->composants = new ArrayCollection();
@@ -92,6 +95,18 @@ class Concept
     public function setDefaultLanguage(?Language $defaultLanguage): static
     {
         $this->defaultLanguage = $defaultLanguage;
+
+        return $this;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(string $title): static
+    {
+        $this->title = $title;
 
         return $this;
     }

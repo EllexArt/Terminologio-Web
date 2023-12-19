@@ -6,9 +6,19 @@
 
 {% block body %}
 
-
-    {{ form_start(uploadForm) }}
-    <button type="submit"> Valider </button>
+<div class="w-full max-w-xs h-screen flex items-center">
+    {{ form_start(uploadForm, {'attr' : {'class' : "bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"}}) }}
+        <div class="">
+            {{ form_errors(uploadForm.image) }}
+        </div>
+        <div class="mb-4">
+                {{ form_label(uploadForm.image) }}
+                {{ form_widget(uploadForm.image) }}
+            </div>
+            {{ form_row(uploadForm.title) }}
+            {{ form_row(uploadForm.defaultLanguage) }}
+            <button type="submit"> Valider </button>
     {{ form_end(uploadForm) }}
+</div>
 
 {% endblock %}
