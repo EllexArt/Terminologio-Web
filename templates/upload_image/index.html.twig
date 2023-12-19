@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% form_theme uploadForm 'tailwind_2_layout.html.twig' %}
+
+{% block title %}Upload Image{% endblock %}
+
+{% block body %}
+
+
+    {{ form_start(uploadForm) }}
+    <button type="submit"> Valider </button>
+    {{ form_end(uploadForm) }}
+
+{% endblock %}
