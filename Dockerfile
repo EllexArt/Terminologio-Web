@@ -17,7 +17,7 @@ COPY . /app
 RUN bash -c "cd /app && mv composer.phar /usr/local/bin/composer  \
     && composer update  \
     && symfony server:ca:install"
-RUN bash -c "npm install -D tailwindcss postcss postcss-loader autoprefixer \
+RUN bash -c "npm install -D tailwindcss postcss postcss-loader autoprefixer @tailwindcss/forms \
     && npx tailwindcss init -p"
 ###> recipes ###
 ###< recipes ###

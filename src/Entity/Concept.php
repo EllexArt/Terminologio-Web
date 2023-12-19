@@ -21,6 +21,10 @@ class Concept
     #[ORM\OneToMany(mappedBy: 'concept', targetEntity: Composant::class, orphanRemoval: true)]
     private Collection $composants;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Language $defaultLanguage = null;
+
     public function __construct()
     {
         $this->composants = new ArrayCollection();
@@ -76,6 +80,18 @@ class Concept
                 $composant->setConcept(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDefaultLanguage(): ?Language
+    {
+        return $this->defaultLanguage;
+    }
+
+    public function setDefaultLanguage(?Language $defaultLanguage): static
+    {
+        $this->defaultLanguage = $defaultLanguage;
 
         return $this;
     }

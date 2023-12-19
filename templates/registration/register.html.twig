@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% form_theme registrationForm 'tailwind_2_layout.html.twig' %}
 
 {% block title %}Register{% endblock %}
 
@@ -22,10 +23,11 @@
 
                     <button type="submit" class="btn">Register</button>
                 {{ form_end(registrationForm) }}
-            </div>
+           </div>
         </form>
         <p class="text-center text-gray-500 text-xs">
-            &copy;2020 Acme Corp. All rights reserved.
+            &copy;2023 Terminologio Team<br>
+            All rights reserved.
         </p>
     </div>
 {% endblock %}
