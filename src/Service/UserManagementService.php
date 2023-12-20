@@ -39,11 +39,4 @@ class UserManagementService {
         $this->entityManager->persist($user);
         $this->entityManager->flush();
     }
-
-    public function connectUser(string $userIdentification, string $passwd) : void {
-        $userRepository = $this->entityManager->getRepository(User::class);
-        if($userRepository->findOneByUsername()){
-
-        }
-}
 }

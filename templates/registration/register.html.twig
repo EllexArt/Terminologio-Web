@@ -3,29 +3,28 @@
 {% block title %}Register{% endblock %}
 
 {% block body %}
-    {% for flash_error in app.flashes('verify_email_error') %}
-        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
-    {% endfor %}
+
 
     <h1>Register</h1>
     <div class="w-full max-w-xs">
-        <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-            <div class="mb-4">
-                {{ form_errors(registrationForm) }}
-
-                {{ form_start(registrationForm) }}
+        <div class="mb-4">
+            {{ form_start(registrationForm, {'attr': {'class':"bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"}}) }}
+                <div>
                     {{ form_row(registrationForm.email) }}
+                    {{ form_row(registrationForm.username) }}
                     {{ form_row(registrationForm.plainPassword, {
                         label: 'Password'
                     }) }}
                     {{ form_row(registrationForm.agreeTerms) }}
 
                     <button type="submit" class="btn">Register</button>
-                {{ form_end(registrationForm) }}
-            </div>
-        </form>
+                </div>
+            {{ form_end(registrationForm) }}
+
+        </div>
         <p class="text-center text-gray-500 text-xs">
-            &copy;2020 Acme Corp. All rights reserved.
+            &copy;2023 Terminologio Team.<br>
+            All rights reserved.
         </p>
     </div>
 {% endblock %}
