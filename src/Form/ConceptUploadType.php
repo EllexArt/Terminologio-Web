@@ -12,7 +12,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
 
-class UploadImageType extends AbstractType
+class ConceptUploadType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

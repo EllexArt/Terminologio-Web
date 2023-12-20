@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Composant;
+use App\Entity\Concept;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,6 +20,18 @@ class ComposantRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Composant::class);
+    }
+
+    public function calculateNextNumber(Concept $concept): int {
+        $values = [];
+        foreach($concept->getComposants() as $composant) {
+            $values[] = $composant->getNumber();
+        }
+
+        if ($values == null) {
+            return 0;
+        }
+        return max($values) + 1;
     }
 
 //    /**

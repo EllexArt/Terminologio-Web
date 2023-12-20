@@ -4,11 +4,14 @@ services:
   server-web:
     command: bash -c "cd /app
       && symfony server:stop
+      && symfony console doctrine:migrations:migrate
+      && symfony console tailwind:build
       && symfony server:start"
     volumes:
       - .:/app
       - /app/var
       - /app/vendor
+      - /app/public
     ports:
       - "8000:8000"
 
