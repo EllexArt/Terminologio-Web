@@ -54,4 +54,40 @@ class ConceptController extends AbstractController
     }
 
 
+    #[Route('/concept/{title}/component/add', name: 'app_concept_component_edit')]
+    public function editComponent(LoggerInterface $logger, ComposantNameRepository $composantNameRepository, Concept $concept): Response
+    {
+        $componentsTrad = [];
+        foreach ($concept->getComposants() as $component) {
+            $trad = $composantNameRepository->findOneBy(['composant' => $component]);
+            $componentTrad = new ComponentTrad(
+                $component->getNumber(),
+                $trad == null ? "" : $trad,
+                $component->getPositionX(),
+                $component->getPositionY()
+            );
+            $logger->info($componentTrad->getPositionY());
+            $componentsTrad[] = $componentTrad;
+        }
+        return $this->render('concept/edit_component.html.twig', [
+            'imagePath' => 'uploads/images/' . $concept->getImage(),
+            'components' => $componentsTrad,
+            'concept' => $concept
+        ]);
+    }
+
+    #[Route('/concept/{title}/component/add/{horizontal_position}/{vertical_position}', name: 'app_concept_component_add')]
+    public function addComponent(ComposantRepository $composantRepository, EntityManagerInterface $entityManager, Concept $concept, int $horizontal_position, int $vertical_position): Response
+    {
+        $component = new Composant();
+        $component->setConcept($concept);
+        $component->setNumber($composantRepository->calculateNextNumber($concept));
+        $component->setPositionX($horizontal_position);
+        $component->setPositionY($vertical_position);
+        $entityManager->persist($component);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_concept_component_edit', [
+            'title' => $concept->getTitle()]);
+    }
 }

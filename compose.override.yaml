@@ -11,6 +11,7 @@ services:
       - .:/app
       - /app/var
       - /app/vendor
+      - /app/public
     ports:
       - "8000:8000"
 
