@@ -28,6 +28,9 @@ class Composant
     #[ORM\OneToMany(mappedBy: 'composant', targetEntity: ComposantName::class, orphanRemoval: true)]
     private Collection $composantNames;
 
+    #[ORM\Column]
+    private ?int $number = null;
+
     public function __construct()
     {
         $this->composantNames = new ArrayCollection();
@@ -107,6 +110,18 @@ class Composant
                 $composantName->setComposant(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getNumber(): ?int
+    {
+        return $this->number;
+    }
+
+    public function setNumber(int $number): static
+    {
+        $this->number = $number;
 
         return $this;
     }

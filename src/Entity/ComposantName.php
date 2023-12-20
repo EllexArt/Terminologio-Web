@@ -21,6 +21,9 @@ class ComposantName
     #[ORM\JoinColumn(nullable: false)]
     private ?Language $language = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $value = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -46,6 +49,18 @@ class ComposantName
     public function setLanguage(?Language $language): static
     {
         $this->language = $language;
+
+        return $this;
+    }
+
+    public function getValue(): ?string
+    {
+        return $this->value;
+    }
+
+    public function setValue(string $value): static
+    {
+        $this->value = $value;
 
         return $this;
     }
