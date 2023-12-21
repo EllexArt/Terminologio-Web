@@ -59,13 +59,13 @@ class ConceptController extends AbstractController
     {
         return $this->render('concept/edit_component.html.twig', [
             'imagePath' => 'uploads/images/' . $concept->getImage(),
-            'components' => $conceptService->calculateComponentsWithDefaultTrad($composantNameRepository, $concept),
+            'components' => $conceptService->calculateComponentsWithDefaultTrad($concept),
             'concept' => $concept
         ]);
     }
 
     #[Route('/concept/{title}/component/add/{horizontal_position}/{vertical_position}', name: 'app_concept_component_add')]
-    public function addComponent(LoggerInterface $logger, ConceptService $conceptService, ComposantNameRepository $composantNameRepository, ComposantRepository $composantRepository, EntityManagerInterface $entityManager, Concept $concept, int $horizontal_position, int $vertical_position): Response
+    public function addComponent(ConceptService $conceptService, ComposantNameRepository $composantNameRepository, ComposantRepository $composantRepository, EntityManagerInterface $entityManager, Concept $concept, int $horizontal_position, int $vertical_position): Response
     {
         $component = new Composant();
         $component->setConcept($concept);
@@ -85,7 +85,7 @@ class ConceptController extends AbstractController
 
         $entityManager->flush();
 
-        $componentsTrad = $conceptService->calculateComponentsWithDefaultTrad($logger, $concept);
+        $componentsTrad = $conceptService->calculateComponentsWithDefaultTrad($concept);
         $componentsTrad[] = new ComponentTrad($component->getId(),
                                                 $component->getNumber(),
                                                 "",
@@ -139,7 +139,7 @@ class ConceptController extends AbstractController
     {
         $number = 0;
         $components = $concept->getComposants();
-        $trads = $components[$number]->getComposantNames();
+        $trads[] = $components[$number]->getComposantNames();
         while (($trad = $request->get('componentText'.$number)) != null) {
 
         }
