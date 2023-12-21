@@ -55,29 +55,17 @@ class ConceptController extends AbstractController
 
 
     #[Route('/concept/{title}/component/add', name: 'app_concept_component_edit')]
-    public function editComponent(LoggerInterface $logger, ComposantNameRepository $composantNameRepository, Concept $concept): Response
+    public function editComponent(ConceptService $conceptService, ComposantNameRepository $composantNameRepository, Concept $concept): Response
     {
-        $componentsTrad = [];
-        foreach ($concept->getComposants() as $component) {
-            $trad = $composantNameRepository->findOneBy(['composant' => $component]);
-            $componentTrad = new ComponentTrad(
-                $component->getNumber(),
-                $trad == null ? "" : $trad,
-                $component->getPositionX(),
-                $component->getPositionY()
-            );
-            $logger->info($componentTrad->getPositionY());
-            $componentsTrad[] = $componentTrad;
-        }
         return $this->render('concept/edit_component.html.twig', [
             'imagePath' => 'uploads/images/' . $concept->getImage(),
-            'components' => $componentsTrad,
+            'components' => $conceptService->calculateComponentsWithDefaultTrad($composantNameRepository, $concept),
             'concept' => $concept
         ]);
     }
 
     #[Route('/concept/{title}/component/add/{horizontal_position}/{vertical_position}', name: 'app_concept_component_add')]
-    public function addComponent(ComposantRepository $composantRepository, EntityManagerInterface $entityManager, Concept $concept, int $horizontal_position, int $vertical_position): Response
+    public function addComponent(ConceptService $conceptService, ComposantNameRepository $composantNameRepository,ComposantRepository $composantRepository, EntityManagerInterface $entityManager, Concept $concept, int $horizontal_position, int $vertical_position): Response
     {
         $component = new Composant();
         $component->setConcept($concept);
@@ -87,7 +75,24 @@ class ConceptController extends AbstractController
         $entityManager->persist($component);
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_concept_component_edit', [
-            'title' => $concept->getTitle()]);
+        $componentsTrad = $conceptService->calculateComponentsWithDefaultTrad($composantNameRepository, $concept);
+        $componentsTrad[] = new ComponentTrad($component->getNumber(),
+                                                "",
+                                                $component->getPositionX(),
+                                                $component->getPositionY());
+
+        return $this->render('concept/components.html.twig', [
+            'components' => $componentsTrad
+        ]);
+    }
+
+    #[Route('/concept/{title}/component/delete/{id}', name: 'app_concept_component_edit')]
+    public function deleteComponent(ConceptService $conceptService, ComposantNameRepository $composantNameRepository, Concept $concept): Response
+    {
+        return $this->render('concept/edit_component.html.twig', [
+            'imagePath' => 'uploads/images/' . $concept->getImage(),
+            'components' => $conceptService->calculateComponentsWithDefaultTrad($composantNameRepository, $concept),
+            'concept' => $concept
+        ]);
     }
 }
