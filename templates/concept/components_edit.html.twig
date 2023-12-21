@@ -1,0 +1,11 @@
+{% for component in components %}
+<div>
+    <label>
+        Component {{ component.number }} :
+        <input id='componentText{{ component.number }}' class='componentText' type="text" value="{{ component.name }}">
+    </label>
+    <button
+            {{ stimulus_action('component', 'deleteComponent', 'click',
+    {id:component.id, number:component.number}) }}>Delete</button>
+</div>
+{% endfor %}
