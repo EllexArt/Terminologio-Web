@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Manage your website{% endblock %}
+
+{% block body %}
+    {% block navigation %}{{ parent() }}{% endblock %}
+
+    {% block showUser %}
+        <div class="w-full max-w-xs">
+            <ul  class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            {% for user in users %}
+                <li>
+                    Username : {{ user.username }},
+                    E-mail : {{ user.email }}
+                    <a href="{{ path('app_delete_user', {id:user.id}) }}">
+                        <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+                            Delete user
+                        </button>
+                    </a>
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+    {% endblock %}
+    {% block showConcepts %}
+        <div class="w-full max-w-xs">
+            <ul  class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+                {% for concept in concepts %}
+                    <li>
+                        Picture :<br>
+                        <img src="{{ asset(concept.image) }}" alt="concept-image" class="w-full aspect-square"/>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endblock %}
+{% endblock %}
