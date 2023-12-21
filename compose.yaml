@@ -4,6 +4,8 @@ services:
   server-web:
     container_name: terminologio
     image: server-web:latest
+    depends_on:
+      - database
     build:
       dockerfile: Dockerfile
     environment:

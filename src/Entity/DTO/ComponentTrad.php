@@ -4,12 +4,15 @@ namespace App\Entity\DTO;
 
 class ComponentTrad
 {
-    public function __construct($number, $name, $positionX, $positionY) {
+    public function __construct($id, $number, $name, $positionX, $positionY) {
+        $this->id = $id;
         $this->number = $number;
         $this->name = $name;
         $this->positionX = $positionX;
         $this->positionY = $positionY;
     }
+
+    private int $id;
 
     private int $positionX;
 
@@ -57,5 +60,15 @@ class ComponentTrad
     public function setNumber(int $number): void
     {
         $this->number = $number;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function setId(int $id): void
+    {
+        $this->id = $id;
     }
 }
