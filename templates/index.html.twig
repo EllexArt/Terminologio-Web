@@ -1,21 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Accueil</title>
-</head>
-<body>
-    <h1>Bienvenue sur Terminologio !</h1>
+{% extends('base.html.twig') %}
 
-    {% if not is_granted('ROLE_USER') %}
-    {% block form %}
-        <form action='{{ path('app_login') }}' method="get">
-            <input type="submit" class="connect" value="Connexion">
-        </form>
-        <form action='{{ path('app_register') }}' method="get">
-            <input type="submit" class="inscription" value="Inscription">
-        </form>
+{% block title %} Terminologio - Home {% endblock %}
+
+{% block body %}
+    {% block navigation %}{{ parent() }}{% endblock %}
+    <div class="flex flex-col min-h-screen">
+        <div class="flex flex-grow flex-col overflow-y-hidden" style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%)"
+        >
+                <div class="flex flex-1 flex-col items-center justify-center px-4 text-center">
+                    <h2 class="text-4xl font-bold mb-2 text-white">
+                        Terminologio
+                    </h2>
+                    <h3 class="text-2xl mb-8 text-gray-200">
+                        Create and edit your own concept, organize it by category and let everyone contribute to it !
+                    </h3>
+                    <a href="{{ path('app_concept_upload') }}">
+                        <button class="bg-white font-bold rounded-full py-4 px-8 shadow-lg uppercase tracking-wider">
+                            Try it now
+                        </button>
+                    </a>
+                </div>
+        </div>
+    </div>
+
+    {% block admin %}
+        {{ include('/administration/administration.html.twig') }}
     {% endblock %}
-    {% endif %}
-</body>
-</html>
+{% endblock %}
