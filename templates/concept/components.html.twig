@@ -1,0 +1,9 @@
+{% for component in components %}
+    <p style="
+            position: absolute;
+            top: {{ component.positionY }}%;
+            left: {{ component.positionX }}%;
+    ">
+        {{ component.number }}
+    </p>
+{% endfor %}
