@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
@@ -13,6 +13,10 @@
         {% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+        {% block body %}
+            {% block navigation %}
+                {{ include('/navigation/navigation.html.twig') }}
+            {% endblock %}
+        {% endblock %}
     </body>
 </html>

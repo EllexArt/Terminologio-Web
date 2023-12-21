@@ -9,7 +9,8 @@ class TerminologioController extends AbstractController {
 
     #[Route('/', name:'app_terminologio_index')]
     public function index() : Response {
-        return $this->render('index.html.twig', ['controller_name' => 'TerminologioController']);
+        $user = $this->getUser();
+        return $this->render('index.html.twig', ['username' => $user == null ? '' : $user->getUsername()]);
     }
 
 }
