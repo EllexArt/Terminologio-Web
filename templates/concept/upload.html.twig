@@ -3,7 +3,7 @@
 {% block title %}Upload a concept !{% endblock %}
 
 {% block body %}
-
+    {% block navigation %}{{ parent() }}{% endblock %}
 <div class="w-full max-w-xs h-screen flex items-center">
     {{ form_start(uploadForm, {'attr' : {'class' : "bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"}}) }}
         <div class="">
