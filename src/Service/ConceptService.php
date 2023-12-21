@@ -6,6 +6,7 @@ use App\Entity\Concept;
 use App\Entity\DTO\ComponentTrad;
 use App\Repository\ComposantNameRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
@@ -36,13 +37,21 @@ class ConceptService
        $entityManager->flush();
    }
 
-   public function calculateComponentsWithDefaultTrad(ComposantNameRepository $composantNameRepository, Concept $concept) : array {
+   public function calculateComponentsWithDefaultTrad(Concept $concept) : array {
        $componentsTrad = [];
        foreach ($concept->getComposants() as $component) {
-           $trad = $composantNameRepository->findOneBy(['composant' => $component]);
+           $trads = $component->getComposantNames();
+           $default_trad = null;
+           foreach ($trads as $trad) {
+               if ($trad->getLanguage()->getName() == $concept->getDefaultLanguage()->getName()) {
+                   $default_trad = $trad;
+               }
+           }
+
            $componentTrad = new ComponentTrad(
+               $component->getId(),
                $component->getNumber(),
-               $trad == null ? "" : $trad,
+               $default_trad == null ? "" : $default_trad->getValue(),
                $component->getPositionX(),
                $component->getPositionY()
            );
