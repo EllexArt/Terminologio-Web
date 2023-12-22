@@ -5,33 +5,56 @@
 {% block body %}
     {% block navigation %}{{ parent() }}{% endblock %}
 
-    {% block showUser %}
-        <div class="w-full max-w-xs">
-            <ul  class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-            {% for user in users %}
-                <li>
-                    Username : {{ user.username }},
-                    E-mail : {{ user.email }}
-                    <a href="{{ path('app_delete_user', {id:user.id}) }}">
-                        <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
-                            Delete user
-                        </button>
-                    </a>
-                </li>
-            {% endfor %}
-            </ul>
-        </div>
-    {% endblock %}
-    {% block showConcepts %}
-        <div class="w-full max-w-xs">
-            <ul  class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                {% for concept in concepts %}
-                    <li>
-                        Picture :<br>
-                        <img src="{{ asset(concept.image) }}" alt="concept-image" class="w-full aspect-square"/>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-    {% endblock %}
+    <div class="grid grid-cols-2 divide-y ">
+        {% block showUser %}
+            <div class="px-11 pt-10 pb-12">
+                <div class="bg-gray-900 p-4 rounded">
+                    <h2 class="mb-11 text-3xl font-bold leading-snug text-white">
+                        Users :
+                        <a href="{{ path('app_add_user') }}">
+                            <button class="bg-indigo-500 bg-opacity-50 hover:bg-blue-500 text-indigo-900 font-semibold hover:text-white py-2 px-4 border border-blue-700 hover:border-transparent rounded">
+                                Add user
+                            </button>
+                        </a>
+                    </h2>
+                    <ul>
+                    {% for user in users %}
+                        <li class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 font-bold" style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%)">
+                            Username : {{ user.username }}<br>
+                            E-mail : {{ user.email }}
+                            <a href="{{ path('app_delete_user', {id:user.id}) }}">
+                                <button class="bg-white bg-opacity-50 hover:bg-blue-500 text-blue-800 font-semibold hover:text-white py-2 px-4 border border-blue-700 hover:border-transparent rounded">
+                                    Delete user
+                                </button>
+                            </a>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% endblock %}
+        {% block showConcepts %}
+            <div class="px-11 pt-10 pb-12">
+                <div class="bg-gray-900 p-4 rounded">
+                    <h2 class="mb-11 text-3xl font-bold leading-snug text-white">
+                        Concepts :
+                    </h2>
+                    <ul>
+                        {% for concept in concepts %}
+                            <li class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 font-bold" style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%)">
+                                Title : {{ concept.title }}<br>
+                                Picture :
+                                <img src="{{ asset('public/uploads/images/' ~concept.image) }}" alt="concept-image" class="w-full aspect-square"/>
+                                <a href="{{ path('app_delete_concept', {id:concept.id}) }}">
+                                    <button class="bg-white bg-opacity-50 hover:bg-blue-500 text-blue-800 font-semibold hover:text-white py-2 px-4 border border-blue-700 hover:border-transparent rounded">
+                                        Delete concept
+                                    </button>
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% endblock %}
+    </div>
 {% endblock %}
