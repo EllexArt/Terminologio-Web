@@ -112,7 +112,6 @@ class ConceptController extends AbstractController
 
     #[Route('/concept/{title}/component/buttons', name: 'app_concept_component_buttons')]
     public function getComponentsButtons(ConceptService $conceptService,
-        ComposantNameRepository $composantNameRepository,
         Concept $concept): Response
     {
         $componentsTrad = $conceptService->calculateComponentsWithDefaultTrad($concept);
@@ -123,13 +122,15 @@ class ConceptController extends AbstractController
     }
 
     #[Route('/concept/{title}/validate', name: 'app_concept_validate')]
-    public function validateConcept(Concept $concept, Request $request): Response
+    public function validateConcept(EntityManagerInterface $entityManager, Concept $concept, Request $request): Response
     {
         $number = 0;
         $components = $concept->getComposants();
         $trads[] = $components[$number]->getComposantNames();
         while (($trad = $request->get('componentText'.$number)) != null) {
-
+            $component_name = $trads[$number];
+            $component_name->setValue($trad);
+            $entityManager->persist($component_name);
         }
 
         return $this->redirectToRoute('app_terminologio_index');
