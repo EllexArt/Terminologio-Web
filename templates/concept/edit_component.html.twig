@@ -14,10 +14,9 @@
             })
         })
         }}>
-            <div class="flex flex-row w-4/5 bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 align-middle">
-                <form method="post" action="{{ path('app_concept_validate', {title:concept.title}) }}">
+                <form class="flex flex-row w-4/5 bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 align-middle" method="post" action="{{ path('app_concept_validate', {title:concept.title}) }}">
                     <div class="flex flex-col size-2/5">
-                        <button class="relative size-full"{{ stimulus_action('component', 'addComponent', 'click') }}>
+                        <button type="button" class="relative size-full"{{ stimulus_action('component', 'addComponent', 'click') }}>
                             <img src="{{ asset(imagePath) }}" alt="concept-image" class="w-full aspect-square"/>
                             <div {{ stimulus_target('component', 'components') }}>
                                 {{ include('concept/components.html.twig') }}
@@ -38,6 +37,5 @@
                 </form>
             </div>
         </div>
-    </div>
 
 {% endblock %}
