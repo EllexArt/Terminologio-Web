@@ -5,14 +5,17 @@
 {% block body %}
     {% block navigation %}{{ parent() }}{% endblock %}
 
-    <div class="grid grid-cols-2 divide-y ">
+    {% if success == true %}
+        {{include('admin/banner_created_user.html.twig')}}
+    {% endif %}
+    <div class="grid grid-cols-2 divide ">
         {% block showUser %}
             <div class="px-11 pt-10 pb-12">
                 <div class="bg-gray-900 p-4 rounded">
                     <h2 class="mb-11 text-3xl font-bold leading-snug text-white">
                         Users :
-                        <a href="{{ path('app_add_user') }}">
-                            <button class="bg-indigo-500 bg-opacity-50 hover:bg-blue-500 text-indigo-900 font-semibold hover:text-white py-2 px-4 border border-blue-700 hover:border-transparent rounded">
+                        <a class="flow float-right " href="{{ path('app_add_user') }}">
+                            <button class="bg-indigo-500 hover:bg-blue-500 text-indigo-900 font-semibold hover:text-white py-2 px-4 border border-blue-700 hover:border-transparent rounded">
                                 Add user
                             </button>
                         </a>
@@ -20,13 +23,13 @@
                     <ul>
                     {% for user in users %}
                         <li class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 font-bold" style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%)">
-                            Username : {{ user.username }}<br>
-                            E-mail : {{ user.email }}
-                            <a href="{{ path('app_delete_user', {id:user.id}) }}">
+                            <a class="flow float-right pt-0" href="{{ path('app_delete_user', {id:user.id}) }}">
                                 <button class="bg-white bg-opacity-50 hover:bg-blue-500 text-blue-800 font-semibold hover:text-white py-2 px-4 border border-blue-700 hover:border-transparent rounded">
                                     Delete user
                                 </button>
                             </a>
+                            Username : {{ user.username }}<br>
+                            E-mail : {{ user.email }}
                         </li>
                     {% endfor %}
                     </ul>
@@ -42,14 +45,16 @@
                     <ul>
                         {% for concept in concepts %}
                             <li class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 font-bold" style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%)">
-                                Title : {{ concept.title }}<br>
-                                Picture :
-                                <img src="{{ asset('public/uploads/images/' ~concept.image) }}" alt="concept-image" class="w-full aspect-square"/>
-                                <a href="{{ path('app_delete_concept', {id:concept.id}) }}">
-                                    <button class="bg-white bg-opacity-50 hover:bg-blue-500 text-blue-800 font-semibold hover:text-white py-2 px-4 border border-blue-700 hover:border-transparent rounded">
+                                <a class="flow float-right " href="{{ path('app_delete_concept', {id:concept.id}) }}">
+                                    <button class="bg-white bg-opacity-50 hover:bg-blue-500 text-blue-800 font-semibold
+                                                   hover:text-white py-2 px-4 border border-blue-700 hover:border-transparent
+                                                   rounded">
                                         Delete concept
                                     </button>
                                 </a>
+                                Title : {{ concept.title }}<br>
+                                Picture :
+                                <img src="{{ asset('uploads/images/' ~concept.image) }}" alt="concept-image" class="w-full aspect-square"/>
                             </li>
                         {% endfor %}
                     </ul>
