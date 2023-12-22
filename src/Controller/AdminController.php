@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Concept;
 use App\Entity\User;
+use App\Form\RegistrationFormType;
 use App\Repository\ConceptRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManager;
@@ -37,5 +38,15 @@ class AdminController extends AbstractController
         $entityManager->remove($concept);
         $entityManager->flush();
         return $this->redirectToRoute('app_admin');
+    }
+
+    #[Route('/add/user', name:'app_add_user')]
+    public function addUser() : Response
+    {
+        $user = new User();
+        $form = $this->createForm(RegistrationFormType::class, $user);
+        return $this->render('admin/admin_add_user.html.twig',[
+            'registrationForm' => $form->createView(),
+        ]);
     }
 }
