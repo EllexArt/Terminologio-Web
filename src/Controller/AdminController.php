@@ -3,9 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Concept;
+use App\Entity\Language;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Repository\ConceptRepository;
+use App\Repository\LanguageRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -18,11 +20,13 @@ use Symfony\Component\Routing\Annotation\Route;
 class AdminController extends AbstractController
 {
     #[Route('/admin', name: 'app_admin')]
-    public function index(UserRepository $userRepository, ConceptRepository $conceptRepository): Response
+    public function index(UserRepository $userRepository, ConceptRepository $conceptRepository,
+                          LanguageRepository $languageRepository): Response
     {
         return $this->render('admin/admin_management.html.twig', [
             'users' => $userRepository->findByRoleUser(),
             'concepts' => $conceptRepository->findAll(),
+            'languages' => $languageRepository->findAll(),
             'success' => false,
         ]);
     }
@@ -47,7 +51,8 @@ class AdminController extends AbstractController
     public function addUser(LoggerInterface $logger, Request $request, UserPasswordHasherInterface $userPasswordHasher,
                             EntityManagerInterface $entityManager,
                             UserRepository $userRepository,
-                            ConceptRepository $conceptRepository) : Response
+                            ConceptRepository $conceptRepository,
+                            LanguageRepository $languageRepository) : Response
     {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -67,11 +72,31 @@ class AdminController extends AbstractController
             return $this->render('admin/admin_management.html.twig', [
                 'users' => $userRepository->findByRoleUser(),
                 'concepts' => $conceptRepository->findAll(),
+                'languages' => $languageRepository->findAll(),
                 'success' => true,
             ]);
         }
         return $this->render('admin/admin_add_user.html.twig',[
             'registrationForm' => $form->createView(),
         ]);
+    }
+
+    #[Route('/delete/language/{id}', name: 'app_delete_language')]
+    public function deleteLanguage(EntityManagerInterface $entityManager, Language $language) : Response
+    {
+        $entityManager->remove($language);
+        $entityManager->flush();
+        return $this->redirectToRoute('app_admin');
+    }
+
+    #[Route('/add/language', name:'app_add_language')]
+    public function addLanguage(LoggerInterface $logger, Request $request, UserPasswordHasherInterface $userPasswordHasher,
+                            EntityManagerInterface $entityManager,
+                            UserRepository $userRepository,
+                            ConceptRepository $conceptRepository,
+                            LanguageRepository $languageRepository) : Response
+    {
+        $language = new Language();
+        return $this->redirectToRoute('app_admin');
     }
 }
