@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\ComposantNameRepository;
+use App\Repository\ComponentNameRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: ComposantNameRepository::class)]
-class ComposantName
+#[ORM\Entity(repositoryClass: ComponentNameRepository::class)]
+class ComponentName
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -15,7 +15,7 @@ class ComposantName
 
     #[ORM\ManyToOne(inversedBy: 'composantNames')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Composant $composant = null;
+    private ?Component $composant = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
@@ -29,12 +29,12 @@ class ComposantName
         return $this->id;
     }
 
-    public function getComposant(): ?Composant
+    public function getComposant(): ?Component
     {
         return $this->composant;
     }
 
-    public function setComposant(?Composant $composant): static
+    public function setComposant(?Component $composant): static
     {
         $this->composant = $composant;
 
