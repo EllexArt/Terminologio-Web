@@ -1,0 +1,8 @@
+{% for component in components %}
+<div>
+    {% include('concept/components/component_edit_name_block.html.twig') %}
+    <button type="button"
+            {{ stimulus_action('component', 'deleteComponent', 'click',
+    {id:component.id, number:component.number}) }}>Delete</button>
+</div>
+{% endfor %}
