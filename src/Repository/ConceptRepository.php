@@ -36,6 +36,20 @@ class ConceptRepository extends ServiceEntityRepository
 //        ;
 //    }
 
+    /**
+     * @return Concept[] Returns an array of Concept objects
+     *          by its default language
+     */
+    public function findByDefaultLanguage($value): array
+    {
+       return $this->createQueryBuilder('c')
+                    ->andWhere('c.defaultLanguage = :val')
+                    ->setParameter('val', $value)
+                    ->getQuery()
+                    ->getResult()
+       ;
+    }
+
 //    public function findOneBySomeField($value): ?Concept
 //    {
 //        return $this->createQueryBuilder('c')
@@ -45,4 +59,13 @@ class ConceptRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    public function findByCategory($value) : array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.category = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
 }

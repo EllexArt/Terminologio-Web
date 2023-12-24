@@ -4,7 +4,7 @@ namespace App\Service;
 
 use App\Entity\Concept;
 use App\Entity\DTO\ComponentTrad;
-use App\Repository\ComposantNameRepository;
+use App\Repository\ComponentNameRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;

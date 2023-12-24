@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\ComposantRepository;
+use App\Repository\ComponentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: ComposantRepository::class)]
-class Composant
+#[ORM\Entity(repositoryClass: ComponentRepository::class)]
+class Component
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -25,7 +25,7 @@ class Composant
     #[ORM\Column]
     private ?int $positionY = null;
 
-    #[ORM\OneToMany(mappedBy: 'composant', targetEntity: ComposantName::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'composant', targetEntity: ComponentName::class, orphanRemoval: true)]
     private Collection $composantNames;
 
     #[ORM\Column]
@@ -85,14 +85,14 @@ class Composant
     }
 
     /**
-     * @return Collection<int, ComposantName>
+     * @return Collection<int, ComponentName>
      */
     public function getComposantNames(): Collection
     {
         return $this->composantNames;
     }
 
-    public function addComposantName(ComposantName $composantName): static
+    public function addComposantName(ComponentName $composantName): static
     {
         if (!$this->composantNames->contains($composantName)) {
             $this->composantNames->add($composantName);
@@ -102,7 +102,7 @@ class Composant
         return $this;
     }
 
-    public function removeComposantName(ComposantName $composantName): static
+    public function removeComposantName(ComponentName $composantName): static
     {
         if ($this->composantNames->removeElement($composantName)) {
             // set the owning side to null (unless already changed)
