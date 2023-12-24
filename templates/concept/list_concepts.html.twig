@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Terminologio - List of concepts{% endblock %}
+
+{% block body %}
+    {% block navigation %}{{ parent() }}{% endblock %}
+
+    {% for concept in concepts %}
+        <a href="{{ path('app_concept_show', {'title': concept.title}) }}">
+            <h2>{{ concept.title }}</h2>
+            <p>Default language : {{ concept.defaultLanguage.name }}</p>
+            <div>
+                <p>Other languages : </p>
+                <p>
+                {% for component_name in concept.composants[0].composantNames %}
+                    {% if component_name.language.name != concept.defaultLanguage.name %}
+                        {{ component_name.language.name }}
+                    {% endif %}
+                {% endfor %}
+                </p>
+            </div>
+        </a>
+    {% endfor %}
+{% endblock %}

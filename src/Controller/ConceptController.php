@@ -6,9 +6,12 @@ use App\Entity\Composant;
 use App\Entity\ComposantName;
 use App\Entity\Concept;
 use App\Entity\DTO\ComponentTrad;
+use App\Entity\Language;
 use App\Form\ConceptUploadType;
 use App\Repository\ComposantNameRepository;
 use App\Repository\ComposantRepository;
+use App\Repository\ConceptRepository;
+use App\Repository\LanguageRepository;
 use App\Service\ConceptService;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -23,7 +26,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 
 class ConceptController extends AbstractController
 {
-    #[Route('/concept/upload', name: 'app_concept_upload')]
+    #[Route('/concept/create', name: 'app_concept_upload')]
     public function upload(Request $request, EntityManagerInterface $entityManager, ConceptService $conceptService, SluggerInterface $slugger): Response
     {
         $concept = new Concept();
@@ -37,103 +40,70 @@ class ConceptController extends AbstractController
             return $this->redirectToRoute('app_concept_component_edit', [
                 'title' => $concept->getTitle()]);
         }
-        return $this->render('concept/upload.html.twig', [
+        return $this->render('concept/create_concept.html.twig', [
             'uploadForm' => $form->createView(),
         ]);
     }
 
-    #[Route('/concept/{title}/component', name: 'app_concept_component_edit')]
-    public function editComponent(ConceptService $conceptService, ComposantNameRepository $composantNameRepository, Concept $concept): Response
-    {
-        return $this->render('concept/edit_component.html.twig', [
-            'imagePath' => 'uploads/images/' . $concept->getImage(),
-            'components' => $conceptService->calculateComponentsWithDefaultTrad($concept),
-            'concept' => $concept
-        ]);
-    }
-
-    #[Route('/concept/{title}/component/add/{horizontal_position}/{vertical_position}', name: 'app_concept_component_add')]
-    public function addComponent(ConceptService $conceptService, ComposantNameRepository $composantNameRepository, ComposantRepository $composantRepository, EntityManagerInterface $entityManager, Concept $concept, int $horizontal_position, int $vertical_position): Response
-    {
-        $component = new Composant();
-        $component->setConcept($concept);
-        $component->setNumber($composantRepository->calculateNextNumber($concept));
-        $component->setPositionX($horizontal_position);
-        $component->setPositionY($vertical_position);
-
-        $componentName = new ComposantName();
-        $componentName->setComposant($component);
-        $componentName->setLanguage($concept->getDefaultLanguage());
-        $componentName->setValue("Composant".$component->getNumber());
-        $entityManager->persist($componentName);
-
-        $component->addComposantName($componentName);
-
-        $entityManager->persist($component);
-
-        $entityManager->flush();
-
-        $componentsTrad = $conceptService->calculateComponentsWithDefaultTrad($concept);
-        $componentsTrad[] = new ComponentTrad($component->getId(),
-                                                $component->getNumber(),
-                                                "",
-                                                $component->getPositionX(),
-                                                $component->getPositionY());
-
-        return $this->render('concept/components.html.twig', [
-            'components' => $componentsTrad
-        ]);
-    }
-
-    #[Route('/concept/{title}/component/delete/{id}', name: 'app_concept_component_delete')]
-    public function deleteComponent(ConceptService $conceptService,
-        ComposantNameRepository $composantNameRepository,
-        EntityManagerInterface $entityManager,
-        #[MapEntity(mapping: ['title' => 'title'])] Concept $concept,
-        #[MapEntity(id: 'id')] Composant $composant_to_delete): Response
-    {
-        if($composant_to_delete->getConcept() == $concept) {
-            $entityManager->remove($composant_to_delete);
-
-            foreach ($concept->getComposants() as $composant) {
-                if($composant->getNumber() > $composant_to_delete->getNumber())
-                $composant->setNumber($composant->getNumber() - 1);
-                $entityManager->persist($composant);
-            }
-
-            $entityManager->flush();
-        }
-        $componentsTrad = $conceptService->calculateComponentsWithDefaultTrad($concept);
-
-        return $this->render('concept/components.html.twig', [
-            'components' => $componentsTrad
-        ]);
-    }
-
-    #[Route('/concept/{title}/component/buttons', name: 'app_concept_component_buttons')]
-    public function getComponentsButtons(ConceptService $conceptService,
-        Concept $concept): Response
-    {
-        $componentsTrad = $conceptService->calculateComponentsWithDefaultTrad($concept);
-
-        return $this->render('concept/components_edit.html.twig', [
-            'components' => $componentsTrad
-        ]);
-    }
-
-    #[Route('/concept/{title}/validate', name: 'app_concept_validate')]
-    public function validateConcept(EntityManagerInterface $entityManager, Concept $concept, Request $request): Response
+    #[Route('/concept/{title}/validate', name: 'app_concept_validate', methods: 'POST')]
+    public function validateConcept(ComposantNameRepository $composantNameRepository, EntityManagerInterface $entityManager, Concept $concept, Request $request): Response
     {
         $number = 0;
         $components = $concept->getComposants();
-        $trads[] = $components[$number]->getComposantNames();
         while (($trad = $request->get('componentText'.$number)) != null) {
-            $component_name = $trads[$number];
+            $component_name = $composantNameRepository
+                ->getComponentNameFromComponentAndLanguage($components[$number], $concept->getDefaultLanguage());
             $component_name->setValue($trad);
             $entityManager->persist($component_name);
+            $number++;
         }
+        $entityManager->flush();
 
-        return $this->redirectToRoute('app_terminologio_index');
+        return $this->redirectToRoute('app_concept_list');
     }
 
+    #[Route('/concept/list', name: 'app_concept_list')]
+    public function listConcepts(ConceptRepository $conceptRepository) : Response
+    {
+        $concepts = $conceptRepository->findAll();
+        return $this->render('concept/list_concepts.html.twig',
+        [
+            'concepts' => $concepts,
+        ]);
+    }
+
+
+    #[Route('/concept/{title}/show', name: 'app_concept_show')]
+    public function showConcept(ConceptService $conceptService, Concept $concept) : Response
+    {
+        $componentsTrad = $conceptService->calculateComponentsWithDefaultTrad($concept);
+        return $this->render('concept/show_concept.html.twig', [
+            'concept' => $concept,
+            'componentsName' => $componentsTrad,
+        ]);
+    }
+
+
+    #[Route('/concept/{title}/translate', name: 'app_concept_translation')]
+    public function createOrEditTranslation(LanguageRepository $languageRepository, ConceptService $conceptService, Concept $concept) : Response
+    {
+        $componentsTrad = $conceptService->calculateComponentsWithDefaultTrad($concept);
+        return $this->render('concept/translation/add_translation.html.twig', [
+            'concept' => $concept,
+            'componentsName' => $componentsTrad,
+            'languages' => $languageRepository->findAll()
+        ]);
+    }
+
+    #[Route('/concept/{title}/translate/get/{id}', name: 'app_concept_translation_get_language')]
+    public function getTranslationFromConcept(ConceptService $conceptService,
+        #[MapEntity(mapping: ['title' => 'title'])] Concept $concept,
+        #[MapEntity(id: 'id')] Language $language) : Response
+    {
+        $componentsTrad = $conceptService->calculateComponentsWithTrad($concept, $language);
+        return $this->render('concept/translation/components_translate_block.html.twig', [
+            'concept' => $concept,
+            'componentsName' => $componentsTrad,
+        ]);
+    }
 }

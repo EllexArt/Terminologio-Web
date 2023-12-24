@@ -7,15 +7,15 @@ export default class extends Controller {
 
     static targets = ['components', 'components_button'];
     async addComponent(image) {
-        let heigt = image.target.height;
+        let height = image.target.height;
         let width = image.target.width;
         let offsetX = (image.offsetX / width) * 100;
-        let offsetY = (image.offsetY / heigt) * 100;
+        let offsetY = (image.offsetY / height) * 100;
 
         let tabText = this.calculateValuesOfComponents();
 
-        const response = await fetch(`${this.urlValue}/add/${offsetX}/${offsetY}`);
-        const response_buttons = await fetch(`${this.urlValue}/buttons`);
+        const response = await fetch(`${this.urlValue}/add/${offsetX}/${offsetY}`, {method: "POST"});
+        const response_buttons = await fetch(`${this.urlValue}/buttons`, {method: "POST"});
         this.componentsTarget.innerHTML = await response.text();
         this.components_buttonTarget.innerHTML = await response_buttons.text();
 
@@ -29,8 +29,8 @@ export default class extends Controller {
 
         let tabText = this.calculateValuesOfComponents();
 
-        const response = await fetch(`${this.urlValue}/delete/${button.params.id}`);
-        const response_buttons = await fetch(`${this.urlValue}/buttons`);
+        const response = await fetch(`${this.urlValue}/delete/${button.params.id}`, {method: "POST"});
+        const response_buttons = await fetch(`${this.urlValue}/buttons`, {method: "POST"});
         this.componentsTarget.innerHTML = await response.text();
         this.components_buttonTarget.innerHTML = await response_buttons.text();
 
@@ -39,6 +39,14 @@ export default class extends Controller {
         for (let i = 0; i < tabText.length; i++) {
             elements[i].setAttribute('value', tabText[i]);
         }
+    }
+
+    async getTranslation() {
+        let languageChooser = document.getElementById('languageChooser');
+        let languageId = languageChooser.id;
+        const response = await fetch(`${this.urlValue}/get/${languageId}`, {method: "POST"});
+
+        this.components_buttonTarget.innerHTML = await response.text();
     }
 
     calculateValuesOfComponents() {

@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Concept;
 use App\Entity\DTO\ComponentTrad;
+use App\Entity\Language;
 use App\Repository\ComposantNameRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -37,27 +38,30 @@ class ConceptService
        $entityManager->flush();
    }
 
-   public function calculateComponentsWithDefaultTrad(Concept $concept) : array {
-       $componentsTrad = [];
-       foreach ($concept->getComposants() as $component) {
-           $trads = $component->getComposantNames();
-           $default_trad = null;
-           foreach ($trads as $trad) {
-               if ($trad->getLanguage()->getName() == $concept->getDefaultLanguage()->getName()) {
-                   $default_trad = $trad;
-               }
-           }
+    public function calculateComponentsWithTrad(Concept $concept, Language $language) : array {
+        $componentsTrad = [];
+        foreach ($concept->getComposants() as $component) {
+            $componentNameGoodLanguage = null;
+            foreach ($component->getComposantNames() as $componentName) {
+                if ($componentName->getLanguage()->getName() == $language->getName()) {
+                    $componentNameGoodLanguage = $componentName;
+                }
+            }
 
-           $componentTrad = new ComponentTrad(
-               $component->getId(),
-               $component->getNumber(),
-               $default_trad == null ? "" : $default_trad->getValue(),
-               $component->getPositionX(),
-               $component->getPositionY()
-           );
-           $componentsTrad[] = $componentTrad;
-       }
-       return $componentsTrad;
+            $componentTrad = new ComponentTrad(
+                $component->getId(),
+                $component->getNumber(),
+                $componentNameGoodLanguage == null ? "" : $componentNameGoodLanguage->getValue(),
+                $component->getPositionX(),
+                $component->getPositionY()
+            );
+            $componentsTrad[] = $componentTrad;
+        }
+        return $componentsTrad;
+    }
+
+   public function calculateComponentsWithDefaultTrad(Concept $concept) : array {
+       return $this->calculateComponentsWithTrad($concept, $concept->getDefaultLanguage());
    }
 
 }

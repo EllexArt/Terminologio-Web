@@ -2,7 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\Composant;
 use App\Entity\ComposantName;
+use App\Entity\Concept;
+use App\Entity\Language;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,6 +22,17 @@ class ComposantNameRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, ComposantName::class);
+    }
+
+    public function getComponentNameFromComponentAndLanguage(Composant $composant, Language $language) : ?ComposantName
+    {
+        $componentsName = $composant->getComposantNames();
+        foreach ($componentsName as $componentName) {
+            if($componentName->getLanguage()->getName() == $language->getName()) {
+                return $componentName;
+            }
+        }
+        return null;
     }
 
 //    /**
