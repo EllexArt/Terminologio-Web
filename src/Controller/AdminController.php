@@ -2,10 +2,16 @@
 
 namespace App\Controller;
 
+use App\Entity\Category;
+use App\Entity\ComponentName;
 use App\Entity\Concept;
 use App\Entity\Language;
 use App\Entity\User;
+use App\Form\CreationCategoryType;
+use App\Form\CreationLanguageType;
 use App\Form\RegistrationFormType;
+use App\Repository\CategoryRepository;
+use App\Repository\ComponentNameRepository;
 use App\Repository\ConceptRepository;
 use App\Repository\LanguageRepository;
 use App\Repository\UserRepository;
@@ -21,12 +27,13 @@ class AdminController extends AbstractController
 {
     #[Route('/admin', name: 'app_admin')]
     public function index(UserRepository $userRepository, ConceptRepository $conceptRepository,
-                          LanguageRepository $languageRepository): Response
+                          LanguageRepository $languageRepository, CategoryRepository $categoryRepository): Response
     {
         return $this->render('admin/admin_management.html.twig', [
             'users' => $userRepository->findByRoleUser(),
             'concepts' => $conceptRepository->findAll(),
             'languages' => $languageRepository->findAll(),
+            'categories' => $categoryRepository->findAll(),
             'success' => false,
         ]);
     }
@@ -48,11 +55,12 @@ class AdminController extends AbstractController
     }
 
     #[Route('/add/user', name:'app_add_user')]
-    public function addUser(LoggerInterface $logger, Request $request, UserPasswordHasherInterface $userPasswordHasher,
+    public function addUser(Request $request, UserPasswordHasherInterface $userPasswordHasher,
                             EntityManagerInterface $entityManager,
                             UserRepository $userRepository,
                             ConceptRepository $conceptRepository,
-                            LanguageRepository $languageRepository) : Response
+                            LanguageRepository $languageRepository,
+                            CategoryRepository$categoryRepository) : Response
     {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -73,6 +81,7 @@ class AdminController extends AbstractController
                 'users' => $userRepository->findByRoleUser(),
                 'concepts' => $conceptRepository->findAll(),
                 'languages' => $languageRepository->findAll(),
+                'categories' => $categoryRepository->findAll(),
                 'success' => true,
             ]);
         }
@@ -82,21 +91,71 @@ class AdminController extends AbstractController
     }
 
     #[Route('/delete/language/{id}', name: 'app_delete_language')]
-    public function deleteLanguage(EntityManagerInterface $entityManager, Language $language) : Response
+    public function deleteLanguage(EntityManagerInterface $entityManager, ComponentNameRepository $componentNameRepository,
+                                   ConceptRepository      $conceptRepository, Language $language) : Response
     {
+        $conceptsDefaultLanguage = $conceptRepository->findByDefaultLanguage($language);
+        foreach($conceptsDefaultLanguage as $concept) {
+            $entityManager->remove($concept);
+        }
+        $translations = $componentNameRepository->findByLanguage($language);
+        foreach($translations as $translation) {
+            $entityManager->remove($translation);
+        }
         $entityManager->remove($language);
         $entityManager->flush();
         return $this->redirectToRoute('app_admin');
     }
 
     #[Route('/add/language', name:'app_add_language')]
-    public function addLanguage(LoggerInterface $logger, Request $request, UserPasswordHasherInterface $userPasswordHasher,
-                            EntityManagerInterface $entityManager,
-                            UserRepository $userRepository,
-                            ConceptRepository $conceptRepository,
-                            LanguageRepository $languageRepository) : Response
+    public function addLanguage(Request $request, EntityManagerInterface $entityManager) : Response
     {
         $language = new Language();
+        $form = $this->createForm(CreationLanguageType::class, $language);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $language->setName($form->get('name')->getData());
+            $entityManager->persist($language);
+            $entityManager->flush();
+            return $this->redirectToRoute('app_admin');
+        }
+        return $this->render('admin/admin_add_language_or_category.html.twig',[
+            'object' => 'language',
+            'creationForm' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/delete/category/{id}', name: 'app_delete_category')]
+    public function deleteCategory(EntityManagerInterface $entityManager, CategoryRepository $categoryRepository,
+                                   ConceptRepository $conceptRepository, Category $category) : Response
+    {
+        $categoryOther = $categoryRepository->findById(0);
+        if($categoryOther != $category) {
+            $conceptsCategory = $conceptRepository->findByCategory($category);
+            foreach($conceptsCategory as $concept) {
+                $concept->setCategory($categoryOther);
+            }
+            $entityManager->remove($category);
+            $entityManager->flush();
+        }
         return $this->redirectToRoute('app_admin');
+    }
+
+    #[Route('/add/category', name:'app_add_category')]
+    public function addCategory(Request $request, EntityManagerInterface $entityManager) : Response
+    {
+        $category = new Category();
+        $form = $this->createForm(CreationCategoryType::class, $category);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $category->setName($form->get('name')->getData());
+            $entityManager->persist($category);
+            $entityManager->flush();
+            return $this->redirectToRoute('app_admin');
+        }
+        return $this->render('admin/admin_add_language_or_category.html.twig',[
+            'object' => 'category',
+            'creationForm' => $form->createView(),
+        ]);
     }
 }

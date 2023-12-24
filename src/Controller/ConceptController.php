@@ -2,13 +2,13 @@
 
 namespace App\Controller;
 
-use App\Entity\Composant;
-use App\Entity\ComposantName;
+use App\Entity\Component;
+use App\Entity\ComponentName;
 use App\Entity\Concept;
 use App\Entity\DTO\ComponentTrad;
 use App\Form\ConceptUploadType;
-use App\Repository\ComposantNameRepository;
-use App\Repository\ComposantRepository;
+use App\Repository\ComponentNameRepository;
+use App\Repository\ComponentRepository;
 use App\Service\ConceptService;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -43,7 +43,7 @@ class ConceptController extends AbstractController
     }
 
     #[Route('/concept/{title}/component', name: 'app_concept_component_edit')]
-    public function editComponent(ConceptService $conceptService, ComposantNameRepository $composantNameRepository, Concept $concept): Response
+    public function editComponent(ConceptService $conceptService, ComponentNameRepository $composantNameRepository, Concept $concept): Response
     {
         return $this->render('concept/edit_component.html.twig', [
             'imagePath' => 'uploads/images/' . $concept->getImage(),
@@ -53,18 +53,18 @@ class ConceptController extends AbstractController
     }
 
     #[Route('/concept/{title}/component/add/{horizontal_position}/{vertical_position}', name: 'app_concept_component_add')]
-    public function addComponent(ConceptService $conceptService, ComposantNameRepository $composantNameRepository, ComposantRepository $composantRepository, EntityManagerInterface $entityManager, Concept $concept, int $horizontal_position, int $vertical_position): Response
+    public function addComponent(ConceptService $conceptService, ComponentNameRepository $composantNameRepository, ComponentRepository $composantRepository, EntityManagerInterface $entityManager, Concept $concept, int $horizontal_position, int $vertical_position): Response
     {
-        $component = new Composant();
+        $component = new Component();
         $component->setConcept($concept);
         $component->setNumber($composantRepository->calculateNextNumber($concept));
         $component->setPositionX($horizontal_position);
         $component->setPositionY($vertical_position);
 
-        $componentName = new ComposantName();
+        $componentName = new ComponentName();
         $componentName->setComposant($component);
         $componentName->setLanguage($concept->getDefaultLanguage());
-        $componentName->setValue("Composant".$component->getNumber());
+        $componentName->setValue("Component".$component->getNumber());
         $entityManager->persist($componentName);
 
         $component->addComposantName($componentName);
@@ -86,11 +86,11 @@ class ConceptController extends AbstractController
     }
 
     #[Route('/concept/{title}/component/delete/{id}', name: 'app_concept_component_delete')]
-    public function deleteComponent(ConceptService $conceptService,
-        ComposantNameRepository $composantNameRepository,
-        EntityManagerInterface $entityManager,
-        #[MapEntity(mapping: ['title' => 'title'])] Concept $concept,
-        #[MapEntity(id: 'id')] Composant $composant_to_delete): Response
+    public function deleteComponent(ConceptService                                      $conceptService,
+                                    ComponentNameRepository                             $composantNameRepository,
+                                    EntityManagerInterface                              $entityManager,
+                                    #[MapEntity(mapping: ['title' => 'title'])] Concept $concept,
+                                    #[MapEntity(id: 'id')] Component                    $composant_to_delete): Response
     {
         if($composant_to_delete->getConcept() == $concept) {
             $entityManager->remove($composant_to_delete);
