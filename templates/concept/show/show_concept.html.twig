@@ -11,7 +11,7 @@
             </h1>
         </div>
         <div class="flex flex-grow justify-center items-center" {{ stimulus_controller('component', {
-            url: path('app_concept_component_edit', {
+            url: path('app_concept_show', {
                 title:concept.title
             })
         })
@@ -19,7 +19,7 @@
                 <div class="flex flex-row w-4/5 bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 align-middle">
                     <div class="flex flex-col size-2/5">
                         <div class="relative size-full">
-                            <img src="{{ image_directory~asset(concept.image) }}" alt="concept-image" class="w-full aspect-square"/>
+                            <img src="{{ image_directory~asset(concept.image) }}" alt="concept-image" class="w-full aspect-auto"/>
                             <div>
                                 {{ include('concept/components/components_number_block.html.twig') }}
                             </div>
@@ -27,7 +27,7 @@
                         <div class="flex flex-col items-center p-4">
                             <label>
                                 Choose the language :
-                                <select>
+                                <select id="languageChooser" {{ stimulus_action('component', 'getShowingNames', 'change') }}>
                                     {% for componentName in concept.composants[0].composantNames %}
                                         <option value="{{ componentName.language.id }}">{{ componentName.language.name }}</option>
                                     {% endfor %}
@@ -37,8 +37,8 @@
                     </div>
                     <div class="mr-8 mb-8 ml-8">
                         <h2>Components : </h2>
-                        <div>
-                            {{ include('concept/components/components_show.html.twig') }}
+                        <div {{ stimulus_target('component', 'componentsNames') }}>
+                            {{ include('concept/show/components_show.html.twig') }}
                         </div>
                     </div>
                 </div>
