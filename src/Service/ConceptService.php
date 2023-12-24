@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\ComposantName;
 use App\Entity\Concept;
 use App\Entity\DTO\ComponentTrad;
 use App\Entity\Language;
@@ -9,6 +10,7 @@ use App\Repository\ComposantNameRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 class ConceptService
@@ -63,5 +65,28 @@ class ConceptService
    public function calculateComponentsWithDefaultTrad(Concept $concept) : array {
        return $this->calculateComponentsWithTrad($concept, $concept->getDefaultLanguage());
    }
+
+    public function saveComponentNames(Concept $concept,
+        Request $request,
+        ComposantNameRepository $composantNameRepository,
+        Language $language,
+        EntityManagerInterface $entityManager): void
+    {
+        $number = 0;
+        $components = $concept->getComposants();
+        while (($trad = $request->get('componentText'.$number)) != null) {
+            $component_name = $composantNameRepository
+                ->getComponentNameFromComponentAndLanguage($components[$number], $language);
+            if($component_name == null) {
+                $component_name = new ComposantName();
+                $component_name->setLanguage($language);
+                $component_name->setComposant($components[$number]);
+            }
+            $component_name->setValue($trad);
+            $entityManager->persist($component_name);
+            $number++;
+        }
+        $entityManager->flush();
+    }
 
 }

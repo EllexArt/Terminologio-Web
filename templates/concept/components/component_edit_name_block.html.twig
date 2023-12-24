@@ -3,10 +3,5 @@
     <input name='componentText{{ component.number }}'
            class='componentText'
            type="text"
-           value="{% if component.name == "" %}
-                    Component{{ component.number }}
-                    {% else %}
-                    {{ component.name }}
-                    {% endif %}
-                ">
+           value="{% if component.name == "" %}Component{{ component.number }}{% else %}{{ component.name }}{% endif %}">
 </label>

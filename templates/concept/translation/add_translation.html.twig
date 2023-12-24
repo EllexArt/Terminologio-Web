@@ -24,9 +24,9 @@
             </label>
         </div>
         <div class="flex flex-grow justify-center items-center">
-            <form class="flex flex-row w-4/5 bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 align-middle"
+            <form id="translationForm" class="flex flex-row w-4/5 bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 align-middle"
                   method="post"
-                  action="{{ path('app_concept_validate', {title:concept.title}) }}">
+                  action="{{ path('app_concept_translation_save', {title:concept.title, id:concept.defaultLanguage.id}) }}">
                 <div class="flex flex-col size-2/5">
                     <div class="relative size-full">
                         <img src="{{ image_directory~asset(concept.image) }}" alt="concept-image" class="w-full aspect-square"/>
@@ -42,7 +42,7 @@
                 </div>
                 <div class="mr-8 mb-8 ml-8">
                     <h2>Components : </h2>
-                    <div {{ stimulus_target('component', 'components_button') }}>
+                    <div {{ stimulus_target('component', 'componentsNames') }}>
                         {{ include('concept/translation/components_translate_block.html.twig') }}
                     </div>
                 </div>
