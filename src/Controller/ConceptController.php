@@ -46,64 +46,12 @@ class ConceptController extends AbstractController
     }
 
     #[Route('/concept/{title}/validate', name: 'app_concept_validate', methods: 'POST')]
-    public function validateConcept(ComposantNameRepository $composantNameRepository, EntityManagerInterface $entityManager, Concept $concept, Request $request): Response
+    public function validateConcept(ConceptService $conceptService, $composantNameRepository, EntityManagerInterface $entityManager, Concept $concept, Request $request): Response
     {
-        $number = 0;
-        $components = $concept->getComposants();
-        while (($trad = $request->get('componentText'.$number)) != null) {
-            $component_name = $composantNameRepository
-                ->getComponentNameFromComponentAndLanguage($components[$number], $concept->getDefaultLanguage());
-            $component_name->setValue($trad);
-            $entityManager->persist($component_name);
-            $number++;
-        }
-        $entityManager->flush();
+        $conceptService->saveComponentNames($concept, $request, $composantNameRepository, $concept->getDefaultLanguage(), $entityManager);
 
         return $this->redirectToRoute('app_concept_list');
     }
 
-    #[Route('/concept/list', name: 'app_concept_list')]
-    public function listConcepts(ConceptRepository $conceptRepository) : Response
-    {
-        $concepts = $conceptRepository->findAll();
-        return $this->render('concept/list_concepts.html.twig',
-        [
-            'concepts' => $concepts,
-        ]);
-    }
 
-
-    #[Route('/concept/{title}/show', name: 'app_concept_show')]
-    public function showConcept(ConceptService $conceptService, Concept $concept) : Response
-    {
-        $componentsTrad = $conceptService->calculateComponentsWithDefaultTrad($concept);
-        return $this->render('concept/show_concept.html.twig', [
-            'concept' => $concept,
-            'componentsName' => $componentsTrad,
-        ]);
-    }
-
-
-    #[Route('/concept/{title}/translate', name: 'app_concept_translation')]
-    public function createOrEditTranslation(LanguageRepository $languageRepository, ConceptService $conceptService, Concept $concept) : Response
-    {
-        $componentsTrad = $conceptService->calculateComponentsWithDefaultTrad($concept);
-        return $this->render('concept/translation/add_translation.html.twig', [
-            'concept' => $concept,
-            'componentsName' => $componentsTrad,
-            'languages' => $languageRepository->findAll()
-        ]);
-    }
-
-    #[Route('/concept/{title}/translate/get/{id}', name: 'app_concept_translation_get_language')]
-    public function getTranslationFromConcept(ConceptService $conceptService,
-        #[MapEntity(mapping: ['title' => 'title'])] Concept $concept,
-        #[MapEntity(id: 'id')] Language $language) : Response
-    {
-        $componentsTrad = $conceptService->calculateComponentsWithTrad($concept, $language);
-        return $this->render('concept/translation/components_translate_block.html.twig', [
-            'concept' => $concept,
-            'componentsName' => $componentsTrad,
-        ]);
-    }
 }
