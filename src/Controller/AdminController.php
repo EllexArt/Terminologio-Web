@@ -83,6 +83,7 @@ class AdminController extends AbstractController
                 'languages' => $languageRepository->findAll(),
                 'categories' => $categoryRepository->findAll(),
                 'success' => true,
+                'object' => 'user',
             ]);
         }
         return $this->render('admin/admin_add_user.html.twig',[
@@ -108,21 +109,20 @@ class AdminController extends AbstractController
     }
 
     #[Route('/add/language', name:'app_add_language')]
-    public function addLanguage(Request $request, EntityManagerInterface $entityManager) : Response
+    public function addLanguage(Request $request, EntityManagerInterface $entityManager,
+                                UserRepository $userRepository,
+                                ConceptRepository $conceptRepository,
+                                LanguageRepository $languageRepository,
+                                CategoryRepository$categoryRepository) : Response
     {
         $language = new Language();
         $form = $this->createForm(CreationLanguageType::class, $language);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $language->setName($form->get('name')->getData());
-            $entityManager->persist($language);
-            $entityManager->flush();
-            return $this->redirectToRoute('app_admin');
-        }
-        return $this->render('admin/admin_add_language_or_category.html.twig',[
+        $result = $this->formProcessing($form, $request, $entityManager, $userRepository, $conceptRepository,
+            $languageRepository, $categoryRepository, $language, 'language');
+        return $result == null ?$this->render('admin/admin_add_language_or_category.html.twig',[
             'object' => 'language',
             'creationForm' => $form->createView(),
-        ]);
+        ]) : $result;
     }
 
     #[Route('/delete/category/{id}', name: 'app_delete_category')]
@@ -142,20 +142,38 @@ class AdminController extends AbstractController
     }
 
     #[Route('/add/category', name:'app_add_category')]
-    public function addCategory(Request $request, EntityManagerInterface $entityManager) : Response
+    public function addCategory(Request $request, EntityManagerInterface $entityManager,
+                                UserRepository $userRepository,
+                                ConceptRepository $conceptRepository,
+                                LanguageRepository $languageRepository,
+                                CategoryRepository$categoryRepository) : Response
     {
         $category = new Category();
         $form = $this->createForm(CreationCategoryType::class, $category);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $category->setName($form->get('name')->getData());
-            $entityManager->persist($category);
-            $entityManager->flush();
-            return $this->redirectToRoute('app_admin');
-        }
-        return $this->render('admin/admin_add_language_or_category.html.twig',[
+        $result = $this->formProcessing($form, $request, $entityManager, $userRepository, $conceptRepository,
+            $languageRepository, $categoryRepository, $category, 'category');
+        return $result == null ? $this->render('admin/admin_add_language_or_category.html.twig',[
             'object' => 'category',
             'creationForm' => $form->createView(),
-        ]);
+        ]) : $result;
+    }
+
+    private function formProcessing($form, $request, $entityManager, $userRepository, $conceptRepository,
+                                    $languageRepository, $categoryRepository,$value, $stringValue) {
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $value->setName($form->get('name')->getData());
+            $entityManager->persist($value);
+            $entityManager->flush();
+            return $this->render('admin/admin_management.html.twig', [
+                'users' => $userRepository->findByRoleUser(),
+                'concepts' => $conceptRepository->findAll(),
+                'languages' => $languageRepository->findAll(),
+                'categories' => $categoryRepository->findAll(),
+                'success' => true,
+                'object' => $stringValue,
+            ]);
+        }
+        return null;
     }
 }
