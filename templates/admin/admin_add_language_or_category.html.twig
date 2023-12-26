@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Manage your website{% endblock %}
+
+{% block body %}
+    {% block navigation %}{{ parent() }}{% endblock %}
+    <div class="grid h-screen place-items-center">
+        <section id="creationForm" class="p-4 flex flex-col justify-center min-h-screen max-w-md mx-auto">
+            <div class="align-middle rounded shadow-2xl max-w-xl container mx-auto w-full "
+                 style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%)">
+                <div class="flex items-center justify-center m-10">
+                    <h1 class="tracking-wide text-3xl drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] text-white font-bold">Add a new {{ object }}</h1>
+                </div>
+                <div class="flex justify-between items-center mb-3">
+                    <div class="w-full max-w-xs flow flow-col grid h-full place-items-center">
+                        <div class="mb-4 mt-10">
+                            {{ form_start(creationForm, {'attr': {'class':"px-8 pt-6 pb-8 mb-4"}}) }}
+                            <div class="font-bold">
+                                {{ form_row(creationForm.name,
+                                    {'attr' : {'class' : 'mb-3 mt-1 block w-full px-2 py-1.5
+                                              border border-gray-300 rounded-md text-sm shadow-sm
+                                              focus:outline-none
+                                              focus:border-sky-500
+                                              focus:ring-1
+                                              focus:ring-sky-500
+                                              focus:invalid:border-red-500 focus:invalid:ring-red-500'
+                                              }
+                                    }
+                                           )
+                                }}
+
+                                <button type="submit" class="border border-indigo-900 rounded-lg  text-center flow flow-col
+                                    text-indigo-900 hover:text-white hover:bg-indigo-900 bg-white text-base font-semibold w-full py-3 mt-9">
+                                    Create the {{ object }}
+                                </button>
+                            </div>
+                            {{ form_end(creationForm) }}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock %}

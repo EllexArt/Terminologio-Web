@@ -1,0 +1,123 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Manage your website{% endblock %}
+
+{% block body %}
+    {% block navigation %}{{ parent() }}{% endblock %}
+
+    {% if success == true %}
+        {{include('admin/banner_created_object.html.twig')}}
+    {% endif %}
+    <div class="h-full">
+        <div class="grid grid-cols-2 divide">
+            {% block languages %}
+
+            <div class="px-11 pt-10 pb-12   ">
+                <div class="bg-gray-900 p-4 rounded">
+                    <h2 class="mb-11 text-2xl font-bold leading-snug text-white">
+                        Languages :
+                        <a class="flow float-right" href="{{ path('app_add_language') }}">
+                            <button class="bg-[#e0e7ff] hover:bg-blue-500 text-indigo-900 font-semibold hover:text-white py-2 px-4 border border-blue-700 hover:border-transparent rounded">
+                                Add language
+                            </button>
+                        </a>
+                    </h2>
+                    <ul class="m-2 grid grid-cols-2 divide gap-2">
+                        {% for language in languages %}
+                                <li class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 font-bold" style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%)">
+                                    <a class="flow float-right " href="{{ path('app_delete_language', {id:language.id}) }}">
+                                        <button class="bg-white bg-opacity-50 hover:bg-blue-500 text-blue-800 font-semibold hover:text-white py-2 px-4 border border-blue-700 hover:border-transparent rounded">
+                                            Delete
+                                        </button>
+                                    </a>
+                                    {{ language.name }}
+                                </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endblock %}
+            {% block categories %}
+
+                <div class="px-11 pt-10 pb-12">
+                    <div class="bg-gray-900 p-4 rounded">
+                        <h2 class="mb-11 text-2xl font-bold leading-snug text-white">
+                            Categories :
+                            <a class="flow float-right " href="{{ path('app_add_category') }}">
+                                <button class="bg-[#e0e7ff] hover:bg-blue-500 text-indigo-900 font-semibold hover:text-white py-2 px-4 border border-blue-700 hover:border-transparent rounded">
+                                    Add category
+                                </button>
+                            </a>
+                        </h2>
+                        <ul class=" grid grid-cols-2 divide gap-2">
+                            {% for category in categories %}
+                                <li class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 font-bold" style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%)">
+                                    <a class="flow float-right pt-0" href="{{ path('app_delete_category', {id:category.id}) }}">
+                                        <button class="bg-white bg-opacity-50 hover:bg-blue-500 text-blue-800 font-semibold hover:text-white py-2 px-4 border border-blue-700 hover:border-transparent rounded">
+                                            Delete
+                                        </button>
+                                    </a>
+                                    {{ category.name }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endblock %}
+    </div>
+        <div class="grid grid-cols-2 divide ">
+            {% block showUser %}
+                <div class="px-11 pt-10 pb-12">
+                    <div class="bg-gray-900 p-4 rounded">
+                        <h2 class="mb-11 text-2xl font-bold leading-snug text-white">
+                            Users :
+                            <a class="flow float-right " href="{{ path('app_add_user') }}">
+                                <button class="bg-[#e0e7ff] hover:bg-blue-500 text-indigo-900 font-semibold hover:text-white py-2 px-4 border border-blue-700 hover:border-transparent rounded">
+                                    Add user
+                                </button>
+                            </a>
+                        </h2>
+                        <ul>
+                        {% for user in users %}
+                            <li class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 font-bold" style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%)">
+                                <a class="flow float-right pt-0" href="{{ path('app_delete_user', {id:user.id}) }}">
+                                    <button class="bg-white bg-opacity-50 hover:bg-blue-500 text-blue-800 font-semibold hover:text-white py-2 px-4 border border-blue-700 hover:border-transparent rounded">
+                                        Delete user
+                                    </button>
+                                </a>
+                                Username : {{ user.username }}<br>
+                                E-mail : {{ user.email }}
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endblock %}
+            {% block showConcepts %}
+                <div class="px-11 pt-10 pb-12">
+                    <div class="bg-gray-900 p-4 rounded">
+                        <h2 class="mb-11 text-3xl font-bold leading-snug text-white">
+                            Concepts :
+                        </h2>
+                        <ul>
+                            {% for concept in concepts %}
+                                <li class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 font-bold" style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%)">
+                                    <a class="flow float-right " href="{{ path('app_delete_concept', {id:concept.id}) }}">
+                                        <button class="bg-white bg-opacity-50 hover:bg-blue-500 text-blue-800 font-semibold
+                                                       hover:text-white py-2 px-4 border border-blue-700 hover:border-transparent
+                                                       rounded">
+                                            Delete concept
+                                        </button>
+                                    </a>
+                                    Title : {{ concept.title }}<br>
+                                    Picture :
+                                    <img src="{{ asset('uploads/images/' ~concept.image) }}" alt="concept-image" class="w-full aspect-square"/>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endblock %}
+        </div>
+    </div>
+{% endblock %}

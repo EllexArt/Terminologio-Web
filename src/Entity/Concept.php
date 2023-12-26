@@ -18,7 +18,7 @@ class Concept
     #[ORM\Column(length: 255)]
     private ?string $image = null;
 
-    #[ORM\OneToMany(mappedBy: 'concept', targetEntity: Composant::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'concept', targetEntity: Component::class, orphanRemoval: true)]
     private Collection $composants;
 
     #[ORM\ManyToOne]
@@ -27,6 +27,10 @@ class Concept
 
     #[ORM\Column(length: 255)]
     private ?string $title = null;
+
+    #[ORM\ManyToOne(inversedBy: 'concepts')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Category $category = null;
 
     public function __construct()
     {
@@ -58,14 +62,14 @@ class Concept
     }
 
     /**
-     * @return Collection<int, Composant>
+     * @return Collection<int, Component>
      */
     public function getComposants(): Collection
     {
         return $this->composants;
     }
 
-    public function addComposant(Composant $composant): static
+    public function addComposant(Component $composant): static
     {
         if (!$this->composants->contains($composant)) {
             $this->composants->add($composant);
@@ -75,7 +79,7 @@ class Concept
         return $this;
     }
 
-    public function removeComposant(Composant $composant): static
+    public function removeComposant(Component $composant): static
     {
         if ($this->composants->removeElement($composant)) {
             // set the owning side to null (unless already changed)
@@ -107,6 +111,18 @@ class Concept
     public function setTitle(string $title): static
     {
         $this->title = $title;
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): static
+    {
+        $this->category = $category;
 
         return $this;
     }

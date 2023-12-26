@@ -2,24 +2,24 @@
 
 namespace App\Repository;
 
-use App\Entity\Composant;
+use App\Entity\Component;
 use App\Entity\Concept;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Composant>
+ * @extends ServiceEntityRepository<Component>
  *
- * @method Composant|null find($id, $lockMode = null, $lockVersion = null)
- * @method Composant|null findOneBy(array $criteria, array $orderBy = null)
- * @method Composant[]    findAll()
- * @method Composant[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Component|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Component|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Component[]    findAll()
+ * @method Component[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ComposantRepository extends ServiceEntityRepository
+class ComponentRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Composant::class);
+        parent::__construct($registry, Component::class);
     }
 
     public function calculateNextNumber(Concept $concept): int {
@@ -35,7 +35,7 @@ class ComposantRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return Composant[] Returns an array of Composant objects
+//     * @return Component[] Returns an array of Component objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -49,7 +49,7 @@ class ComposantRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Composant
+//    public function findOneBySomeField($value): ?Component
 //    {
 //        return $this->createQueryBuilder('c')
 //            ->andWhere('c.exampleField = :val')
