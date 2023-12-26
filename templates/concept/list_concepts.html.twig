@@ -5,9 +5,10 @@
 {% block body %}
     {% block navigation %}{{ parent() }}{% endblock %}
 
+    <div class="flex flex-col flex-grow justify-center items-center">
     {% for concept in concepts %}
-        <a href="{{ path('app_concept_show', {'title': concept.title}) }}">
-            <h2>{{ concept.title }}</h2>
+        <a class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 align-middle" href="{{ path('app_concept_show', {'title': concept.title}) }}">
+            <h2>Title : {{ concept.title }}</h2>
             <p>Default language : {{ concept.defaultLanguage.name }}</p>
             <div>
                 <p>Other languages : </p>
@@ -21,4 +22,5 @@
             </div>
         </a>
     {% endfor %}
+    </div>
 {% endblock %}

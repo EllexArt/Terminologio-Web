@@ -46,7 +46,7 @@ class ConceptController extends AbstractController
     }
 
     #[Route('/concept/{title}/validate', name: 'app_concept_validate', methods: 'POST')]
-    public function validateConcept(ConceptService $conceptService, $composantNameRepository, EntityManagerInterface $entityManager, Concept $concept, Request $request): Response
+    public function validateConcept(ConceptService $conceptService, ComposantNameRepository $composantNameRepository, EntityManagerInterface $entityManager, Concept $concept, Request $request): Response
     {
         $conceptService->saveComponentNames($concept, $request, $composantNameRepository, $concept->getDefaultLanguage(), $entityManager);
 
