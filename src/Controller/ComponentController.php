@@ -63,7 +63,6 @@ class ComponentController extends AbstractController
         #[MapEntity(mapping: ['title' => 'title'])] Concept $concept,
         #[MapEntity(id: 'id')] Component $componentToDelete): Response
     {
-        $precedentId = $componentToDelete->getId();
         if($componentToDelete->getConcept() == $concept) {
             $concept->removeComponent($componentToDelete);
             $entityManager->remove($componentToDelete);
