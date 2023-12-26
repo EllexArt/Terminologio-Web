@@ -13,9 +13,9 @@ class ComponentName
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'composantNames')]
+    #[ORM\ManyToOne(inversedBy: 'componentNames')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Component $composant = null;
+    private ?Component $component = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
@@ -29,14 +29,14 @@ class ComponentName
         return $this->id;
     }
 
-    public function getComposant(): ?Component
+    public function getComponent(): ?Component
     {
-        return $this->composant;
+        return $this->component;
     }
 
-    public function setComposant(?Component $composant): static
+    public function setComponent(?Component $component): static
     {
-        $this->composant = $composant;
+        $this->component = $component;
 
         return $this;
     }

@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\Category;
 use App\Entity\Concept;
 use App\Entity\Language;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -34,6 +35,10 @@ class ConceptUploadType extends AbstractType
             ->add('title', TextType::class)
             ->add('defaultLanguage', EntityType::class, [
                 'class' => Language::class,
+                'choice_label' => 'name'
+            ])
+            ->add('category', EntityType::class, [
+                'class' => Category::class,
                 'choice_label' => 'name'
             ])
         ;

@@ -15,7 +15,7 @@ class Component
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'composants')]
+    #[ORM\ManyToOne(inversedBy: 'components')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Concept $concept = null;
 
@@ -25,15 +25,15 @@ class Component
     #[ORM\Column]
     private ?int $positionY = null;
 
-    #[ORM\OneToMany(mappedBy: 'composant', targetEntity: ComponentName::class, orphanRemoval: true)]
-    private Collection $composantNames;
+    #[ORM\OneToMany(mappedBy: 'component', targetEntity: ComponentName::class, orphanRemoval: true)]
+    private Collection $componentNames;
 
     #[ORM\Column]
     private ?int $number = null;
 
     public function __construct()
     {
-        $this->composantNames = new ArrayCollection();
+        $this->componentNames = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -87,27 +87,27 @@ class Component
     /**
      * @return Collection<int, ComponentName>
      */
-    public function getComposantNames(): Collection
+    public function getComponentNames(): Collection
     {
-        return $this->composantNames;
+        return $this->componentNames;
     }
 
-    public function addComposantName(ComponentName $composantName): static
+    public function addComponentName(ComponentName $componentName): static
     {
-        if (!$this->composantNames->contains($composantName)) {
-            $this->composantNames->add($composantName);
-            $composantName->setComposant($this);
+        if (!$this->componentNames->contains($componentName)) {
+            $this->componentNames->add($componentName);
+            $componentName->setComponent($this);
         }
 
         return $this;
     }
 
-    public function removeComposantName(ComponentName $composantName): static
+    public function removeComponentName(ComponentName $componentName): static
     {
-        if ($this->composantNames->removeElement($composantName)) {
+        if ($this->componentNames->removeElement($componentName)) {
             // set the owning side to null (unless already changed)
-            if ($composantName->getComposant() === $this) {
-                $composantName->setComposant(null);
+            if ($componentName->getComponent() === $this) {
+                $componentName->setComponent(null);
             }
         }
 

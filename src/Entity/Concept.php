@@ -19,7 +19,7 @@ class Concept
     private ?string $image = null;
 
     #[ORM\OneToMany(mappedBy: 'concept', targetEntity: Component::class, orphanRemoval: true)]
-    private Collection $composants;
+    private Collection $components;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
@@ -34,7 +34,7 @@ class Concept
 
     public function __construct()
     {
-        $this->composants = new ArrayCollection();
+        $this->components = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -64,27 +64,27 @@ class Concept
     /**
      * @return Collection<int, Component>
      */
-    public function getComposants(): Collection
+    public function getComponents(): Collection
     {
-        return $this->composants;
+        return $this->components;
     }
 
-    public function addComposant(Component $composant): static
+    public function addComponent(Component $component): static
     {
-        if (!$this->composants->contains($composant)) {
-            $this->composants->add($composant);
-            $composant->setConcept($this);
+        if (!$this->components->contains($component)) {
+            $this->components->add($component);
+            $component->setConcept($this);
         }
 
         return $this;
     }
 
-    public function removeComposant(Component $composant): static
+    public function removeComponent(Component $component): static
     {
-        if ($this->composants->removeElement($composant)) {
+        if ($this->components->removeElement($component)) {
             // set the owning side to null (unless already changed)
-            if ($composant->getConcept() === $this) {
-                $composant->setConcept(null);
+            if ($component->getConcept() === $this) {
+                $component->setConcept(null);
             }
         }
 

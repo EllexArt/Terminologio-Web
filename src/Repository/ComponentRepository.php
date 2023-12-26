@@ -24,8 +24,8 @@ class ComponentRepository extends ServiceEntityRepository
 
     public function calculateNextNumber(Concept $concept): int {
         $values = [];
-        foreach($concept->getComposants() as $composant) {
-            $values[] = $composant->getNumber();
+        foreach($concept->getComponents() as $component) {
+            $values[] = $component->getNumber();
         }
 
         if ($values == null) {

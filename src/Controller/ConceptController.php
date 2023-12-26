@@ -2,21 +2,12 @@
 
 namespace App\Controller;
 
-use App\Entity\Component;
-use App\Entity\ComponentName;
 use App\Entity\Concept;
-use App\Entity\DTO\ComponentTrad;
-use App\Entity\Language;
 use App\Form\ConceptUploadType;
 use App\Repository\ComponentNameRepository;
-use App\Repository\ComponentRepository;
 use App\Service\ConceptService;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Psr\Log\LoggerInterface;
-use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -43,98 +34,13 @@ class ConceptController extends AbstractController
         ]);
     }
 
-    #[Route('/concept/{title}/component', name: 'app_concept_component_edit')]
-    public function editComponent(ConceptService $conceptService, ComponentNameRepository $composantNameRepository, Concept $concept): Response
+    #[Route('/concept/{title}/validate', name: 'app_concept_validate', methods: 'POST')]
+    public function validateConcept(ConceptService $conceptService, ComponentNameRepository $componentNameRepository, EntityManagerInterface $entityManager, Concept $concept, Request $request): Response
     {
-        return $this->render('concept/edit_component.html.twig', [
-            'imagePath' => 'uploads/images/' . $concept->getImage(),
-            'components' => $conceptService->calculateComponentsWithDefaultTrad($concept),
-            'concept' => $concept
-        ]);
+        $conceptService->saveComponentNames($concept, $request, $componentNameRepository, $concept->getDefaultLanguage(), $entityManager);
+
+        return $this->redirectToRoute('app_concept_list');
     }
 
-    #[Route('/concept/{title}/component/add/{horizontal_position}/{vertical_position}', name: 'app_concept_component_add')]
-    public function addComponent(ConceptService $conceptService, ComponentNameRepository $composantNameRepository, ComponentRepository $composantRepository, EntityManagerInterface $entityManager, Concept $concept, int $horizontal_position, int $vertical_position): Response
-    {
-        $component = new Component();
-        $component->setConcept($concept);
-        $component->setNumber($composantRepository->calculateNextNumber($concept));
-        $component->setPositionX($horizontal_position);
-        $component->setPositionY($vertical_position);
-
-        $componentName = new ComponentName();
-        $componentName->setComposant($component);
-        $componentName->setLanguage($concept->getDefaultLanguage());
-        $componentName->setValue("Component".$component->getNumber());
-        $entityManager->persist($componentName);
-
-        $component->addComposantName($componentName);
-
-        $entityManager->persist($component);
-
-        $entityManager->flush();
-
-        $componentsTrad = $conceptService->calculateComponentsWithDefaultTrad($concept);
-        $componentsTrad[] = new ComponentTrad($component->getId(),
-                                                $component->getNumber(),
-                                                "",
-                                                $component->getPositionX(),
-                                                $component->getPositionY());
-
-        return $this->render('concept/components.html.twig', [
-            'components' => $componentsTrad
-        ]);
-    }
-
-    #[Route('/concept/{title}/component/delete/{id}', name: 'app_concept_component_delete')]
-    public function deleteComponent(ConceptService                                      $conceptService,
-                                    ComponentNameRepository                             $composantNameRepository,
-                                    EntityManagerInterface                              $entityManager,
-                                    #[MapEntity(mapping: ['title' => 'title'])] Concept $concept,
-                                    #[MapEntity(id: 'id')] Component                    $composant_to_delete): Response
-    {
-        if($composant_to_delete->getConcept() == $concept) {
-            $entityManager->remove($composant_to_delete);
-
-            foreach ($concept->getComposants() as $composant) {
-                if($composant->getNumber() > $composant_to_delete->getNumber())
-                $composant->setNumber($composant->getNumber() - 1);
-                $entityManager->persist($composant);
-            }
-
-            $entityManager->flush();
-        }
-        $componentsTrad = $conceptService->calculateComponentsWithDefaultTrad($concept);
-
-        return $this->render('concept/components.html.twig', [
-            'components' => $componentsTrad
-        ]);
-    }
-
-    #[Route('/concept/{title}/component/buttons', name: 'app_concept_component_buttons')]
-    public function getComponentsButtons(ConceptService $conceptService,
-        Concept $concept): Response
-    {
-        $componentsTrad = $conceptService->calculateComponentsWithDefaultTrad($concept);
-
-        return $this->render('concept/components_edit.html.twig', [
-            'components' => $componentsTrad
-        ]);
-    }
-
-    #[Route('/concept/{title}/validate', name: 'app_concept_validate')]
-    public function validateConcept(EntityManagerInterface $entityManager, Concept $concept, Request $request): Response
-    {
-        $number = 0;
-        $components = $concept->getComposants();
-        $trads[] = $components[$number]->getComposantNames();
-        while (($trad = $request->get('componentText'.$number)) != null) {
-            $component_name = $trads[$number];
-            $component_name->setValue($trad);
-            $entityManager->persist($component_name);
-        }
-
-        return $this->redirectToRoute('app_terminologio_index');
-    }
 
 }

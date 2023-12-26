@@ -2,13 +2,13 @@
 
 namespace App\Controller;
 
-use App\Entity\Composant;
-use App\Entity\ComposantName;
+use App\Entity\Component;
+use App\Entity\ComponentName;
 use App\Entity\Concept;
 use App\Entity\DTO\ComponentTrad;
 use App\Entity\Language;
-use App\Repository\ComposantNameRepository;
-use App\Repository\ComposantRepository;
+use App\Repository\ComponentNameRepository;
+use App\Repository\ComponentRepository;
 use App\Service\ConceptService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -30,22 +30,22 @@ class ComponentController extends AbstractController
     }
 
     #[Route('/concept/{title}/component/add/{horizontal_position}/{vertical_position}', name: 'app_concept_component_add', methods: 'POST')]
-    public function addComponent(ComposantRepository $composantRepository,
+    public function addComponent(ComponentRepository $ComponentRepository,
         EntityManagerInterface $entityManager,
         Concept $concept, int $horizontal_position, int $vertical_position): Response
     {
-        $component = new Composant();
+        $component = new Component();
         $component->setConcept($concept);
-        $component->setNumber($composantRepository->calculateNextNumber($concept));
+        $component->setNumber($ComponentRepository->calculateNextNumber($concept));
         $component->setPositionX($horizontal_position);
         $component->setPositionY($vertical_position);
-        $concept->addComposant($component);
+        $concept->addComponent($component);
 
-        $componentName = new ComposantName();
-        $componentName->setComposant($component);
+        $componentName = new ComponentName();
+        $componentName->setComponent($component);
         $componentName->setLanguage($concept->getDefaultLanguage());
         $componentName->setValue("");
-        $component->addComposantName($componentName);
+        $component->addComponentName($componentName);
 
         $entityManager->persist($componentName);
         $entityManager->persist($component);
@@ -61,14 +61,14 @@ class ComponentController extends AbstractController
     public function deleteComponent(
         EntityManagerInterface $entityManager,
         #[MapEntity(mapping: ['title' => 'title'])] Concept $concept,
-        #[MapEntity(id: 'id')] Composant $componentToDelete): Response
+        #[MapEntity(id: 'id')] Component $componentToDelete): Response
     {
         $precedentId = $componentToDelete->getId();
         if($componentToDelete->getConcept() == $concept) {
-            $concept->removeComposant($componentToDelete);
+            $concept->removeComponent($componentToDelete);
             $entityManager->remove($componentToDelete);
 
-            foreach ($concept->getComposants() as $component) {
+            foreach ($concept->getComponents() as $component) {
                 if($component->getNumber() > $componentToDelete->getNumber()) {
                     $component->setNumber($component->getNumber() - 1);
                     $entityManager->persist($component);
@@ -99,7 +99,7 @@ class ComponentController extends AbstractController
     public function showConcept(ConceptService $conceptService, Concept $concept, Language $language) : Response
     {
         $componentsTrad = $conceptService->calculateComponentsWithTrad($concept, $language);
-        return $this->render('concept/components/components_show.html.twig', [
+        return $this->render('concept/show/components_show.html.twig', [
             'componentsName' => $componentsTrad,
         ]);
     }

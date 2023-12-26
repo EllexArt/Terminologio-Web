@@ -13,7 +13,7 @@
             <div>
                 <p>Other languages : </p>
                 <p>
-                {% for component_name in concept.composants[0].composantNames %}
+                {% for component_name in concept.components[0].componentNames %}
                     {% if component_name.language.name != concept.defaultLanguage.name %}
                         {{ component_name.language.name }}
                     {% endif %}

@@ -2,9 +2,10 @@
 
 namespace App\Service;
 
-use App\Entity\ComposantName;
+use App\Entity\ComponentName;
 use App\Entity\Concept;
 use App\Entity\DTO\ComponentTrad;
+use App\Entity\Language;
 use App\Repository\ComponentNameRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -15,35 +16,35 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 class ConceptService
 {
 
-   public function uploadConcept(mixed $image,
-                    SluggerInterface $slugger,
-                    Concept $concept,
-                    EntityManagerInterface $entityManager,
-                    string $directory): void
-   {
-       $originalFilename = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
-       $safeFilename = $slugger->slug($originalFilename);
-       $newFilename = $safeFilename.'-'.uniqid().'.'.$image->guessExtension();
+    public function uploadConcept(mixed $image,
+        SluggerInterface $slugger,
+        Concept $concept,
+        EntityManagerInterface $entityManager,
+        string $directory): void
+    {
+        $originalFilename = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+        $safeFilename = $slugger->slug($originalFilename);
+        $newFilename = $safeFilename.'-'.uniqid().'.'.$image->guessExtension();
 
-       try {
-           $image->move(
-               $directory,
-               $newFilename
-           );
-       } catch (FileException $e) {
+        try {
+            $image->move(
+                $directory,
+                $newFilename
+            );
+        } catch (FileException $e) {
 
-       }
+        }
 
-       $concept->setImage($newFilename);
-       $entityManager->persist($concept);
-       $entityManager->flush();
-   }
+        $concept->setImage($newFilename);
+        $entityManager->persist($concept);
+        $entityManager->flush();
+    }
 
     public function calculateComponentsWithTrad(Concept $concept, Language $language) : array {
         $componentsTrad = [];
-        foreach ($concept->getComposants() as $component) {
+        foreach ($concept->getComponents() as $component) {
             $componentNameGoodLanguage = null;
-            foreach ($component->getComposantNames() as $componentName) {
+            foreach ($component->getComponentNames() as $componentName) {
                 if ($componentName->getLanguage()->getName() == $language->getName()) {
                     $componentNameGoodLanguage = $componentName;
                 }
@@ -61,25 +62,25 @@ class ConceptService
         return $componentsTrad;
     }
 
-   public function calculateComponentsWithDefaultTrad(Concept $concept) : array {
-       return $this->calculateComponentsWithTrad($concept, $concept->getDefaultLanguage());
-   }
+    public function calculateComponentsWithDefaultTrad(Concept $concept) : array {
+        return $this->calculateComponentsWithTrad($concept, $concept->getDefaultLanguage());
+    }
 
     public function saveComponentNames(Concept $concept,
         Request $request,
-        ComposantNameRepository $composantNameRepository,
+        ComponentNameRepository $ComponentNameRepository,
         Language $language,
         EntityManagerInterface $entityManager): void
     {
         $number = 0;
-        $components = $concept->getComposants();
+        $components = $concept->getComponents();
         while (($trad = $request->get('componentText'.$number)) != null) {
-            $component_name = $composantNameRepository
+            $component_name = $ComponentNameRepository
                 ->getComponentNameFromComponentAndLanguage($components[$number], $language);
             if($component_name == null) {
-                $component_name = new ComposantName();
+                $component_name = new ComponentName();
                 $component_name->setLanguage($language);
-                $component_name->setComposant($components[$number]);
+                $component_name->setComponent($components[$number]);
             }
             $component_name->setValue($trad);
             $entityManager->persist($component_name);

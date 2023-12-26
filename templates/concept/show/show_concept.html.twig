@@ -28,7 +28,7 @@
                             <label>
                                 Choose the language :
                                 <select id="languageChooser" {{ stimulus_action('component', 'getShowingNames', 'change') }}>
-                                    {% for componentName in concept.composants[0].composantNames %}
+                                    {% for componentName in concept.components[0].componentNames %}
                                         <option value="{{ componentName.language.id }}">{{ componentName.language.name }}</option>
                                     {% endfor %}
                                 </select>

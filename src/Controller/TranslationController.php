@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Concept;
 use App\Entity\Language;
-use App\Repository\ComposantNameRepository;
+use App\Repository\ComponentNameRepository;
 use App\Repository\LanguageRepository;
 use App\Service\ConceptService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -41,13 +41,13 @@ class TranslationController extends AbstractController
 
 
     #[Route('/concept/{title}/translate/save/{id}', name: 'app_concept_translation_save')]
-    public function saveTranslation(ConceptService $conceptService, ComposantNameRepository $composantNameRepository,
+    public function saveTranslation(ConceptService $conceptService, ComponentNameRepository $componentNameRepository,
         EntityManagerInterface $entityManager,
         #[MapEntity(mapping: ['title' => 'title'])] Concept $concept,
         #[MapEntity(id: 'id')] Language $language,
         Request $request) : Response
     {
-        $conceptService->saveComponentNames($concept, $request, $composantNameRepository, $language, $entityManager);
+        $conceptService->saveComponentNames($concept, $request, $componentNameRepository, $language, $entityManager);
         return $this->redirectToRoute('app_concept_show', [
             'title' => $concept->getTitle(),
         ]);
