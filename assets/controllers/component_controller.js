@@ -5,7 +5,7 @@ export default class extends Controller {
         url: String
     }
 
-    static targets = ['components', 'componentsNames'];
+    static targets = ['components', 'componentsNames', 'style'];
     async addComponent(image) {
         let height = image.target.height;
         let width = image.target.width;
@@ -15,9 +15,8 @@ export default class extends Controller {
         let tabText = this.calculateValuesOfComponents();
 
         const response = await fetch(`${this.urlValue}/add/${offsetX}/${offsetY}`, {method: "POST"});
-        const response_buttons = await fetch(`${this.urlValue}/buttons`, {method: "POST"});
         this.componentsTarget.innerHTML = await response.text();
-        this.componentsNamesTarget.innerHTML = await response_buttons.text();
+        await this.updateComponentsToShow();
 
         let elements = document.getElementsByClassName('componentText');
         for (let i = 0; i < tabText.length; i++) {
@@ -30,9 +29,8 @@ export default class extends Controller {
         let tabText = this.calculateValuesOfComponents();
 
         const response = await fetch(`${this.urlValue}/delete/${button.params.id}`, {method: "POST"});
-        const response_buttons = await fetch(`${this.urlValue}/buttons`, {method: "POST"});
         this.componentsTarget.innerHTML = await response.text();
-        this.componentsNamesTarget.innerHTML = await response_buttons.text();
+        await this.updateComponentsToShow();
 
         let elements = document.getElementsByClassName('componentText');
         tabText.splice(button.params.number, 1);
@@ -68,5 +66,12 @@ export default class extends Controller {
             tabText.push(elements[i].value);
         }
         return tabText;
+    }
+
+    async updateComponentsToShow() {
+        const response_buttons = await fetch(`${this.urlValue}/buttons`, {method: "POST"});
+        const style = await fetch(`${this.urlValue}/styles`, {method: "POST"});
+        this.componentsNamesTarget.innerHTML = await response_buttons.text();
+        this.styleTarget.innerHTML = await style.text();
     }
 }

@@ -1,5 +1,5 @@
 {% for component in components %}
-<div>
+<div id="componentEdit{{ component.number }}">
     {% include('concept/components/component_edit_name_block.html.twig') %}
     <button type="button"
             {{ stimulus_action('component', 'deleteComponent', 'click',

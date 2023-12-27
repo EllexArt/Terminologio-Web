@@ -1,0 +1,7 @@
+{% for component in components %}
+    body:has(#componentEdit{{ component.number }}:hover) #componentNumber{{ component.number }} svg {
+        box-shadow: 0px 0px 1em yellow;
+        border-radius:50%;
+        font-weight: bold;
+    }
+{% endfor %}
