@@ -1,5 +1,5 @@
 <nav style="background: #101734">
-    <div class="container mx-auto rem-0.375 py-2 flex justify-between items-center">
+    <div class="container mx-auto rem-0.375 py-2 px-2 flex justify-between items-center">
         <a class="font-bold text-2xl lg:text-4xl text-white" href="{{ path('app_terminologio_index') }}">
             Terminologio
         </a>
@@ -18,7 +18,7 @@
                     <li><a class="rem-0.25 hover:text-gray-700 text-white" href='{{ path('app_login') }}'>Sign in</a></li>
                     <li><a class="rem-0.25 hover:text-gray-700 text-white" href="{{ path('app_register') }}">Sign up</a></li>
                 {% else %}
-                    <li><a class="rem-0.25 hover:text-gray-700 text-white" href="{{ path('app_register') }}">Logout</a></li>
+                    <li><a class="rem-0.25 hover:text-gray-700 text-white" href="{{ path('app_logout') }}">Logout</a></li>
                 {% endif %}
             </ul>
         </div>
