@@ -1,7 +1,7 @@
-<label>
-    Component {{ component.number }} :
+<label class="ml-6">
+    <span class="font-bold ">Component {{ component.number }} :</span>
     <input name='componentText{{ component.number }}'
-           class='componentText'
+           class='rounded bg-[#f3e8ff] componentText'
            type="text"
            value="{% if component.name == "" %}Component{{ component.number }}{% else %}{{ component.name }}{% endif %}">
 </label>

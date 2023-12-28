@@ -24,33 +24,37 @@
 {% endblock %}
 
 {% block bodyContent %}
-    <div class="flex flex-col h-screen">
-        <div class="m-8">
-            <h1 class="text-2xl font-bold text-center text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">Add your components</h1>
-        </div>
-        <div class="flex flex-grow justify-center items-center">
-            <form class="flex flex-row w-4/5 bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 align-middle" method="post" action="{{ path('app_concept_validate', {title:concept.title}) }}">
-                <div class="flex flex-col size-2/5">
-                    <button type="button" class="relative size-full"{{ stimulus_action('component', 'addComponent', 'click') }}>
-                        <img id="srcImage" src="{{ image_directory~asset(concept.image) }}" alt="concept-image" class="w-full aspect-auto"/>
-                        <div {{ stimulus_target('component', 'components') }}>
-                            {{ include('concept/components/components_number_block.html.twig') }}
-                        </div>
-                    </button>
-                    <div class="flex flex-col items-center p-4">
-                        <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                            Validate
+
+        <div class="align-middle rounded shadow-2xl container mx-auto mt-2 py-1 w-full "
+             style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%)">
+            <div class="flex items-center justify-center m-10">
+                <h1 class="tracking-wide text-3xl drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] text-white font-bold">Create a new concept</h1>
+            </div>
+            <div class="flex flex-grow justify-center items-center">
+                <form class="flex flex-row w-4/5  px-8 pt-6 pb-8 mb-4 align-middle" method="post" action="{{ path('app_concept_validate', {title:concept.title}) }}">
+                    <div class="flex flex-col size-2/5">
+                        <button type="button" class="relative size-full"{{ stimulus_action('component', 'addComponent', 'click') }}>
+                            <img id="srcImage" src="{{ image_directory~asset(concept.image) }}" alt="concept-image" class="w-full aspect-auto"/>
+                            <div {{ stimulus_target('component', 'components') }}>
+                                {{ include('concept/components/components_number_block.html.twig') }}
+                            </div>
                         </button>
+                        <div class="flex flex-col items-center p-4">
+                            <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                                Publish
+                            </button>
+                        </div>
                     </div>
-                </div>
-                <div class="mr-8 mb-8 ml-8">
-                    <h2>Components : </h2>
-                    <div {{ stimulus_target('component', 'componentsNames') }}>
-                        {{ include('concept/components/components_add_block.html.twig') }}
+                    <div class="mx-5 pb-5 bg-[#8b5cf6] flex flex-col align-right w-3/5 rounded-lg">
+                        <h2 class="tracking-wide text-2xl drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] text-white font-bold text-center">Components : </h2>
+                        <br>
+                        <div {{ stimulus_target('component', 'componentsNames') }}>
+                            {{ include('concept/components/components_add_block.html.twig') }}
+                        </div>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
-    </div>
+
 
 {% endblock %}
