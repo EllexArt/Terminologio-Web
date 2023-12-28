@@ -14,9 +14,6 @@
                 <div class="w-full max-w-md flow flow-col grid h-full ">
                     <form method="post" class="px-8 pb-8 mb-4 font-bold">
                         <div class="mb-4 mt-10">
-                            {% if error %}
-                                <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-                            {% endif %}
 
                             {% if app.user %}
                                 <div class="mb-3">

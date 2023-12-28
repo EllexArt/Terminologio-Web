@@ -14,23 +14,40 @@
                 <div class="w-full max-w-md flow flow-col grid h-full ">
                     {{ form_start(registrationForm, {'attr': {'class':"px-8 pb-8 mb-4 font-bold"}}) }}
                     <div class="mb-4 mt-10">
-                        {{ form_row(registrationForm.email,
-                            {'attr' : {'class' : 'text-neutral-600 text-base font-normal text-lg flex my-3 items-center justify-between
-                                                bg-zinc-100 rounded-lg'}}) }}
+                        <div>
+                            {{ form_label(registrationForm.email) }}
+                            {{ form_widget(registrationForm.email,
+                                {'attr' : {'class' : 'text-neutral-600 text-base font-normal text-lg flex my-3 items-center justify-between
+                                                    bg-zinc-100 rounded-lg'}}) }}
+                        </div>
                         <br>
-                        {{ form_row(registrationForm.username,
-                            {'attr' : {'class' : 'text-neutral-600 text-base font-normal text-lg flex my-3 items-center justify-between
-                                                bg-zinc-100 rounded-lg'}}) }}
+                        <div>
+                            {{ form_label(registrationForm.username) }}
+                            {{ form_widget(registrationForm.username,
+                                {'attr' : {'class' : 'text-neutral-600 text-base font-normal text-lg flex my-3 items-center justify-between
+                                                    bg-zinc-100 rounded-lg'}}) }}
+                        </div>
                         <br>
-                        {{ form_row(registrationForm.plainPassword,  {'attr' : {'class' : 'text-neutral-600 text-lg text-base font-normal flex my-3 items-center justify-between
-                                                bg-zinc-100 rounded-lg'
-                        }
-                        }
-                        ) }}
+                        <div>
+                            {{ form_label(registrationForm.plainPassword) }}
+                            {{ form_widget(registrationForm.plainPassword,
+                                {'attr' : {'class' : 'text-neutral-600 text-base font-normal text-lg flex my-3 items-center justify-between
+                                                    bg-zinc-100 rounded-lg'}}) }}
+                        </div>
                         <br>
-                        {{ form_row(registrationForm.agreeTerms,
-                            {'attr' : {'class' : 'text-neutral-600 text-base font-normal text-lg flex my-3 items-center justify-between
-                                                bg-zinc-100 rounded-lg'}}) }}
+                        <div>
+                            {{ form_label(registrationForm.confirmPassword) }}
+                            {{ form_widget(registrationForm.confirmPassword,
+                                {'attr' : {'class' : 'text-neutral-600 text-base font-normal text-lg flex my-3 items-center justify-between
+                                                    bg-zinc-100 rounded-lg'}}) }}
+                        </div>
+                        <br>
+                        <div class="flex flex-row items-center">
+                            {{ form_label(registrationForm.agreeTerms) }}
+                            {{ form_widget(registrationForm.agreeTerms,
+                                {'attr' : {'class' : 'text-neutral-600 text-base font-normal text-lg flex my-3 ml-5 items-center justify-center
+                                                    bg-zinc-100 rounded-lg size-6'}}) }}
+                        </div>
 
                         <button type="submit" class="border border-indigo-900 rounded-lg  text-center flow flow-col
                                     text-indigo-900 hover:text-white hover:bg-indigo-900 bg-white text-base font-semibold w-full py-3 mt-9">

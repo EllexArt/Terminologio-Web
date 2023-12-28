@@ -1,0 +1,72 @@
+{% extends('base.html.twig') %}
+
+{% block title %} Terminologio - Profile {% endblock %}
+
+{% block bodyContent %}
+        <section id="creationForm" class="p-8 mt-8 flex flex-col justify-center size-full">
+            <div class="align-middle rounded shadow-2xl size-full "
+                 style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%)">
+                <div class="grid grid-cols-3">
+                    <div></div>
+                    <h1 class="mt-8 text-3xl font-bold text-center text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
+                        Manage your account
+                    </h1>
+                    <a href="{{ path('app_logout') }}" class="border border-indigo-900 rounded-lg  text-center flow flow-col
+                                    text-indigo-900 hover:text-white hover:bg-indigo-900 bg-white text-base font-semibold
+                                    m-8 py-4 w-1/5 ml-auto">
+                        Logout
+                    </a>
+                </div>
+
+                <div class="bg-indigo-400 overflow-hidden shadow rounded-lg m-8">
+                    <div class="px-4 py-5 sm:px-6">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900">
+                            Your information
+                        </h3>
+                    </div>
+                    <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
+                        <dl class="sm:divide-y sm:divide-gray-200">
+                            <div class="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                <dt class="text-sm font-medium">
+                                    Username
+                                </dt>
+                                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                    {{ user.username }}
+                                </dd>
+                            </div>
+                            <div class="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                <dt class="text-sm font-medium">
+                                    Email
+                                </dt>
+                                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                    {{ user.email }}
+                                </dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+                <div class="grid grid-cols-3">
+                    <a href="" class="border border-indigo-900 rounded-lg text-center flow flow-col
+                                    text-indigo-900 hover:text-white hover:bg-indigo-900 bg-white text-base font-semibold
+                                    m-8 py-4">
+                        Change my username
+                    </a>
+                    <a href="" class="border border-indigo-900 rounded-lg  text-center flow flow-col
+                                    text-indigo-900 hover:text-white hover:bg-indigo-900 bg-white text-base font-semibold
+                                    m-8 py-4">
+                        Change my email
+                    </a>
+                    <a href="" class="border border-indigo-900 rounded-lg  text-center flow flow-col
+                                    text-indigo-900 hover:text-white hover:bg-indigo-900 bg-white text-base font-semibold
+                                    m-8 py-4">
+                        Change my password
+                    </a>
+                </div>
+                <div class="mt-40 mb-10 flex flex-col justify-center items-center">
+                    <a href="{{ path('app_profile_delete') }}" class="bg-red-500 hover:bg-red-700 text-white py-4 px-10 font-bold rounded">
+                        Delete my account
+                    </a>
+                </div>
+            </div>
+        </section>
+{% endblock %}
