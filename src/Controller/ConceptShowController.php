@@ -54,15 +54,4 @@ class ConceptShowController extends AbstractController
             'components' => $componentsTrad,
         ]);
     }
-
-    #[Route('/concept/{title}/show/{id}/components/get', name: 'app_concept_show_get_components', methods: 'POST')]
-    public function getComponentsToShow(ConceptService $conceptService,
-        #[MapEntity(mapping: ['title' => 'title'])] Concept $concept,
-        #[MapEntity(id: 'id')] Language $language) : Response
-    {
-        $componentsTrad = $conceptService->calculateComponentsWithTrad($concept, $language);
-        return $this->render('concept/show/components_show_block.html.twig', [
-            'componentsName' => $componentsTrad,
-        ]);
-    }
 }
