@@ -38,7 +38,7 @@ class ConceptController extends AbstractController
 
             $conceptService->uploadConcept($image, $user, $slugger, $concept, $entityManager, $this->getParameter('image_directory'));
 
-            return $this->redirectToRoute('app_concept_component_edit', [
+            return $this->redirectToRoute('app_concept_component', [
                 'title' => $concept->getTitle()]);
         }
         return $this->render('concept/create_concept.html.twig', [
@@ -46,7 +46,7 @@ class ConceptController extends AbstractController
         ]);
     }
 
-    #[Route('/concept/{title}/component', name: 'app_concept_component_edit')]
+    #[Route('/concept/{title}/component', name: 'app_concept_component')]
     public function addComponentsToConcept(ConceptService $conceptService, Concept $concept): Response
     {
         if($concept->isIsValidated()) {
@@ -54,7 +54,7 @@ class ConceptController extends AbstractController
                 'title' => $concept->getTitle(),
             ]);
         }
-        return $this->render('concept/edit_concept.html.twig', [
+        return $this->render('concept/add_component_to_concept.html.twig', [
             'components' => $conceptService->calculateComponentsWithDefaultTrad($concept),
             'concept' => $concept,
         ]);
@@ -65,7 +65,7 @@ class ConceptController extends AbstractController
     {
         if(sizeof($concept->getComponents()) == 0) {
             $this->addFlash('warning', 'You need to specify at least one component');
-            return $this->redirectToRoute('app_concept_component_edit', [
+            return $this->redirectToRoute('app_concept_component', [
                 'title' => $concept->getTitle(),
             ]);
         }

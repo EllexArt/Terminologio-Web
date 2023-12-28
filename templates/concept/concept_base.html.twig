@@ -1,0 +1,26 @@
+{% extends('base.html.twig') %}
+
+{% block html %}
+    <html lang="en" {{ stimulus_controller('component', {
+        urlComponent: path('app_concept_component', {
+            title:concept.title
+        }),
+        urlTranslation: path('app_concept_translation', {
+            title:concept.title
+        })
+    })
+    }}>
+    {% block head %}
+        {{ parent() }}
+        {% block stylesheets %}
+            {{ parent() }}
+            <style rel="stylesheet" {{ stimulus_target('component', 'style') }}>
+                {{ include('concept/components/hover_component_stylesheets_block.html.twig') }}
+            </style>
+        {% endblock %}
+    {% endblock %}
+    {% block body %}
+        {{ parent() }}
+    {% endblock %}
+    </html>
+{% endblock %}

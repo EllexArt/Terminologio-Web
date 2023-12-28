@@ -1,27 +1,6 @@
-{% extends 'base.html.twig' %}
+{% extends 'concept/concept_base.html.twig' %}
 
 {% block title %}Terminologio - Add components' concept !{% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
-    <style rel="stylesheet" {{ stimulus_target('component', 'style') }}>
-    {{ include('concept/components/hover_component_block.html.twig') }}
-    </style>
-{% endblock %}
-
-{% block html %}
-    <html lang="en" {{ stimulus_controller('component', {
-        url: path('app_concept_component_edit', {
-            title:concept.title
-        })
-    })
-    }}>
-        {% block head %} {{ parent() }} {% endblock %}
-        {% block body %}
-            {{ parent() }}
-        {% endblock %}
-    </html>
-{% endblock %}
 
 {% block bodyContent %}
 
@@ -34,10 +13,7 @@
                 <form class="flex flex-row w-4/5  px-8 pt-6 pb-8 mb-4 align-middle" method="post" action="{{ path('app_concept_validate', {title:concept.title}) }}">
                     <div class="flex flex-col size-2/5">
                         <button type="button" class="relative size-full"{{ stimulus_action('component', 'addComponent', 'click') }}>
-                            <img id="srcImage" src="{{ image_directory~asset(concept.image) }}" alt="concept-image" class="w-full aspect-auto"/>
-                            <div {{ stimulus_target('component', 'components') }}>
-                                {{ include('concept/components/components_number_block.html.twig') }}
-                            </div>
+                            {% include('concept/show_concept_with_component_block.html.twig') %}
                         </button>
                         <div class="flex flex-col items-center p-4">
                             <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">

@@ -26,7 +26,7 @@ class ConceptShowController extends AbstractController
     {
         $categoryId = $request->query->get('category');
         $languageId = $request->query->get('language');
-        $concepts = $conceptRepository->findAll();
+        $concepts = $conceptRepository->findBy(['isValidated' => true]);
         for ($i = sizeof($concepts) - 1; $i >= 0 ; $i--) {
             $languagesOfConcept = array_map( fn(ComponentName $componentName): int => $componentName->getLanguage()->getId() ,
                 $concepts[$i]->getComponents()[0]->getComponentNames()->toArray());
@@ -36,7 +36,7 @@ class ConceptShowController extends AbstractController
                 array_splice($concepts, $i, 1);
             }
         }
-        return $this->render('concept/list_concepts.html.twig',
+        return $this->render('concept/list/list_concepts.html.twig',
             [
                 'concepts' => $concepts,
                 'languages' => $languageRepository->findAll(),
@@ -51,7 +51,7 @@ class ConceptShowController extends AbstractController
         $componentsTrad = $conceptService->calculateComponentsWithDefaultTrad($concept);
         return $this->render('concept/show/show_concept.html.twig', [
             'concept' => $concept,
-            'componentsName' => $componentsTrad,
+            'components' => $componentsTrad,
         ]);
     }
 
@@ -61,7 +61,7 @@ class ConceptShowController extends AbstractController
         #[MapEntity(id: 'id')] Language $language) : Response
     {
         $componentsTrad = $conceptService->calculateComponentsWithTrad($concept, $language);
-        return $this->render('components_show_block.html.twig', [
+        return $this->render('concept/show/components_show_block.html.twig', [
             'componentsName' => $componentsTrad,
         ]);
     }

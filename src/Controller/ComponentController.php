@@ -94,7 +94,7 @@ class ComponentController extends AbstractController
     {
         $componentsTrad = $conceptService->calculateComponentsWithTrad($concept, $language);
         return $this->render('concept/show/components_show_block.html.twig', [
-            'componentsName' => $componentsTrad,
+            'components' => $componentsTrad,
         ]);
     }
 
@@ -102,7 +102,7 @@ class ComponentController extends AbstractController
     public function getStyleOfComponents( ConceptService $conceptService, Concept $concept): Response
     {
         $componentsTrad = $conceptService->calculateComponentsWithDefaultTrad($concept);
-        return $this->render('concept/components/hover_component_block.html.twig', [
+        return $this->render('concept/components/hover_component_stylesheets_block.html.twig', [
             'components' => $componentsTrad
         ]);
     }

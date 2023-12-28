@@ -2,7 +2,8 @@ import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
     static values = {
-        url: String
+        urlComponent: String,
+        urlTranslation: String
     }
 
     static targets = ['components', 'componentsNames', 'style'];
@@ -19,7 +20,7 @@ export default class extends Controller {
 
         let tabText = this.calculateValuesOfComponents();
 
-        const response = await fetch(`${this.urlValue}/add/${offsetX}/${offsetY}`, {method: "POST"});
+        const response = await fetch(`${this.urlComponentValue}/add/${offsetX}/${offsetY}`, {method: "POST"});
         this.componentsTarget.innerHTML = await response.text();
         await this.updateComponentsToShow();
 
@@ -33,7 +34,7 @@ export default class extends Controller {
 
         let tabText = this.calculateValuesOfComponents();
 
-        const response = await fetch(`${this.urlValue}/delete/${button.params.id}`, {method: "POST"});
+        const response = await fetch(`${this.urlComponentValue}/delete/${button.params.id}`, {method: "POST"});
         if(!response.ok) {
             location.reload()
         } else {
@@ -53,9 +54,9 @@ export default class extends Controller {
         let languageChooser = document.getElementById('languageChooser');
         let languageId = languageChooser.value;
 
-        languageForm.setAttribute('action', `${this.urlValue}/save/${languageId}`);
+        languageForm.setAttribute('action', `${this.urlTranslationValue}/save/${languageId}`);
 
-        const response = await fetch(`${this.urlValue}/get/${languageId}`, {method: "POST"});
+        const response = await fetch(`${this.urlTranslationValue}/get/${languageId}`, {method: "POST"});
 
         this.componentsNamesTarget.innerHTML = await response.text();
     }
@@ -64,7 +65,7 @@ export default class extends Controller {
         let languageChooser = document.getElementById('languageChooser');
         let languageId = languageChooser.value;
 
-        const response = await fetch(`${this.urlValue}/${languageId}/components/get`, {method: "POST"});
+        const response = await fetch(`${this.urlTranslationValue}/${languageId}/components/get`, {method: "POST"});
         this.componentsNamesTarget.innerHTML = await response.text();
     }
 
@@ -78,8 +79,8 @@ export default class extends Controller {
     }
 
     async updateComponentsToShow() {
-        const response_buttons = await fetch(`${this.urlValue}/buttons`, {method: "POST"});
-        const style = await fetch(`${this.urlValue}/styles`, {method: "POST"});
+        const response_buttons = await fetch(`${this.urlComponentValue}/buttons`, {method: "POST"});
+        const style = await fetch(`${this.urlComponentValue}/styles`, {method: "POST"});
         this.componentsNamesTarget.innerHTML = await response_buttons.text();
         this.styleTarget.innerHTML = await style.text();
     }

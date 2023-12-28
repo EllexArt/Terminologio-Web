@@ -24,7 +24,7 @@ class TranslationController extends AbstractController
         $componentsTrad = $conceptService->calculateComponentsWithDefaultTrad($concept);
         return $this->render('concept/translation/add_translation.html.twig', [
             'concept' => $concept,
-            'componentsName' => $componentsTrad,
+            'components' => $componentsTrad,
             'languages' => $languageRepository->findAll(),
         ]);
     }
@@ -37,7 +37,7 @@ class TranslationController extends AbstractController
         $componentsTrad = $conceptService->calculateComponentsWithTrad($concept, $language);
         return $this->render('concept/translation/components_translate_block.html.twig', [
             'concept' => $concept,
-            'componentsName' => $componentsTrad,
+            'components' => $componentsTrad,
         ]);
     }
 

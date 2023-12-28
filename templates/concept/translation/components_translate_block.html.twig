@@ -1,5 +1,5 @@
-{% for component in componentsName %}
-    <div>
+{% for component in components %}
+    <div id="componentEdit{{ component.number }}">
         {% include('concept/components/component_edit_name_block.html.twig') %}
     </div>
 {% endfor %}

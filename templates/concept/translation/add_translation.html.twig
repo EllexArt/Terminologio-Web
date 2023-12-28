@@ -1,14 +1,9 @@
-{% extends 'base.html.twig' %}
+{% extends 'concept/concept_base.html.twig' %}
 
 {% block title %}Terminologio - Create a new translation !{% endblock %}
 
 {% block bodyContent %}
-    <div class="flex flex-col h-screen" {{ stimulus_controller('component', {
-        url: path('app_concept_translation', {
-            title:concept.title
-        })
-    })
-    }}>
+    <div class="flex flex-col h-screen">
         <div class="m-8">
             <h1 class="text-2xl font-bold text-center text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
                 Edit your translations
@@ -28,10 +23,7 @@
                   action="{{ path('app_concept_translation_save', {title:concept.title, id:concept.defaultLanguage.id}) }}">
                 <div class="flex flex-col size-2/5">
                     <div class="relative size-full">
-                        <img src="{{ image_directory~asset(concept.image) }}" alt="concept-image" class="w-full aspect-square"/>
-                        <div>
-                            {{ include('concept/components/components_number_block.html.twig') }}
-                        </div>
+                        {% include('concept/show_concept_with_component_block.html.twig') %}
                     </div>
                     <div class="flex flex-col items-center p-4">
                         <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
