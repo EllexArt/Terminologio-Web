@@ -9,7 +9,7 @@
                     data-dropdown-toggle="dropdown"
                     onclick="function showHiddenMenu() {
                         let menu = document.getElementById('hidden_menu');
-                        menu.style.visibility = (menu.style.visibility  === 'hidden' ? 'visible' : 'hidden');
+                        menu.style.visibility = (menu.style.visibility  === 'hidden' || menu.style.visibility === '' ? 'visible' : 'hidden');
                     }
                     showHiddenMenu()">
                 <svg class="fill-current h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -17,23 +17,27 @@
                     <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"></path>
                 </svg>
             </button>
-            <div id='hidden_menu' class="block absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+            <div id='hidden_menu' class="invisible block absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
                 <div class="py-1" role="none">
                     <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
-                    <a href="/" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-0">Home</a>
+                    <a href="{{ path('app_terminologio_index') }}" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-0">Home</a>
+                    <a href="{{ path('app_concept_list', {'category' : '-1', 'language' : '-1'}) }}"
+                       class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-2">
+                        List Concepts
+                    </a>
                     {% if not is_granted('ROLE_USER') %}
                         <a href="{{ path('app_login') }}" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem"
-                           tabindex="-1" id="menu-item-1">
+                           tabindex="-1" id="menu-item-2">
                             Sign in
                         </a>
-                        <a href="{{ path('app_register')}}" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-2">Sign up</a>
+                        <a href="{{ path('app_register')}}" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-3">Sign up</a>
                     {% else %}
-                        <a href="{{ path('app_concept_list', {'category' : '-1', 'language' : '-1'}) }}"
-                           class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-2">
-                            Concepts
+                        <a href="{{ path('app_concept_upload') }}" class="text-gray-700 block px-4 py-2 text-sm"
+                           role="menuitem" tabindex="-1" id="menu-item-3">
+                            Create Concept
                         </a>
                         <a href="{{ path('app_logout') }}" class="text-gray-700 block px-4 py-2 text-sm"
-                           role="menuitem" tabindex="-1" id="menu-item-2">
+                           role="menuitem" tabindex="-1" id="menu-item-4">
                             Logout
                         </a>
                     {% endif %}
@@ -42,15 +46,16 @@
         </div>
         <div class="hidden lg:block">
             <ul class="inline-flex space-x-10">
-                <li><a class="rem-0.25 hover:text-gray-700 font-bold text-white" href="/">Home</a></li>
+                <li><a class="rem-0.25 hover:text-gray-700 font-bold text-white" href="{{ path('app_terminologio_index') }}">Home</a></li>
+                <li><a class="rem-0.25 hover:text-gray-700 text-white" href="{{ path('app_concept_list', {
+                        'category': '-1',
+                        'language': '-1'
+                    }) }}">List Concepts</a></li>
                 {% if not is_granted('ROLE_USER') %}
                     <li><a class="rem-0.25 hover:text-gray-700 text-white" href='{{ path('app_login') }}'>Sign in</a></li>
                     <li><a class="rem-0.25 hover:text-gray-700 text-white" href="{{ path('app_register') }}">Sign up</a></li>
                 {% else %}
-                    <li><a class="rem-0.25 hover:text-gray-700 text-white" href="{{ path('app_concept_list', {
-                            'category': '-1',
-                            'language': '-1'
-                        }) }}">Concepts</a></li>
+                    <li><a class="rem-0.25 hover:text-gray-700 text-white" href="{{ path('app_concept_upload') }}">Create Concept</a></li>
                     <li><a class="rem-0.25 hover:text-gray-700 text-white" href="{{ path('app_logout') }}">Logout</a></li>
                 {% endif %}
             </ul>
