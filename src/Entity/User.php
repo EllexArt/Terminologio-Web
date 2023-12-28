@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -31,6 +33,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     private ?string $password = null;
+
+    #[ORM\OneToMany(mappedBy: 'author', targetEntity: Concept::class)]
+    private Collection $concepts;
+
+    public function __construct()
+    {
+        $this->concepts = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -110,5 +120,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUsername(?string $username): void
     {
         $this->username = $username;
+    }
+
+    /**
+     * @return Collection<int, Concept>
+     */
+    public function getConcepts(): Collection
+    {
+        return $this->concepts;
+    }
+
+    public function addConcept(Concept $concept): static
+    {
+        if (!$this->concepts->contains($concept)) {
+            $this->concepts->add($concept);
+            $concept->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeConcept(Concept $concept): static
+    {
+        if ($this->concepts->removeElement($concept)) {
+            // set the owning side to null (unless already changed)
+            if ($concept->getAuthor() === $this) {
+                $concept->setAuthor(null);
+            }
+        }
+
+        return $this;
     }
 }

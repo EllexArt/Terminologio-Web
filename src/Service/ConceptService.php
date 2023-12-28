@@ -6,6 +6,7 @@ use App\Entity\ComponentName;
 use App\Entity\Concept;
 use App\Entity\DTO\ComponentTrad;
 use App\Entity\Language;
+use App\Entity\User;
 use App\Repository\ComponentNameRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -17,6 +18,7 @@ class ConceptService
 {
 
     public function uploadConcept(mixed $image,
+        User $user,
         SluggerInterface $slugger,
         Concept $concept,
         EntityManagerInterface $entityManager,
@@ -36,6 +38,8 @@ class ConceptService
         }
 
         $concept->setImage($newFilename);
+        $concept->setAuthor($user);
+        $concept->setIsValidated(false);
         $entityManager->persist($concept);
         $entityManager->flush();
     }

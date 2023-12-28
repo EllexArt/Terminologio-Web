@@ -23,8 +23,8 @@ class ConceptController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $image = $form->get('image')->getData();
-
-            $conceptService->uploadConcept($image, $slugger, $concept, $entityManager, $this->getParameter('image_directory'));
+            $user = $this->getUser();
+            $conceptService->uploadConcept($image, $user, $slugger, $concept, $entityManager, $this->getParameter('image_directory'));
 
             return $this->redirectToRoute('app_concept_component_edit', [
                 'title' => $concept->getTitle()]);
@@ -34,11 +34,33 @@ class ConceptController extends AbstractController
         ]);
     }
 
+    #[Route('/concept/{title}/component', name: 'app_concept_component_edit')]
+    public function addComponentsToConcept(ConceptService $conceptService, Concept $concept): Response
+    {
+        if($concept->isIsValidated()) {
+            return $this->redirectToRoute('app_concept_show', [
+                'title' => $concept->getTitle(),
+            ]);
+        }
+        return $this->render('concept/edit_concept.html.twig', [
+            'components' => $conceptService->calculateComponentsWithDefaultTrad($concept),
+            'concept' => $concept,
+        ]);
+    }
+
     #[Route('/concept/{title}/validate', name: 'app_concept_validate', methods: 'POST')]
     public function validateConcept(ConceptService $conceptService, ComponentNameRepository $componentNameRepository, EntityManagerInterface $entityManager, Concept $concept, Request $request): Response
     {
+        if(sizeof($concept->getComponents()) == 0) {
+            $this->addFlash('warning', 'You need to specify at least one component');
+            return $this->redirectToRoute('app_concept_component_edit', [
+                'title' => $concept->getTitle(),
+            ]);
+        }
         $conceptService->saveComponentNames($concept, $request, $componentNameRepository, $concept->getDefaultLanguage(), $entityManager);
-
+        $concept->setIsValidated(true);
+        $entityManager->persist($concept);
+        $entityManager->flush();
         return $this->redirectToRoute('app_concept_list');
     }
 

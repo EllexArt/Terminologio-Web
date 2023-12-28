@@ -32,6 +32,13 @@ class Concept
     #[ORM\JoinColumn(nullable: false)]
     private ?Category $category = null;
 
+    #[ORM\Column]
+    private ?bool $isValidated = null;
+
+    #[ORM\ManyToOne(inversedBy: 'concepts')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $author = null;
+
     public function __construct()
     {
         $this->components = new ArrayCollection();
@@ -123,6 +130,30 @@ class Concept
     public function setCategory(?Category $category): static
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    public function isIsValidated(): ?bool
+    {
+        return $this->isValidated;
+    }
+
+    public function setIsValidated(bool $isValidated): static
+    {
+        $this->isValidated = $isValidated;
+
+        return $this;
+    }
+
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): static
+    {
+        $this->author = $author;
 
         return $this;
     }
