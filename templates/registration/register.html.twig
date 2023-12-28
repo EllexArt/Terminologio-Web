@@ -4,26 +4,48 @@
 
 {% block body %}
     {% block navigation %}{{ parent() }}{% endblock %}
-    <h1>Register</h1>
-    <div class="w-full max-w-xs">
-        <div class="mb-4">
-            {{ form_start(registrationForm, {'attr': {'class':"bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"}}) }}
-                <div>
-                    {{ form_row(registrationForm.email) }}
-                    {{ form_row(registrationForm.username) }}
-                    {{ form_row(registrationForm.plainPassword, {
-                        label: 'Password'
-                    }) }}
-                    {{ form_row(registrationForm.agreeTerms) }}
+<div class="grid h-screen place-items-center">
+    <section id="register" class="p-4 flex flex-col justify-center min-h-screen w-3/5 mx-auto">
+        <div class="align-middle rounded shadow-2xl max-w-xl container mx-auto w-full "
+             style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%)">
+            <div class="flex items-center justify-center m-5">
+                <h1 class="tracking-wide text-3xl drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] text-white font-bold">Register</h1>
+            </div>
+            <div class="flex justify-center w-full items-center mb-6">
+                <div class="w-full max-w-md flow flow-col grid h-full ">
+                    {{ form_start(registrationForm, {'attr': {'class':"px-8 pb-8 mb-4 font-bold"}}) }}
+                    <div class="mb-4 mt-10">
+                        {{ form_row(registrationForm.email,
+                            {'attr' : {'class' : 'text-neutral-600 text-base font-normal text-lg flex my-3 items-center justify-between
+                                                bg-zinc-100 rounded-lg'}}) }}
+                        <br>
+                        {{ form_row(registrationForm.username,
+                            {'attr' : {'class' : 'text-neutral-600 text-base font-normal text-lg flex my-3 items-center justify-between
+                                                bg-zinc-100 rounded-lg'}}) }}
+                        <br>
+                        {{ form_row(registrationForm.plainPassword,  {'attr' : {'class' : 'text-neutral-600 text-lg text-base font-normal flex my-3 items-center justify-between
+                                                bg-zinc-100 rounded-lg'
+                        }
+                        }
+                        ) }}
+                        <br>
+                        {{ form_row(registrationForm.agreeTerms,
+                            {'attr' : {'class' : 'text-neutral-600 text-base font-normal text-lg flex my-3 items-center justify-between
+                                                bg-zinc-100 rounded-lg'}}) }}
 
-                    <button type="submit" class="btn">Register</button>
+                        <button type="submit" class="border border-indigo-900 rounded-lg  text-center flow flow-col
+                                    text-indigo-900 hover:text-white hover:bg-indigo-900 bg-white text-base font-semibold w-full py-3 mt-9">
+                            Register
+                        </button>
+
+                    </div>
+                    {{ form_end(registrationForm) }}
                 </div>
-            {{ form_end(registrationForm) }}
-
-        </div>
-        <p class="text-center text-gray-500 text-xs">
-            &copy;2023 Terminologio Team.<br>
-            All rights reserved.
+            </div>
+        <p class="text-center text-black text-sm pb-2">
+            <b>[1] View <a href="{{ path('app_terms') }}">Terms of use</a></b>
         </p>
-    </div>
+        </div>
+    </section>
+</div>
 {% endblock %}
