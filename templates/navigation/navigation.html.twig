@@ -4,12 +4,41 @@
             Terminologio
         </a>
         <div class="block lg:hidden">
-            <button class="flex items-center rem-0.125 py-2 border rounded text-gray-500 border-gray-600 hover:text-gray-800 hover:border-teal-500 appearance-none focus:outline-none">
+            <button class="flex items-center rem-0.125 py-2 border rounded text-gray-500 border-gray-600 hover:text-gray-800
+                            hover:border-teal-500 appearance-none focus:outline-none"
+                    data-dropdown-toggle="dropdown"
+                    onclick="function showHiddenMenu() {
+                        let menu = document.getElementById('hidden_menu');
+                        menu.style.visibility = (menu.style.visibility  === 'hidden' ? 'visible' : 'hidden');
+                    }
+                    showHiddenMenu()">
                 <svg class="fill-current h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                     <title>Menu</title>
-                    <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
+                    <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"></path>
                 </svg>
             </button>
+            <div id='hidden_menu' class="block absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+                <div class="py-1" role="none">
+                    <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
+                    <a href="/" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-0">Home</a>
+                    {% if not is_granted('ROLE_USER') %}
+                        <a href="{{ path('app_login') }}" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem"
+                           tabindex="-1" id="menu-item-1">
+                            Sign in
+                        </a>
+                        <a href="{{ path('app_register')}}" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-2">Sign up</a>
+                    {% else %}
+                        <a href="{{ path('app_concept_list', {'category' : '-1', 'language' : '-1'}) }}"
+                           class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-2">
+                            Concepts
+                        </a>
+                        <a href="{{ path('app_logout') }}" class="text-gray-700 block px-4 py-2 text-sm"
+                           role="menuitem" tabindex="-1" id="menu-item-2">
+                            Logout
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
         </div>
         <div class="hidden lg:block">
             <ul class="inline-flex space-x-10">
