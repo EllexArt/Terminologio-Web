@@ -6,11 +6,16 @@ export default class extends Controller {
     }
 
     static targets = ['components', 'componentsNames', 'style'];
-    async addComponent(image) {
-        let height = image.target.height;
-        let width = image.target.width;
-        let offsetX = (image.offsetX / width) * 100;
-        let offsetY = (image.offsetY / height) * 100;
+    async addComponent(request) {
+        let image = document.getElementById("srcImage");
+        let height = image.height
+        let width = image.width;
+        let offsetX = (request.offsetX / width) * 100;
+        let offsetY = (request.offsetY / height) * 100;
+
+        if(isNaN(offsetY) || isNaN(offsetX)) {
+            return;
+        }
 
         let tabText = this.calculateValuesOfComponents();
 
