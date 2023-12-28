@@ -2,8 +2,7 @@
 
 {% block title %}Manage your website{% endblock %}
 
-{% block body %}
-    {% block navigation %}{{ parent() }}{% endblock %}
+{% block bodyContent %}
 
     {% if success == true %}
         {{include('admin/banner_created_object.html.twig')}}

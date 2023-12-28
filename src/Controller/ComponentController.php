@@ -53,22 +53,23 @@ class ComponentController extends AbstractController
     public function deleteComponent(
         EntityManagerInterface $entityManager,
         #[MapEntity(mapping: ['title' => 'title'])] Concept $concept,
-        #[MapEntity(id: 'id')] Component $componentToDelete): Response
+        #[MapEntity(id: 'id')] Component $componentToDelete = null): Response
     {
-        if($componentToDelete->getConcept() == $concept) {
-            $concept->removeComponent($componentToDelete);
-            $entityManager->remove($componentToDelete);
+        if($componentToDelete == null || $componentToDelete->getConcept() != $concept) {
+            $this->addFlash('warning', 'Impossible to delete this component. Maybe it has already been deleted ?');
+            return new Response('Invalid component', 404);
+        }
+        $concept->removeComponent($componentToDelete);
+        $entityManager->remove($componentToDelete);
 
-            foreach ($concept->getComponents() as $component) {
-                if($component->getNumber() > $componentToDelete->getNumber()) {
-                    $component->setNumber($component->getNumber() - 1);
-                    $entityManager->persist($component);
-                }
+        foreach ($concept->getComponents() as $component) {
+            if ($component->getNumber() > $componentToDelete->getNumber()) {
+                $component->setNumber($component->getNumber() - 1);
+                $entityManager->persist($component);
             }
-
-            $entityManager->flush();
         }
 
+        $entityManager->flush();
         return $this->render('concept/components/components_number_block.html.twig', [
             'concept' => $concept,
         ]);
