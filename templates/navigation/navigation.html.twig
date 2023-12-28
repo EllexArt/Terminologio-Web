@@ -36,9 +36,9 @@
                            role="menuitem" tabindex="-1" id="menu-item-3">
                             Create Concept
                         </a>
-                        <a href="{{ path('app_logout') }}" class="text-gray-700 block px-4 py-2 text-sm"
+                        <a href="{{ path('app_profile') }}" class="text-gray-700 block px-4 py-2 text-sm"
                            role="menuitem" tabindex="-1" id="menu-item-4">
-                            Logout
+                            Profile
                         </a>
                     {% endif %}
                 </div>
@@ -56,7 +56,7 @@
                     <li><a class="rem-0.25 hover:text-gray-700 text-white" href="{{ path('app_register') }}">Sign up</a></li>
                 {% else %}
                     <li><a class="rem-0.25 hover:text-gray-700 text-white" href="{{ path('app_concept_upload') }}">Create Concept</a></li>
-                    <li><a class="rem-0.25 hover:text-gray-700 text-white" href="{{ path('app_logout') }}">Logout</a></li>
+                    <li><a class="rem-0.25 hover:text-gray-700 text-white" href="{{ path('app_profile') }}">Profile</a></li>
                 {% endif %}
             </ul>
         </div>
