@@ -1,20 +1,41 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Upload a concept !{% endblock %}
+{% block title %}Terminologio- Create a concept !{% endblock %}
 
 {% block bodyContent %}
-    <div class="w-full max-w-xs h-screen flex items-center">
-        {{ form_start(uploadForm, {'attr' : {'class' : "bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"}}) }}
-            <div class="">
-                {{ form_errors(uploadForm.image) }}
+<div class="grid h-screen place-items-center">
+    <section id="creationForm" class="p-4 flex flex-col justify-center min-h-screen w-3/5 mx-auto">
+        <div class="align-middle rounded shadow-2xl max-w-xl container mx-auto w-full "
+             style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%)">
+            <div class="flex items-center justify-center m-10">
+                <h1 class="tracking-wide text-3xl drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] text-white font-bold">Create a new concept</h1>
             </div>
-            <div class="mb-4">
-                    {{ form_label(uploadForm.image) }}
-                    {{ form_widget(uploadForm.image) }}
+            <div class="flex justify-center items-center mb-6">
+                <div class="w-full max-w-md flow flow-col grid h-full">
+                    <div class="mb-4 mt-10">
+                        {{ form_start(uploadForm, {'attr' : {'class' : "px-8 pt-6 pb-8 font-bold"}}) }}
+                            <div class="mb-4">
+                                {{ form_row(uploadForm.image, {'attr' : {'class' : 'text-neutral-600 text-base font-normal flex my-3 items-center justify-between
+                                                bg-zinc-100 rounded-lg'}}) }}
+
+                                {{ form_row(uploadForm.title, {'attr' : {'class' : 'text-neutral-600 text-base font-normal flex my-3 items-center justify-between
+                                                bg-zinc-100 rounded-lg'}}) }}
+                                {{ form_row(uploadForm.defaultLanguage, {'attr' : {'class' : 'text-neutral-600 text-base font-normal flex my-3 items-center justify-between
+                                                bg-zinc-100 rounded-lg'}}) }}
+
+                                {{ form_row(uploadForm.category, {'attr' : {'class' : 'text-neutral-600 text-base font-normal flex my-3 items-center justify-between
+                                                bg-zinc-100 rounded-lg'}}) }}
+                                <button type="submit" class="border border-indigo-900 rounded-lg  text-center flow flow-col
+                                    text-indigo-900 hover:text-white hover:bg-indigo-900 bg-white text-base font-semibold
+                                    w-full py-3 mt-9">
+                                    Valider
+                                </button>
+                            </div>
+                        {{ form_end(uploadForm) }}
+                    </div>
                 </div>
-                {{ form_row(uploadForm.title) }}
-                {{ form_row(uploadForm.defaultLanguage) }}
-                <button type="submit"> Valider </button>
-        {{ form_end(uploadForm) }}
-    </div>
+            </div>
+        </div>
+    </section>
+</div>
 {% endblock %}
