@@ -2,9 +2,7 @@
 
 {% block title %}Terminologio - List of concepts{% endblock %}
 
-{% block body %}
-    {% block navigation %}{{ parent() }}{% endblock %}
-
+{% block bodyContent %}
     <div class="flex flex-col flex-grow justify-center items-center">
         <form action="{{ path('app_concept_list') }}" method="get">
             <label>
@@ -27,22 +25,6 @@
             </label>
             <input type="submit" value="Submit">
         </form>
-    {% for concept in concepts %}
-        <a class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 align-middle" href="{{ path('app_concept_show', {'title': concept.title}) }}">
-            <h2>Title : {{ concept.title }}</h2>
-            <p>Default language : {{ concept.defaultLanguage.name }}</p>
-            <div>
-                <p>Other languages : </p>
-                <p>
-                {% for component_name in concept.components[0].componentNames %}
-                    {% if component_name.language.name != concept.defaultLanguage.name %}
-                        {{ component_name.language.name }}
-                    {% endif %}
-                {% endfor %}
-                </p>
-            </div>
-            <p>Category : {{ concept.category.name }}</p>
-        </a>
-    {% endfor %}
+        {% include('concept/list/list_concepts_block.html.twig') %}
     </div>
 {% endblock %}

@@ -21,15 +21,6 @@ use Symfony\Component\Routing\Annotation\Route;
 class ComponentController extends AbstractController
 {
 
-    #[Route('/concept/{title}/component', name: 'app_concept_component_edit')]
-    public function addComponentsToConcept(ConceptService $conceptService, Concept $concept): Response
-    {
-        return $this->render('concept/edit_concept.html.twig', [
-            'components' => $conceptService->calculateComponentsWithDefaultTrad($concept),
-            'concept' => $concept,
-        ]);
-    }
-
     #[Route('/concept/{title}/component/add/{horizontal_position}/{vertical_position}', name: 'app_concept_component_add', methods: 'POST')]
     public function addComponent(ComponentRepository $ComponentRepository,
         EntityManagerInterface $entityManager,
@@ -99,7 +90,7 @@ class ComponentController extends AbstractController
     public function getComponentToShow(ConceptService $conceptService, Concept $concept, Language $language) : Response
     {
         $componentsTrad = $conceptService->calculateComponentsWithTrad($concept, $language);
-        return $this->render('concept/show/components_show.html.twig', [
+        return $this->render('concept/show/components_show_block.html.twig', [
             'componentsName' => $componentsTrad,
         ]);
     }
@@ -108,7 +99,7 @@ class ComponentController extends AbstractController
     public function getStyleOfComponents( ConceptService $conceptService, Concept $concept): Response
     {
         $componentsTrad = $conceptService->calculateComponentsWithDefaultTrad($concept);
-        return $this->render('concept/components/hover_component.html.twig', [
+        return $this->render('concept/components/hover_component_block.html.twig', [
             'components' => $componentsTrad
         ]);
     }

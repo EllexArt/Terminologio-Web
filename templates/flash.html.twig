@@ -1,0 +1,19 @@
+{% for message in app.flashes('warning') %}
+    <div id="alert" role="alert" class="px-6 py-6">
+        <div class="bg-red-500 text-white font-bold rounded-t px-4 py-2">
+            Alert
+        </div>
+        <div class="flex flex-row border border-t-0 border-red-400 rounded-b bg-red-100 px-4 py-3 text-red-700">
+            <p class="w-3/5 float-left">{{ message }}</p>
+            <button class="flex flex-grow bg-transparent text-2xl font-semibold leading-none outline-none focus:outline-none" onclick="closeAlert()">
+                <span class="w-full h-full text-right">×</span>
+            </button>
+        </div>
+    </div>
+{% endfor %}
+<script>
+    function closeAlert(event){
+        let element = document.getElementById('alert');
+        element.remove();
+    }
+</script>

@@ -61,7 +61,7 @@ class ConceptShowController extends AbstractController
         #[MapEntity(id: 'id')] Language $language) : Response
     {
         $componentsTrad = $conceptService->calculateComponentsWithTrad($concept, $language);
-        return $this->render('concept/show/components_show.html.twig', [
+        return $this->render('components_show_block.html.twig', [
             'componentsName' => $componentsTrad,
         ]);
     }

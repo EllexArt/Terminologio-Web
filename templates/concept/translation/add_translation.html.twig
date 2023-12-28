@@ -2,8 +2,7 @@
 
 {% block title %}Terminologio - Create a new translation !{% endblock %}
 
-{% block body %}
-    {% block navigation %}{{ parent() }}{% endblock %}
+{% block bodyContent %}
     <div class="flex flex-col h-screen" {{ stimulus_controller('component', {
         url: path('app_concept_translation', {
             title:concept.title
@@ -49,5 +48,4 @@
             </form>
         </div>
     </div>
-
 {% endblock %}

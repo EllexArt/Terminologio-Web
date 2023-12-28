@@ -1,0 +1,18 @@
+{% for concept in concepts %}
+    <a class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 align-middle" href="{{ path('app_concept_show', {'title': concept.title}) }}">
+        <h2>Title : {{ concept.title }}</h2>
+        <p>Default language : {{ concept.defaultLanguage.name }}</p>
+        <div>
+            <p>Other languages : </p>
+            <p>
+                {% for component_name in concept.components[0].componentNames %}
+                    {% if component_name.language.name != concept.defaultLanguage.name %}
+                        {{ component_name.language.name }}
+                    {% endif %}
+                {% endfor %}
+            </p>
+        </div>
+        <p>Category : {{ concept.category.name }}</p>
+        <p>Author : {{ concept.author.username }}</p>
+    </a>
+{% endfor %}
