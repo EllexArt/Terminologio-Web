@@ -1,27 +1,49 @@
 {% for concept in concepts %}
-    <section id="creationForm" class="p-4 flex flex-col w-full justify-center items-center">
-        <div class="grid grid-cols-2 rounded shadow-2xl p-4 w-3/5"
+    <section id="creationForm" class="p-4 flex flex-col w-full justify-center items-center min-h-80">
+        <div class="grid grid-cols-2 rounded shadow-2xl p-4 w-3/5 h-full"
              style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%)">
-            <div class="w-3/5">
-                <h2 class="text-3xl font-bold">{{ concept.title }}</h2>
-                <div class="h-2/5">
-                    <img src="{{ image_directory~asset(concept.image) }}" alt="concept-image" class="p-1 rounded h-full aspect-auto"/>
+            <div class="flex flex-row h-full max-h-64 max-w-2/5 ">
+                <img src="{{ image_directory~asset(concept.image) }}" alt="concept-image" class="p-1 rounded object-contain h-64 min-w-0"/>
+                <div class="flex flex-col align-items justify-center pl-4 max-w-full">
+                    <h2 class="text-4xl font-bold pb-4 max-w-fit">Title : {{ concept.title }}</h2>
+                    <p>Created by {{ concept.author.username }}</p>
                 </div>
-                <p>Created by {{ concept.author.username }}</p>
             </div>
-            <div class="w-2/5">
-                <p>Default language : {{ concept.defaultLanguage.name }}</p>
-                <div>
-                    <p>Other languages : </p>
-                    <p>
-                        {% for component_name in concept.components[0].componentNames %}
-                            {% if component_name.language.name != concept.defaultLanguage.name %}
-                                {{ component_name.language.name }}
-                            {% endif %}
-                        {% endfor %}
-                    </p>
+            <div class="w-full flex flex-row">
+                <div class="flex flex-col flex-grow">
+                    <div class="flex-grow">
+                        <div class="flex flex-row">
+                            <p class="pb-4 font-bold">Default language : </p>
+                            <p>&nbsp;{{ concept.defaultLanguage.name }}</p>
+                        </div>
+                        <div>
+                            <p class="font-bold">Other languages : </p>
+                            <ul class="list-disc list-inside">
+                                {% for component_name in concept.components[0].componentNames %}
+                                    {% if component_name.language.name != concept.defaultLanguage.name %}
+                                        <li>{{ component_name.language.name }}</li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="flex flex-row">
+                        <p class="font-bold">Category :</p>
+                        <p>&nbsp;{{ concept.category.name }} </p>
+                    </div>
                 </div>
-                <p>Category : {{ concept.category.name }}</p>
+                <div class="flex flex-col w-2/5">
+                    <a class="border border-indigo-900 rounded-lg  text-center flow flow-col
+                                    text-indigo-900 hover:text-white hover:bg-indigo-900 bg-white text-base font-semibold
+                                    w-full py-3 mt-9" href="{{ path('app_concept_show', {'title': concept.title}) }}">
+                        Show
+                    </a>
+                    <a class="border border-indigo-900 rounded-lg  text-center flow flow-col
+                                    text-indigo-900 hover:text-white hover:bg-indigo-900 bg-white text-base font-semibold
+                                    w-full py-3 mt-9" href="{{ path('app_concept_translation', {'title': concept.title}) }}">
+                        Edit
+                    </a>
+                </div>
             </div>
             </div>
     </section>
