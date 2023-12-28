@@ -34,7 +34,11 @@ export default class extends Controller {
         let tabText = this.calculateValuesOfComponents();
 
         const response = await fetch(`${this.urlValue}/delete/${button.params.id}`, {method: "POST"});
-        this.componentsTarget.innerHTML = await response.text();
+        if(!response.ok) {
+            location.reload()
+        } else {
+            this.componentsTarget.innerHTML = await response.text();
+        }
         await this.updateComponentsToShow();
 
         let elements = document.getElementsByClassName('componentText');

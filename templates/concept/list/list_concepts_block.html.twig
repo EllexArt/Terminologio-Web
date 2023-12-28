@@ -1,18 +1,28 @@
 {% for concept in concepts %}
-    <a class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 align-middle" href="{{ path('app_concept_show', {'title': concept.title}) }}">
-        <h2>Title : {{ concept.title }}</h2>
-        <p>Default language : {{ concept.defaultLanguage.name }}</p>
-        <div>
-            <p>Other languages : </p>
-            <p>
-                {% for component_name in concept.components[0].componentNames %}
-                    {% if component_name.language.name != concept.defaultLanguage.name %}
-                        {{ component_name.language.name }}
-                    {% endif %}
-                {% endfor %}
-            </p>
-        </div>
-        <p>Category : {{ concept.category.name }}</p>
-        <p>Author : {{ concept.author.username }}</p>
-    </a>
+    <section id="creationForm" class="p-4 flex flex-col w-full justify-center items-center">
+        <div class="grid grid-cols-2 rounded shadow-2xl p-4 w-3/5"
+             style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%)">
+            <div class="w-3/5">
+                <h2 class="text-3xl font-bold">{{ concept.title }}</h2>
+                <div class="h-2/5">
+                    <img src="{{ image_directory~asset(concept.image) }}" alt="concept-image" class="p-1 rounded h-full aspect-auto"/>
+                </div>
+                <p>Created by {{ concept.author.username }}</p>
+            </div>
+            <div class="w-2/5">
+                <p>Default language : {{ concept.defaultLanguage.name }}</p>
+                <div>
+                    <p>Other languages : </p>
+                    <p>
+                        {% for component_name in concept.components[0].componentNames %}
+                            {% if component_name.language.name != concept.defaultLanguage.name %}
+                                {{ component_name.language.name }}
+                            {% endif %}
+                        {% endfor %}
+                    </p>
+                </div>
+                <p>Category : {{ concept.category.name }}</p>
+            </div>
+            </div>
+    </section>
 {% endfor %}

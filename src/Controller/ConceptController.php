@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Concept;
 use App\Form\ConceptUploadType;
 use App\Repository\ComponentNameRepository;
+use App\Repository\ConceptRepository;
 use App\Service\ConceptService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,14 +17,23 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 class ConceptController extends AbstractController
 {
     #[Route('/concept/create', name: 'app_concept_upload')]
-    public function upload(Request $request, EntityManagerInterface $entityManager, ConceptService $conceptService, SluggerInterface $slugger): Response
+    public function upload(Request $request, EntityManagerInterface $entityManager, ConceptService $conceptService, SluggerInterface $slugger, ConceptRepository $conceptRepository): Response
     {
         $concept = new Concept();
         $form = $this->createForm(ConceptUploadType::class, $concept);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+
+            if($conceptRepository->findOneBy(['title' => $concept->getTitle()]) != null) {
+                $this->addFlash('warning', 'Title already taken');
+                return $this->render('concept/create_concept.html.twig', [
+                    'uploadForm' => $form->createView(),
+                ]);
+            }
+
             $image = $form->get('image')->getData();
             $user = $this->getUser();
+
             $conceptService->uploadConcept($image, $user, $slugger, $concept, $entityManager, $this->getParameter('image_directory'));
 
             return $this->redirectToRoute('app_concept_component_edit', [
@@ -61,7 +71,9 @@ class ConceptController extends AbstractController
         $concept->setIsValidated(true);
         $entityManager->persist($concept);
         $entityManager->flush();
-        return $this->redirectToRoute('app_concept_list');
+        return $this->redirectToRoute('app_concept_show', [
+            'title' => $concept->getTitle(),
+        ]);
     }
 
 
