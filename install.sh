@@ -20,7 +20,8 @@ composer update
 symfony console tailwind:init
 
 echo "Mot de passe root nécessaire pour installer le certificat TLS"
-su -c 'symfony server:ca:install'
+su -c 'export PATH="/usr/sbin:$PATH"'\
+'&& symfony server:ca:install'
 
 if [ $? -ne 0 ]
 then
