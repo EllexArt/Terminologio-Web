@@ -6,8 +6,7 @@ su -c 'apt update'\
 '&& apt install -y git zip unzip curl apt-transport-https ca-certificates php-intl'\
 '&& curl -1sLf "https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh" | bash'\
 '&& apt install -y symfony-cli'\
-'&& chmod u+x composer.phar' \
-'&& mv composer.phar /usr/local/bin/composer'
+'&& chmod u+x composer.phar'
 
 if [ $? -ne 0 ]
 then
@@ -49,11 +48,9 @@ echo "BDD configurée"
 
 #Installation de Symfony et des dépendances associées
 rm -f composer.lock
-composer update
+./composer.phar update --no-dev --optimize-autoloader
+symfony console importmap:install
 symfony console tailwind:init
-
-#Lancement du serveur
-symfony server:start
 
 echo "Mot de passe root nécessaire pour installer le certificat TLS"
 su -c 'symfony server:ca:install'
@@ -63,11 +60,13 @@ then
   exit 1
 fi
 
-#Fermeture du serveur
-symfony server:stop
+#Mise en production
+php bin/console asset-map:compile
+./composer.phar dump-env prod
+export APP_ENV=prod
+export APP_DEBUG=0
+php bin/console cache:clear
 
-#Installation d'une dépendance
-symfony console importmap:install
 
 #Création des tables de la BDD
 symfony console doctrine:migrations:migrate --no-interaction
