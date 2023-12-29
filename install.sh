@@ -15,7 +15,7 @@ fi
 
 #Installation de Symfony et des dépendances associées
 rm -f composer.lock
-composer.phar update
+./composer.phar update
 symfony console tailwind:init
 
 echo "Mot de passe root nécessaire pour installer le certificat TLS"
@@ -64,7 +64,7 @@ echo "BDD configurée"
 symfony server:stop
 
 #Vérification des mises à jours
-composer.phar update
+./composer.phar update
 
 #Installation d'une dépendance
 symfony console importmap:install
