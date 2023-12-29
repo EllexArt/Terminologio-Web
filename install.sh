@@ -9,6 +9,11 @@ su -c 'apt update
 && chmod u+x composer.phar
 && mv composer.phar /usr/local/bin/composer'
 
+if [ $? -ne 0 ]
+then
+  exit 1
+fi
+
 #Installation de Symfony et des dépendances associées
 rm -f composer.lock
 composer update
@@ -16,6 +21,11 @@ symfony console tailwind:init
 
 echo "Mot de passe root nécessaire pour installer le certificat TLS"
 su -c 'symfony server:ca:install'
+
+if [ $? -ne 0 ]
+then
+  exit 1
+fi
 
 #Configuration de la BDD
 echo "Début de la configuration de la BDD"
