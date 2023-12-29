@@ -6,8 +6,7 @@ su -c 'apt update'\
 '&& apt install -y git zip unzip curl apt-transport-https ca-certificates'\
 '&& curl -1sLf "https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh" | bash'\
 '&& apt install -y symfony-cli'\
-'&& chmod u+x composer.phar'\
-'&& mv composer.phar /usr/local/bin/composer'
+'&& chmod u+x composer.phar'
 
 if [ $? -ne 0 ]
 then
@@ -16,7 +15,7 @@ fi
 
 #Installation de Symfony et des dépendances associées
 rm -f composer.lock
-composer update
+composer.phar update
 symfony console tailwind:init
 
 echo "Mot de passe root nécessaire pour installer le certificat TLS"
@@ -65,7 +64,7 @@ echo "BDD configurée"
 symfony server:stop
 
 #Vérification des mises à jours
-composer update
+composer.phar update
 
 #Installation d'une dépendance
 symfony console importmap:install
