@@ -1,20 +1,21 @@
 #!/bin/bash
+
 #Installation des dépendances de base
-apt update
-apt install -y git zip unzip curl
+su -c apt update
+su -c apt install -y git zip unzip curl
 
 #Installation de l'interpréteur de lignes de commandes de Symfony
 #et paramètrage du système pour accueillir symfony
-curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | bash
-apt install -y symfony-cli
+su -c curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | bash
+su -c apt install -y symfony-cli
 
 #Installation de Symfony et des dépendances associées
-chmod u+x composer.phar \
-&& rm -f composer.lock \
-&& mv composer.phar /usr/local/bin/composer \
-&& composer update \
-&& symfony console tailwind:init \
-&& symfony server:ca:install
+su -c chmod u+x composer.phar
+rm -f composer.lock
+mv composer.phar /usr/local/bin/composer
+composer update
+symfony console tailwind:init
+symfony server:ca:install
 
 #Configuration de la BDD
 echo "Début de la configuration de la BDD"
