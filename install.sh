@@ -2,12 +2,12 @@
 
 #Installation des dépendances de base
 echo "Mot de passe root nécessaire pour installer les dépendances"
-su -c 'apt update
-&& apt install -y git zip unzip curl
-&& curl -1sLf "https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh" | bash
-&& apt install -y symfony-cli
-&& chmod u+x composer.phar
-&& mv composer.phar /usr/local/bin/composer'
+su -c 'apt update'\
+'&& apt install -y git zip unzip curl'\
+'&& curl -1sLf "https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh" | bash'\
+'&& apt install -y symfony-cli'\
+'&& chmod u+x composer.phar'\
+'&& mv composer.phar /usr/local/bin/composer'
 
 if [ $? -ne 0 ]
 then
