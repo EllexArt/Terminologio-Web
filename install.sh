@@ -1,21 +1,22 @@
 #!/bin/bash
 
 #Installation des dépendances de base
-su -c 'apt update'
-su -c 'apt install -y git zip unzip curl'
+curl -1sLf "https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh" | bash
 
-#Installation de l'interpréteur de lignes de commandes de Symfony
-#et paramètrage du système pour accueillir symfony
-su -c 'curl -1sLf "https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh" | bash'
-su -c 'apt install -y symfony-cli'
+echo "Mot de passe root nécessaire pour installer les dépendances"
+su -c 'apt update
+&& apt install -y git zip unzip curl
+&& apt install -y symfony-cli
+&& chmod u+x composer.phar
+&& mv composer.phar /usr/local/bin/composer'
 
 #Installation de Symfony et des dépendances associées
-su -c 'chmod u+x composer.phar'
 rm -f composer.lock
-mv composer.phar /usr/local/bin/composer
 composer update
 symfony console tailwind:init
-symfony server:ca:install
+
+echo "Mot de passe root nécessaire pour installer le certificat TLS"
+su -c 'symfony server:ca:install'
 
 #Configuration de la BDD
 echo "Début de la configuration de la BDD"
