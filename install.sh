@@ -52,6 +52,21 @@ rm -f composer.lock
 symfony console importmap:install
 symfony console tailwind:init
 
+#Lancement du serveur
+symfony server:start
+
+#Installation du certificat TLS
+echo "Mot de passe root nécessaire pour installer le certificat TLS"
+su -c 'symfony server:ca:install'
+
+if [ $? -ne 0 ]
+then
+  exit 1
+fi
+
+#Fermeture du serveur
+symfony server:stop
+
 #Mise en production
 php bin/console asset-map:compile
 ./composer.phar dump-env prod
@@ -65,15 +80,6 @@ symfony console doctrine:migrations:migrate --no-interaction
 
 #Installation du framework CSS Tailwind
 symfony console tailwind:build
-
-#Installation du certificat TLS
-echo "Mot de passe root nécessaire pour installer le certificat TLS"
-su -c 'symfony server:ca:install'
-
-if [ $? -ne 0 ]
-then
-  exit 1
-fi
 
 #Lancement du serveur
 symfony server:start
