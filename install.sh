@@ -6,7 +6,9 @@ su -c "export PATH=\"/usr/sbin:$PATH\""\
 'apt update'\
 '&& apt install -y git zip unzip curl apt-transport-https ca-certificates php-intl php-fpm'\
 '&& a2enmod proxy_fcgi setenvif'\
+'&& a2enmod ssl'\
 '&& a2enconf php8.2-fpm'\
+'&& systemctl reload apache2'\
 '&& mv terminologio.com.conf /etc/apache2/sites-available'\
 '&& mv apache-selfsigned.crt /etc/ssl/certs'\
 '&& mv apache-selfsigned.key /etc/ssl/private'\
