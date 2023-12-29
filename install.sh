@@ -15,11 +15,11 @@ fi
 
 #Installation de Symfony et des dépendances associées
 rm -f composer.lock
-./composer.phar update
+./composer.phar update --no-dev --optimize-autoloader
 symfony console tailwind:init
 
 echo "Mot de passe root nécessaire pour installer le certificat TLS"
-su -c 'export PATH="/usr/sbin:$PATH"'\
+su -c "export PATH='/usr/sbin:$PATH'"\
 '&& symfony server:ca:install'
 
 if [ $? -ne 0 ]
@@ -65,6 +65,12 @@ symfony server:stop
 
 #Vérification des mises à jours
 ./composer.phar update
+
+#Mise en production
+./composer.phar dump-env prod
+export APP_ENV=prod
+export APP_DEBUG=0
+php bin/console cache:clear
 
 #Installation d'une dépendance
 symfony console importmap:install
