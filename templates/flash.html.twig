@@ -1,5 +1,5 @@
 {% for message in app.flashes('warning') %}
-    <div id="alert" role="alert" class="px-6 py-6">
+    <div role="alert" class="banner px-6 py-6">
         <div class="bg-red-500 text-white font-bold rounded-t px-4 py-2">
             Alert
         </div>
@@ -11,9 +11,24 @@
         </div>
     </div>
 {% endfor %}
+{% for message in app.flashes('info') %}
+    <div role="alert" class="banner px-6 py-6">
+        <div class="bg-blue-500 text-white font-bold rounded-t px-4 py-2">
+            Info
+        </div>
+        <div class="flex flex-row border border-t-0 border-blue-400 rounded-b bg-blue-100 px-4 py-3 text-blue-700">
+            <p class="w-3/5 float-left">{{ message }}</p>
+            <button class="flex flex-grow bg-transparent text-2xl font-semibold leading-none outline-none focus:outline-none" onclick="closeAlert()">
+                <span class="w-full h-full text-right">×</span>
+            </button>
+        </div>
+    </div>
+{% endfor %}
 <script>
     function closeAlert(){
-        let element = document.getElementById('alert');
-        element.remove();
+        let elements = document.getElementsByClassName('banner');
+        for (let i = 0; i < elements.length; i++) {
+            elements[i].remove();
+        }
     }
 </script>
