@@ -7,6 +7,7 @@ use App\Form\ConceptUploadType;
 use App\Repository\ComponentNameRepository;
 use App\Repository\ConceptRepository;
 use App\Service\ConceptService;
+use App\Service\UploadImageService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +20,9 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 class ConceptController extends AbstractController
 {
     #[Route('/concept/create', name: 'app_concept_upload')]
-    public function upload(Request $request, EntityManagerInterface $entityManager, ConceptService $conceptService, SluggerInterface $slugger, ConceptRepository $conceptRepository): Response
+    public function upload(Request $request, EntityManagerInterface $entityManager,
+                           ConceptService $conceptService, SluggerInterface $slugger,
+                           ConceptRepository $conceptRepository, UploadImageService $uploadImageService): Response
     {
         $concept = new Concept();
         $form = $this->createForm(ConceptUploadType::class, $concept);
@@ -36,7 +39,14 @@ class ConceptController extends AbstractController
             $image = $form->get('image')->getData();
             $user = $this->getUser();
 
-            $conceptService->uploadConcept($image, $user, $slugger, $concept, $entityManager, $this->getParameter('image_directory'));
+            $newFilename = $uploadImageService->uploadImage($slugger, $image, $this->getParameter('image_directory'));
+            if($newFilename == null) {
+                $this->addFlash('Warning', 'Issue while uploading file');
+                return $this->render('concept/create_concept.html.twig', [
+                    'uploadForm' => $form->createView(),
+                ]);
+            }
+            $conceptService->uploadConcept( $user , $concept, $entityManager, $newFilename);
 
             return $this->redirectToRoute('app_concept_component', [
                 'title' => $concept->getTitle()]);

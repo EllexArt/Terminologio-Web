@@ -17,26 +17,11 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 class ConceptService
 {
 
-    public function uploadConcept(mixed $image,
-        User $user,
-        SluggerInterface $slugger,
-        Concept $concept,
-        EntityManagerInterface $entityManager,
-        string $directory): void
+    public function uploadConcept(User $user, Concept $concept,
+                                  EntityManagerInterface $entityManager,
+                                  string $newFilename
+    ): void
     {
-        $originalFilename = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
-        $safeFilename = $slugger->slug($originalFilename);
-        $newFilename = $safeFilename.'-'.uniqid().'.'.$image->guessExtension();
-
-        try {
-            $image->move(
-                $directory,
-                $newFilename
-            );
-        } catch (FileException $e) {
-
-        }
-
         $concept->setImage($newFilename);
         $concept->setAuthor($user);
         $concept->setIsValidated(false);

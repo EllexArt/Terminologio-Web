@@ -15,6 +15,7 @@ use App\Repository\ComponentNameRepository;
 use App\Repository\ConceptRepository;
 use App\Repository\LanguageRepository;
 use App\Repository\UserRepository;
+use App\Service\UploadImageService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -50,10 +51,13 @@ class AdminController extends AbstractController
     }
 
     #[Route('/delete/concept/{id}/{redirectPath}', name: 'app_delete_concept')]
-    public function deleteConcept(EntityManagerInterface $entityManager, Concept $concept, string $redirectPath) : Response
+    public function deleteConcept(EntityManagerInterface $entityManager, Concept $concept, string $redirectPath,
+                                  UploadImageService $uploadImageService) : Response
     {
+        $filename = $concept->getImage();
         $entityManager->remove($concept);
         $entityManager->flush();
+        $uploadImageService->deleteImage($this->getParameter('image_directory'), $filename);
         return $this->redirectToRoute($redirectPath);
     }
 

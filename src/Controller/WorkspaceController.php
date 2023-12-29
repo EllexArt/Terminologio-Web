@@ -9,6 +9,7 @@ use App\Repository\CategoryRepository;
 use App\Repository\ConceptRepository;
 use App\Repository\LanguageRepository;
 use App\Service\ConceptService;
+use App\Service\UploadImageService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -50,7 +51,8 @@ class WorkspaceController extends AbstractController
 
     #[Route('/concept/drafts/delete/{id}', name: 'app_concept_drafts_delete')]
     #[IsGranted('ROLE_USER')]
-    public function deleteDraft(Concept $concept, EntityManagerInterface $entityManager) : Response
+    public function deleteDraft(Concept $concept, EntityManagerInterface $entityManager,
+                                UploadImageService $uploadImageService) : Response
     {
         $user = $this->getUser();
         if($concept->getAuthor()->getId() != $user->getId()) {
@@ -61,8 +63,10 @@ class WorkspaceController extends AbstractController
             $this->addFlash('warning', 'This is not a draft, impossible to delete');
             return $this->redirectToRoute('app_concept_drafts');
         }
+        $filename = $concept->getImage();
         $entityManager->remove($concept);
         $entityManager->flush();
+        $uploadImageService->deleteImage($this->getParameter('image_directory'), $filename);
         return $this->redirectToRoute('app_concept_drafts');
     }
 }
