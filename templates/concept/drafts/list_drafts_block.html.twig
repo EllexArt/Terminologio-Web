@@ -6,7 +6,7 @@
                 <img src="{{ image_directory~asset(concept.image) }}" alt="concept-image" class="p-1 rounded object-contain h-64 min-w-0"/>
                 <div class="flex flex-col align-items justify-center pl-4 max-w-full">
                     <h2 class="text-4xl font-bold pb-4 max-w-fit">Title : {{ concept.title }}</h2>
-                    <p>Created by {{ concept.author.username }}</p>
+                    <p>Draft</p>
                 </div>
             </div>
             <div class="w-full flex flex-row">
@@ -16,35 +16,23 @@
                             <p class="pb-4 font-bold">Default language : </p>
                             <p>&nbsp;{{ concept.defaultLanguage.name }}</p>
                         </div>
-                        <div>
-                            <p class="font-bold">Other languages : </p>
-                            <ul class="list-disc list-inside">
-                                {% for component_name in concept.components[0].componentNames %}
-                                    {% if component_name.language.name != concept.defaultLanguage.name %}
-                                        <li>{{ component_name.language.name }}</li>
-                                    {% endif %}
-                                {% endfor %}
-                            </ul>
-                        </div>
                     </div>
                     <div class="flex flex-row">
                         <p class="font-bold">Category :</p>
                         <p>&nbsp;{{ concept.category.name }} </p>
                     </div>
                 </div>
-                <div class="flex flex-col w-2/5">
+                <div class="flex flex-col w-2/5 items-center justify-center">
                     <a class="border border-indigo-900 rounded-lg  text-center flow flow-col
                                     text-indigo-900 hover:text-white hover:bg-indigo-900 bg-white text-base font-semibold
-                                    w-full py-3 mt-9" href="{{ path('app_concept_show', {'title': concept.title}) }}">
-                        Show
+                                    w-full py-3" href="{{ path('app_concept_component', {'title': concept.title}) }}">
+                        Edit
                     </a>
-                    {% if is_granted('ROLE_USER') %}
-                    <a class="border border-indigo-900 rounded-lg  text-center flow flow-col
-                                    text-indigo-900 hover:text-white hover:bg-indigo-900 bg-white text-base font-semibold
-                                    w-full py-3 mt-9" href="{{ path('app_concept_translation', {'title': concept.title}) }}">
-                        Translate
+
+                    <a class="bg-red-500 hover:bg-red-700 text-white py-4 px-10 font-bold rounded-lg mt-9 w-full text-center"
+                       href="{{ path('app_concept_drafts_delete', {'id': concept.id}) }}">
+                        Delete
                     </a>
-                    {% endif %}
                 </div>
             </div>
             </div>

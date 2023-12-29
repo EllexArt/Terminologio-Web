@@ -42,7 +42,7 @@ class RegistrationController extends AbstractController
             );
             $user->setUsername($form->get('username')->getData());
             $user->setEmail($form->get('email')->getData());
-            $user->setRoles($user->getRoles());
+            $user->addRole("ROLE_USER");
             $entityManager->persist($user);
             $entityManager->flush();
             $security->login($user, 'form_login', 'main', [(new RememberMeBadge())->enable()]);

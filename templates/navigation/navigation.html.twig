@@ -21,25 +21,41 @@
                 <div class="py-1" role="none">
                     <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
                     <a href="{{ path('app_terminologio_index') }}" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-0">Home</a>
-                    <a href="{{ path('app_concept_list', {'category' : '-1', 'language' : '-1'}) }}"
+                    <a href="{{ path('app_concept_list') }}"
                        class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-2">
                         List Concepts
                     </a>
-                    {% if not is_granted('ROLE_USER') %}
+                    {% if not is_granted('ROLE_USER') and not is_granted('ROLE_ADMIN')%}
                         <a href="{{ path('app_login') }}" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem"
                            tabindex="-1" id="menu-item-2">
                             Sign in
                         </a>
                         <a href="{{ path('app_register')}}" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-3">Sign up</a>
                     {% else %}
+                        {% if  is_granted('ROLE_USER')%}
                         <a href="{{ path('app_concept_upload') }}" class="text-gray-700 block px-4 py-2 text-sm"
                            role="menuitem" tabindex="-1" id="menu-item-3">
                             Create Concept
                         </a>
-                        <a href="{{ path('app_profile') }}" class="text-gray-700 block px-4 py-2 text-sm"
+                        <a href="{{ path('app_concept_drafts') }}" class="text-gray-700 block px-4 py-2 text-sm"
                            role="menuitem" tabindex="-1" id="menu-item-4">
+                            Drafts
+                        </a>
+                        <a href="{{ path('app_profile') }}" class="text-gray-700 block px-4 py-2 text-sm"
+                           role="menuitem" tabindex="-1" id="menu-item-5">
                             Profile
                         </a>
+                        {% endif %}
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a href="{{ path('app_admin') }}" class="text-gray-700 block px-4 py-2 text-sm"
+                               role="menuitem" tabindex="-1" id="menu-item-3">
+                                Dashboard
+                            </a>
+                            <a href="{{ path('app_logout') }}" class="text-gray-700 block px-4 py-2 text-sm"
+                               role="menuitem" tabindex="-1" id="menu-item-4">
+                                Logout
+                            </a>
+                        {% endif %}
                     {% endif %}
                 </div>
             </div>
@@ -47,16 +63,20 @@
         <div class="hidden lg:block">
             <ul class="inline-flex space-x-10">
                 <li><a class="rem-0.25 hover:text-gray-700 font-bold text-white" href="{{ path('app_terminologio_index') }}">Home</a></li>
-                <li><a class="rem-0.25 hover:text-gray-700 text-white" href="{{ path('app_concept_list', {
-                        'category': '-1',
-                        'language': '-1'
-                    }) }}">List Concepts</a></li>
-                {% if not is_granted('ROLE_USER') %}
+                <li><a class="rem-0.25 hover:text-gray-700 text-white" href="{{ path('app_concept_list') }}">List Concepts</a></li>
+                {% if not is_granted('ROLE_USER') and not is_granted('ROLE_ADMIN') %}
                     <li><a class="rem-0.25 hover:text-gray-700 text-white" href='{{ path('app_login') }}'>Sign in</a></li>
                     <li><a class="rem-0.25 hover:text-gray-700 text-white" href="{{ path('app_register') }}">Sign up</a></li>
                 {% else %}
-                    <li><a class="rem-0.25 hover:text-gray-700 text-white" href="{{ path('app_concept_upload') }}">Create Concept</a></li>
-                    <li><a class="rem-0.25 hover:text-gray-700 text-white" href="{{ path('app_profile') }}">Profile</a></li>
+                    {% if  is_granted('ROLE_USER')%}
+                        <li><a class="rem-0.25 hover:text-gray-700 text-white" href="{{ path('app_concept_upload') }}">Create Concept</a></li>
+                        <li><a class="rem-0.25 hover:text-gray-700 text-white" href="{{ path('app_concept_drafts') }}">Drafts</a></li>
+                        <li><a class="rem-0.25 hover:text-gray-700 text-white" href="{{ path('app_profile') }}">Profile</a></li>
+                    {% endif %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <li><a class="rem-0.25 hover:text-gray-700 text-white" href="{{ path('app_admin') }}">Dashboard</a></li>
+                        <li><a class="rem-0.25 hover:text-gray-700 text-white" href="{{ path('app_logout') }}">Logout</a></li>
+                    {% endif %}
                 {% endif %}
             </ul>
         </div>

@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Terminologio - Your drafts{% endblock %}
+
+{% block bodyContent %}
+    <section id="creationForm" class="flex flex-col justify-center items-center m-8">
+        <div class="rounded shadow-2xl w-3/5 h-full p-4"
+             style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%)">
+            <div class="flex flex-col flex-grow justify-center items-center">
+                <form class="grid grid-cols-3 justify-center items-center" action="{{ path('app_concept_drafts') }}" method="get">
+                    <label class="font-bold mx-4">
+                        Language :
+                        <select name="language">
+                            <option value="-1">All</option>
+                            {% for language in languages %}
+                                <option value="{{ language.id }}">{{ language.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                    <label class="font-bold mx-4">
+                        Category :
+                        <select name="category">
+                            <option value="-1">All</option>
+                            {% for category in categories %}
+                                <option value="{{ category.id }}">{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                    <button type="submit" class="border border-indigo-900 rounded-lg  text-center
+                                    text-indigo-900 hover:text-white hover:bg-indigo-900 bg-white text-base font-semibold
+                                     p-2 mx-4">
+                        Search
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+    {% include('concept/drafts/list_drafts_block.html.twig') %}
+{% endblock %}

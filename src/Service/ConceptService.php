@@ -93,4 +93,23 @@ class ConceptService
         $entityManager->flush();
     }
 
+    public function isConceptNotInCategory(Concept $concept, int $categoryId) {
+        return $concept->getCategory()->getId() <> $categoryId and $categoryId != -1;
+    }
+
+    public function isConceptNotTranslated(Concept $concept, int $languageId) {
+        $firstComponent = $concept->getComponents()[0];
+        if($firstComponent == null) {
+            return $concept->getDefaultLanguage()->getId() <> $languageId and $languageId != -1;
+        }
+        $languagesOfConcept = array_map( fn(ComponentName $componentName): int => $componentName->getLanguage()->getId() ,
+            $firstComponent->getComponentNames()->toArray());
+        return ($concept->getDefaultLanguage()->getId() <> $languageId
+            and !in_array($languageId, $languagesOfConcept) and $languageId != -1 );
+    }
+
+    public function isUserAuthorOfConcept(Concept $concept, User $user) {
+        return $concept->getAuthor()->getId() ==$user->getId();
+    }
+
 }

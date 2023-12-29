@@ -22,17 +22,15 @@ class ConceptShowController extends AbstractController
     public function listConcepts(ConceptRepository $conceptRepository,
         LanguageRepository $languageRepository,
         CategoryRepository $categoryRepository,
+        ConceptService $conceptService,
         Request $request) : Response
     {
-        $categoryId = $request->query->get('category');
-        $languageId = $request->query->get('language');
+        $categoryId = ($request->query->get('category') == null ? -1 : $request->query->get('category'));
+        $languageId = ($request->query->get('language') == null ? -1 : $request->query->get('language'));
         $concepts = $conceptRepository->findBy(['isValidated' => true]);
         for ($i = sizeof($concepts) - 1; $i >= 0 ; $i--) {
-            $languagesOfConcept = array_map( fn(ComponentName $componentName): int => $componentName->getLanguage()->getId() ,
-                $concepts[$i]->getComponents()[0]->getComponentNames()->toArray());
-            if (($concepts[$i]->getCategory()->getId() <> $categoryId and $categoryId != -1)
-                or ($concepts[$i]->getDefaultLanguage()->getId() <> $languageId
-                and !in_array($languageId, $languagesOfConcept) and $languageId != -1 )) {
+            if ($conceptService->isConceptNotInCategory($concepts[$i], $categoryId)
+                or $conceptService->isConceptNotTranslated($concepts[$i], $languageId)) {
                 array_splice($concepts, $i, 1);
             }
         }
