@@ -6,7 +6,7 @@ su -c 'apt update'\
 '&& apt install -y git zip unzip curl apt-transport-https ca-certificates php-intl php-fpm'\
 '&& a2enmod proxy_fcgi setenvif'\
 '&& a2enconf php8.2-fpm'\
-'&& mv terminologio.com.conf /etc/apache2/sites_available'\
+'&& mv terminologio.com.conf /etc/apache2/sites-available'\
 '&& a2ensite terminologio.com'\
 '&& systemctl reload apache2'\
 '&& curl -1sLf "https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh" | bash'\
@@ -57,20 +57,11 @@ rm -f composer.lock
 symfony console importmap:install
 symfony console tailwind:init
 
-#Lancement du serveur
-symfony server:start
+#Installation du framework CSS Tailwind
+symfony console tailwind:build
 
-#Installation du certificat TLS
-echo "Mot de passe root nécessaire pour installer le certificat TLS"
-su -c 'symfony server:ca:install'
-
-if [ $? -ne 0 ]
-then
-  exit 1
-fi
-
-#Fermeture du serveur
-symfony server:stop
+#Création des tables de la BDD
+symfony console doctrine:migrations:migrate --no-interaction
 
 #Mise en production
 php bin/console asset-map:compile
@@ -78,13 +69,3 @@ php bin/console asset-map:compile
 export APP_ENV=prod
 export APP_DEBUG=0
 php bin/console cache:clear
-
-
-#Création des tables de la BDD
-symfony console doctrine:migrations:migrate --no-interaction
-
-#Installation du framework CSS Tailwind
-symfony console tailwind:build
-
-#Lancement du serveur
-symfony server:start
