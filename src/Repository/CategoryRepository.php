@@ -36,20 +36,6 @@ class CategoryRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-    /**
-     * @return Category[] Returns an array of ComponentName objects
-     *                    by language value
-     */
-    public function findById($value): array
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.id = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-
 //    public function findOneBySomeField($value): ?Category
 //    {
 //        return $this->createQueryBuilder('c')

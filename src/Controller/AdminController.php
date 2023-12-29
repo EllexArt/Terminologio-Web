@@ -33,14 +33,17 @@ class AdminController extends AbstractController
             'users' => $userRepository->findByRoleUser(),
             'concepts' => $conceptRepository->findAll(),
             'languages' => $languageRepository->findAll(),
-            'categories' => $categoryRepository->findAll(),
-            'success' => false,
+            'categories' => $categoryRepository->findAll()
         ]);
     }
 
     #[Route('/delete/user/{id}', name: 'app_delete_user')]
     public function deleteUser(EntityManagerInterface $entityManager, User $user) : Response
     {
+        foreach ($user->getConcepts() as $concept) {
+            $concept->setAuthor(null);
+            $entityManager->persist($concept);
+        }
         $entityManager->remove($user);
         $entityManager->flush();
         return $this->redirectToRoute('app_admin');
@@ -56,11 +59,7 @@ class AdminController extends AbstractController
 
     #[Route('/add/user', name:'app_add_user')]
     public function addUser(Request $request, UserPasswordHasherInterface $userPasswordHasher,
-                            EntityManagerInterface $entityManager,
-                            UserRepository $userRepository,
-                            ConceptRepository $conceptRepository,
-                            LanguageRepository $languageRepository,
-                            CategoryRepository$categoryRepository) : Response
+                            EntityManagerInterface $entityManager) : Response
     {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -77,14 +76,8 @@ class AdminController extends AbstractController
             $user->setRoles($user->getRoles());
             $entityManager->persist($user);
             $entityManager->flush();
-            return $this->render('admin/admin_management.html.twig', [
-                'users' => $userRepository->findByRoleUser(),
-                'concepts' => $conceptRepository->findAll(),
-                'languages' => $languageRepository->findAll(),
-                'categories' => $categoryRepository->findAll(),
-                'success' => true,
-                'object' => 'user',
-            ]);
+            $this->addFlash('notice', 'A new user has been created');
+            return $this->redirectToRoute('app_admin');
         }
         return $this->render('admin/admin_add_user.html.twig',[
             'registrationForm' => $form->createView(),
@@ -109,16 +102,11 @@ class AdminController extends AbstractController
     }
 
     #[Route('/add/language', name:'app_add_language')]
-    public function addLanguage(Request $request, EntityManagerInterface $entityManager,
-                                UserRepository $userRepository,
-                                ConceptRepository $conceptRepository,
-                                LanguageRepository $languageRepository,
-                                CategoryRepository$categoryRepository) : Response
+    public function addLanguage(Request $request, EntityManagerInterface $entityManager) : Response
     {
         $language = new Language();
         $form = $this->createForm(CreationLanguageType::class, $language);
-        $result = $this->formProcessing($form, $request, $entityManager, $userRepository, $conceptRepository,
-            $languageRepository, $categoryRepository, $language, 'language');
+        $result = $this->formProcessing($form, $request, $entityManager, $language, 'language');
         return $result == null ?$this->render('admin/admin_add_language_or_category.html.twig',[
             'object' => 'language',
             'creationForm' => $form->createView(),
@@ -129,8 +117,8 @@ class AdminController extends AbstractController
     public function deleteCategory(EntityManagerInterface $entityManager, CategoryRepository $categoryRepository,
                                    ConceptRepository $conceptRepository, Category $category) : Response
     {
-        $categoryOther = $categoryRepository->findById(0);
-        if($categoryOther != $category) {
+        $categoryOther = $categoryRepository->findOneBy(['id' => 1]);
+        if($categoryOther->getId() !== $category->getId()) {
             $conceptsCategory = $conceptRepository->findByCategory($category);
             foreach($conceptsCategory as $concept) {
                 $concept->setCategory($categoryOther);
@@ -150,29 +138,21 @@ class AdminController extends AbstractController
     {
         $category = new Category();
         $form = $this->createForm(CreationCategoryType::class, $category);
-        $result = $this->formProcessing($form, $request, $entityManager, $userRepository, $conceptRepository,
-            $languageRepository, $categoryRepository, $category, 'category');
+        $result = $this->formProcessing($form, $request, $entityManager, $category, 'category');
         return $result == null ? $this->render('admin/admin_add_language_or_category.html.twig',[
             'object' => 'category',
             'creationForm' => $form->createView(),
         ]) : $result;
     }
 
-    private function formProcessing($form, $request, $entityManager, $userRepository, $conceptRepository,
-                                    $languageRepository, $categoryRepository,$value, $stringValue) {
+    private function formProcessing($form, $request, $entityManager, $value, $typeValue) {
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $value->setName($form->get('name')->getData());
             $entityManager->persist($value);
             $entityManager->flush();
-            return $this->render('admin/admin_management.html.twig', [
-                'users' => $userRepository->findByRoleUser(),
-                'concepts' => $conceptRepository->findAll(),
-                'languages' => $languageRepository->findAll(),
-                'categories' => $categoryRepository->findAll(),
-                'success' => true,
-                'object' => $stringValue,
-            ]);
+            $this->addFlash('notice', 'A new '.$typeValue. ' has been created');
+            return $this->redirectToRoute('app_admin');
         }
         return null;
     }

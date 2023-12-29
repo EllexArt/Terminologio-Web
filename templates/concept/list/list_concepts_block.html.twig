@@ -6,7 +6,7 @@
                 <img src="{{ image_directory~asset(concept.image) }}" alt="concept-image" class="p-1 rounded object-contain h-64 min-w-0"/>
                 <div class="flex flex-col align-items justify-center pl-4 max-w-full">
                     <h2 class="text-4xl font-bold pb-4 max-w-fit">Title : {{ concept.title }}</h2>
-                    <p>Created by {{ concept.author.username }}</p>
+                    <p>Created by {% if concept.author is null %}anonymous{% else %}{{ concept.author.username }}{% endif %}</p>
                 </div>
             </div>
             <div class="w-full flex flex-row">

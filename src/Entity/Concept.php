@@ -36,7 +36,6 @@ class Concept
     private ?bool $isValidated = null;
 
     #[ORM\ManyToOne(inversedBy: 'concepts')]
-    #[ORM\JoinColumn(nullable: false)]
     private ?User $author = null;
 
     public function __construct()
