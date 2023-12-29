@@ -3,7 +3,7 @@
 #Installation des dépendances de base
 echo "Mot de passe root nécessaire pour installer les dépendances"
 su -c 'apt update'\
-'&& apt install -y git zip unzip curl'\
+'&& apt install -y git zip unzip curl apt-transport-https'\
 '&& curl -1sLf "https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh" | bash'\
 '&& apt install -y symfony-cli'\
 '&& chmod u+x composer.phar'\
@@ -70,7 +70,7 @@ composer update
 symfony console importmap:install
 
 #Création des tables de la BDD
-symfony console doctrine:migrations:migrate
+symfony console doctrine:migrations:migrate --no-interaction
 
 #Installation du framework CSS Tailwind
 symfony console tailwind:build
