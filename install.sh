@@ -6,6 +6,8 @@ su -c 'apt update'\
 '&& apt install -y git zip unzip curl apt-transport-https ca-certificates php-intl php-fpm'\
 '&& a2enmod proxy_fcgi setenvif'\
 '&& a2enconf php8.2-fpm'\
+'&& mv terminologio.com.conf /etc/apache2/sites_available'\
+'&& a2ensite terminologio.com'\
 '&& systemctl reload apache2'\
 '&& curl -1sLf "https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh" | bash'\
 '&& apt install -y symfony-cli'\
