@@ -3,7 +3,7 @@
 #Installation des dépendances de base
 echo "Mot de passe root nécessaire pour installer les dépendances"
 su -c 'apt update'\
-'&& apt install -y git zip unzip curl apt-transport-https ca-certificates'\
+'&& apt install -y git zip unzip curl apt-transport-https ca-certificates php-intl'\
 '&& curl -1sLf "https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh" | bash'\
 '&& apt install -y symfony-cli'\
 '&& chmod u+x composer.phar'
@@ -19,8 +19,7 @@ rm -f composer.lock
 symfony console tailwind:init
 
 echo "Mot de passe root nécessaire pour installer le certificat TLS"
-su -c "export PATH='/usr/sbin:$PATH'"\
-'&& symfony server:ca:install'
+su -c 'symfony server:ca:install'
 
 if [ $? -ne 0 ]
 then
@@ -62,9 +61,6 @@ echo "BDD configurée"
 
 #Fermeture du serveur (par sécurité)
 symfony server:stop
-
-#Vérification des mises à jours
-./composer.phar update
 
 #Mise en production
 ./composer.phar dump-env prod
