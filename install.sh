@@ -65,4 +65,4 @@ symfony console doctrine:migrations:migrate
 symfony console tailwind:build
 
 #Lancement du serveur
-symfony console server:start
+symfony server:start
