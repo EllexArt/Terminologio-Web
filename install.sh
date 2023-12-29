@@ -34,7 +34,17 @@ read -p 'Version de votre BDD: ' version
 
 if [[ $software == "mariadb" ]]
 then
-sed "s/DATABASE_URL=.*/DATABASE_URL=\"mysql://$user:$password@$address:$port\/$schema?serverVersion=$version-MariaDB&charset=utf8mb4\"/" .env
+sed -i "s/DATABASE_URL=.*/DATABASE_URL=\"mysql:\/\/$user:$password@$address:$port\/$schema?serverVersion=$version-MariaDB\&charset=utf8mb4\"/" .env
+fi
+
+if [[ $software == "mysql" ]]
+then
+sed -i "s/DATABASE_URL=.*/DATABASE_URL=\"mysql:\/\/$user:$password@$address:$port\/$schema?serverVersion=$version\&charset=utf8mb4\"/" .env
+fi
+
+if [[ $software == "postgresql" ]]
+then
+sed -i "s/DATABASE_URL=.*/DATABASE_URL=\"postgresql:\/\/$user:$password@$address:$port\/$schema?serverVersion=$version\&charset=utf8\"/" .env
 fi
 
 echo "BDD configurée"
