@@ -14,6 +14,8 @@ su -c "export PATH=\"/usr/sbin:$PATH\""\
 '&& mv apache-selfsigned.key /etc/ssl/private'\
 '&& a2ensite terminologio.com'\
 '&& systemctl reload apache2'\
+'&& chown -R www-data:www-data /var/www/terminologio/public/uploads'\
+'&& chmod -R u+rw /var/www/terminologio/public/uploads'\
 '&& curl -1sLf "https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh" | bash'\
 '&& apt install -y symfony-cli'\
 '&& chmod u+x composer.phar'
