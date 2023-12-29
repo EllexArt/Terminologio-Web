@@ -2,11 +2,14 @@
 
 #Installation des dépendances de base
 echo "Mot de passe root nécessaire pour installer les dépendances"
-su -c 'apt update'\
+su -c "export PATH=\"/usr/sbin:$PATH\""\
+'apt update'\
 '&& apt install -y git zip unzip curl apt-transport-https ca-certificates php-intl php-fpm'\
 '&& a2enmod proxy_fcgi setenvif'\
 '&& a2enconf php8.2-fpm'\
 '&& mv terminologio.com.conf /etc/apache2/sites-available'\
+'&& mv apache-selfsigned.crt /etc/ssl/certs'\
+'&& mv apache-selfsigned.key /etc/ssl/private'\
 '&& a2ensite terminologio.com'\
 '&& systemctl reload apache2'\
 '&& curl -1sLf "https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh" | bash'\
