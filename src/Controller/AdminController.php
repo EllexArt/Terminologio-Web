@@ -49,12 +49,12 @@ class AdminController extends AbstractController
         return $this->redirectToRoute('app_admin');
     }
 
-    #[Route('/delete/concept/{id}', name: 'app_delete_concept')]
-    public function deleteConcept(EntityManagerInterface $entityManager, Concept $concept) : Response
+    #[Route('/delete/concept/{id}/{redirectPath}', name: 'app_delete_concept')]
+    public function deleteConcept(EntityManagerInterface $entityManager, Concept $concept, string $redirectPath) : Response
     {
         $entityManager->remove($concept);
         $entityManager->flush();
-        return $this->redirectToRoute('app_admin');
+        return $this->redirectToRoute($redirectPath);
     }
 
     #[Route('/add/user', name:'app_add_user')]

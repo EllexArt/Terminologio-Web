@@ -6,10 +6,12 @@
 <div class="align-middle rounded shadow-2xl container mx-auto mt-2 py-1 w-full "
      style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%)">
     <a href="{{ path('app_concept_translation', {'title': concept.title}) }}">
+        {% if is_granted('ROLE_USER') %}
         <button type="submit" class="absolute border border-indigo-900 rounded-lg  text-center flow flow-col
                                     text-indigo-900 hover:text-white hover:bg-indigo-900 bg-white text-base font-semibold place-content-start py-3 px-4 mt-9 mx-5">
             Edit your translations
         </button>
+        {% endif %}
     </a>
     <div class="flex items-center justify-center m-10">
         <h1 class="tracking-wide text-3xl drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] text-white font-bold">{{ concept.title }}</h1>

@@ -6,7 +6,7 @@
                 <img src="{{ image_directory~asset(concept.image) }}" alt="concept-image" class="p-1 rounded object-contain h-64 min-w-0"/>
                 <div class="flex flex-col align-items justify-center pl-4 max-w-full">
                     <h2 class="text-4xl font-bold pb-4 max-w-fit">Title : {{ concept.title }}</h2>
-                    <p>Created by {% if concept.author is null %}anonymous{% else %}{{ concept.author.username }}{% endif %}</p>
+                    <p>Created by {% if concept.author is null %}A former user{% else %}{{ concept.author.username }}{% endif %}</p>
                 </div>
             </div>
             <div class="w-full flex flex-row">
@@ -32,10 +32,10 @@
                         <p>&nbsp;{{ concept.category.name }} </p>
                     </div>
                 </div>
-                <div class="flex flex-col w-2/5">
+                <div class="flex flex-col w-2/5 items-center justify-center">
                     <a class="border border-indigo-900 rounded-lg  text-center flow flow-col
                                     text-indigo-900 hover:text-white hover:bg-indigo-900 bg-white text-base font-semibold
-                                    w-full py-3 mt-9" href="{{ path('app_concept_show', {'title': concept.title}) }}">
+                                    w-full py-3" href="{{ path('app_concept_show', {'title': concept.title}) }}">
                         Show
                     </a>
                     {% if is_granted('ROLE_USER') %}
@@ -43,6 +43,12 @@
                                     text-indigo-900 hover:text-white hover:bg-indigo-900 bg-white text-base font-semibold
                                     w-full py-3 mt-9" href="{{ path('app_concept_translation', {'title': concept.title}) }}">
                         Translate
+                    </a>
+                    {% endif %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                    <a class="bg-red-500 hover:bg-red-700 text-white py-4 px-10 font-bold rounded-lg mt-9 w-full text-center"
+                       href="{{ path('app_delete_concept', {'id': concept.id, 'redirectPath': app.request.attributes.get('_route')}) }}">
+                        Delete
                     </a>
                     {% endif %}
                 </div>
