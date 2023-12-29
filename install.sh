@@ -1,3 +1,4 @@
+#!/bin/bash
 #Installation des dépendances de base
 apt update
 apt install -y git zip unzip curl
