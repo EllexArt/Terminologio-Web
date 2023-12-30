@@ -7,6 +7,7 @@ use App\Entity\ComponentName;
 use App\Entity\Concept;
 use App\Repository\ComponentRepository;
 use App\Service\ConceptService;
+use App\Service\UploadImageService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -53,6 +54,7 @@ class ComponentController extends AbstractController
     #[Route('/concept/{title}/component/delete/{id}', name: 'app_concept_component_delete', methods: 'POST')]
     public function deleteComponentOfConcept(
         EntityManagerInterface $entityManager,
+        UploadImageService $uploadImageService,
         #[MapEntity(mapping: ['title' => 'title'])] Concept $concept,
         #[MapEntity(id: 'id')] Component $componentToDelete = null): Response
     {
@@ -84,6 +86,7 @@ class ComponentController extends AbstractController
                 $entityManager->remove($concept);
                 $this->addFlash('info', 'No more components, concept deleted');
                 $entityManager->flush();
+                $uploadImageService->deleteImage($this->getParameter('image_directory'), $concept->getImage());
                 return new Response('Concept deleted', 204);
             }
         }
