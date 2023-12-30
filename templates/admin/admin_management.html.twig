@@ -101,16 +101,29 @@
                         <ul>
                             {% for concept in concepts %}
                                 <li class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 font-bold" style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%)">
-                                    <a class="flow float-right " href="{{ path('app_delete_concept', {id:concept.id, 'redirectPath': app.request.attributes.get('_route')}) }}">
-                                        <button class="bg-white bg-opacity-50 hover:bg-blue-500 text-blue-800 font-semibold
+                                    <div class="flex flex-row justify-center">
+                                        <div class="w-2/5 mr-8">
+                                            Title : {{ concept.title }}<br>
+                                            Picture :
+                                            <img src="{{ asset('uploads/images/' ~concept.image) }}" alt="concept-image" class="w-full aspect-auto"/>
+                                        </div>
+                                        <div class="relative flow float-right w-2/5">
+                                            <a class="w-full" href="{{ path('app_concept_show', {title:concept.title}) }}">
+                                                <button class="bg-white bg-opacity-50 hover:bg-blue-500 text-blue-800 font-semibold
+                                                           hover:text-white py-2 px-4 border border-blue-700 hover:border-transparent
+                                                           rounded w-full">
+                                                    Show Concept
+                                                </button>
+                                            </a>
+                                            <a class="absolute bottom-0 inset-x-0 w-full" href="{{ path('app_delete_concept', {id:concept.id, 'redirectPath': app.request.attributes.get('_route')}) }}">
+                                                <button class="bg-white bg-opacity-50 hover:bg-blue-500 text-blue-800 font-semibold
                                                        hover:text-white py-2 px-4 border border-blue-700 hover:border-transparent
-                                                       rounded">
-                                            Delete concept
-                                        </button>
-                                    </a>
-                                    Title : {{ concept.title }}<br>
-                                    Picture :
-                                    <img src="{{ asset('uploads/images/' ~concept.image) }}" alt="concept-image" class="w-full aspect-square"/>
+                                                       rounded w-full">
+                                                    Delete concept
+                                                </button>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </li>
                             {% endfor %}
                         </ul>
