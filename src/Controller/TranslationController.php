@@ -29,25 +29,12 @@ class TranslationController extends AbstractController
         ]);
     }
 
-    #[Route('/concept/{title}/translate/get/{id}', name: 'app_concept_translation_get_language')]
-    public function getTranslationFromConcept(ConceptService $conceptService,
-        #[MapEntity(mapping: ['title' => 'title'])] Concept $concept,
-        #[MapEntity(id: 'id')] Language $language) : Response
-    {
-        $componentsTrad = $conceptService->calculateComponentsWithTrad($concept, $language);
-        return $this->render('concept/translation/components_translate_block.html.twig', [
-            'concept' => $concept,
-            'components' => $componentsTrad,
-        ]);
-    }
-
-
     #[Route('/concept/{title}/translate/save/{id}', name: 'app_concept_translation_save')]
     public function saveTranslation(ConceptService $conceptService, ComponentNameRepository $componentNameRepository,
-        EntityManagerInterface $entityManager,
-        #[MapEntity(mapping: ['title' => 'title'])] Concept $concept,
-        #[MapEntity(id: 'id')] Language $language,
-        Request $request) : Response
+                                    EntityManagerInterface $entityManager,
+                                    #[MapEntity(mapping: ['title' => 'title'])] Concept $concept,
+                                    #[MapEntity(id: 'id')] Language $language,
+                                    Request $request) : Response
     {
         $conceptService->saveComponentNames($concept, $request, $componentNameRepository, $language, $entityManager);
         return $this->redirectToRoute('app_concept_show', [
@@ -55,14 +42,29 @@ class TranslationController extends AbstractController
         ]);
     }
 
-    #[Route('/concept/{title}/translate/{id}/components/get', name: 'app_concept_show_get_components', methods: 'POST')]
-    public function getTranslation(ConceptService                                      $conceptService,
+    #[Route('/concept/{title}/translate/get/editable/{id}', name: 'app_concept_translation_get_language', methods: 'POST')]
+    public function getTranslationEditableFromConcept(ConceptService $conceptService,
+        #[MapEntity(mapping: ['title' => 'title'])] Concept $concept,
+        #[MapEntity(id: 'id')] Language $language) : Response
+    {
+        $componentsTrad = $conceptService->calculateComponentsWithTrad($concept, $language);
+        return $this->render('concept/components/components_legend_block.html.twig', [
+            'concept' => $concept,
+            'components' => $componentsTrad,
+            'translation' => true
+        ]);
+    }
+
+    #[Route('/concept/{title}/translate/get/notEditable/{id}', name: 'app_concept_show_get_components', methods: 'POST')]
+    public function getTranslationNotEditableFromConcept(ConceptService                                      $conceptService,
                                    #[MapEntity(mapping: ['title' => 'title'])] Concept $concept,
                                    #[MapEntity(id: 'id')] Language                     $language) : Response
     {
         $componentsTrad = $conceptService->calculateComponentsWithTrad($concept, $language);
-        return $this->render('concept/show/components_show_block.html.twig', [
+        return $this->render('concept/components/components_legend_block.html.twig', [
+            'concept' => $concept,
             'components' => $componentsTrad,
+            'readonly' => true
         ]);
     }
 }

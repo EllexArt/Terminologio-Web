@@ -7,7 +7,8 @@
         }),
         urlTranslation: path('app_concept_translation', {
             title:concept.title
-        })
+        }),
+        urlList: path('app_concept_list')
     })
     }}>
     {% block head %}
@@ -23,4 +24,55 @@
         {{ parent() }}
     {% endblock %}
     </html>
+{% endblock %}
+
+{% block bodyContent %}
+    <div class="align-middle rounded shadow-2xl m-8"
+         style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%)">
+
+        {% block upButton %}
+        {% endblock %}
+
+        <div class="flex items-center justify-center m-10">
+            <h1 class="mt-4 tracking-wide text-3xl drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] text-white font-bold">{{ title }}</h1>
+        </div>
+
+        <{% if form is defined %}form{% else %}div{% endif %}
+                {% if form is defined %}id="form" method="post" action="{{ path(formPath, formParameter) }}" {% endif %}
+                class="flex w-full px-8 pt-6 pb-8 mb-4">
+            <div class="flex flex-col size-2/5">
+                <{% if button is defined %}button{% else %}div{% endif %}
+                        {% if button is defined %} type="button" {{ stimulus_action('component', buttonFunction, 'click') }} {% endif %}
+                        class="relative size-full">
+                    {% include('concept/show_concept_with_component_block.html.twig') %}
+                </{% if button is defined %}button{% else %}div{% endif %}>
+                {% if languageChooser is defined %}
+                <label class="flex flex-col items-center p-4">
+                    Choose the language :
+                    <select id="languageChooser" {{ stimulus_action('component', languageChooserFunction, 'change') }}>
+                        {% for language in languages %}
+                            <option {% if language == concept.defaultLanguage %}selected="selected" {% endif %}value="{{ language.id }}">{{ language.name }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                {% endif %}
+                {%  if form is defined %}
+                    <div class="flex flex-col items-center p-4">
+                        <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                            Validate
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="mx-5 pb-5 bg-[#8b5cf6] bg-opacity-50 shadow-lg flex flex-col align-right w-3/5 rounded-lg">
+                <h2 class="tracking-wide text-2xl drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] text-white font-bold text-center">Components : </h2>
+                <br>
+                <div {{ stimulus_target('component', 'componentsNames') }} class="flex item-center justify-center flex-col">
+                    {% include 'concept/components/components_legend_block.html.twig' with legendParameter %}
+                </div>
+            </div>
+        </{% if form is defined %}form{% else %}div{% endif %}>
+    </div>
+
+
 {% endblock %}

@@ -1,0 +1,21 @@
+{% for component in components %}
+<div id="componentEdit{{ component.number }}" class="{% if (translation is not defined and readonly is not defined) or is_granted('ROLE_ADMIN') %}grid grid-cols-2 w-full{% else %}w-4/5{% endif %} py-3 place-items-center">
+
+    <label class="ml-2 grid grid-cols-2">
+        <span class="font-bold text-center overflow-hidden">Component {{ component.number }} :</span>
+        <textarea name='componentText{{ component.number }}'
+                  class='rounded bg-[#f3e8ff] componentText py-1 px-4'
+                  type="text"
+                  {% if readonly is defined %}readonly{% endif %}
+        >{% if component.name == "" %}Component{{ component.number }}{% else %}{{ component.name }}{% endif %}</textarea>
+    </label>
+
+    {% if (translation is not defined and readonly is not defined) or is_granted('ROLE_ADMIN') %}
+        <button type="button" class="bg-red-500 hover:bg-red-700 shadow-lg text-white text-center font-bold py-2 px-5 rounded-full float-right"
+                {{ stimulus_action('component', 'deleteComponent', 'click',
+        {id:component.id, number:component.number}) }}>Delete</button>
+    {% endif %}
+
+</div>
+{% endfor %}
+

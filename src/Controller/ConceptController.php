@@ -20,7 +20,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 class ConceptController extends AbstractController
 {
     #[Route('/concept/create', name: 'app_concept_upload')]
-    public function upload(Request $request, EntityManagerInterface $entityManager,
+    public function create(Request $request, EntityManagerInterface $entityManager,
                            ConceptService $conceptService, SluggerInterface $slugger,
                            ConceptRepository $conceptRepository, UploadImageService $uploadImageService): Response
     {
@@ -36,6 +36,13 @@ class ConceptController extends AbstractController
                 ]);
             }
 
+            if($concept->getTitle() == "create" || $concept->getTitle() == "list" || $concept->getTitle() == "drafts") {
+                $this->addFlash('warning', 'Invalid title, please choose another');
+                return $this->render('concept/create_concept.html.twig', [
+                    'uploadForm' => $form->createView(),
+                ]);
+            }
+
             $image = $form->get('image')->getData();
             $user = $this->getUser();
 
@@ -46,8 +53,9 @@ class ConceptController extends AbstractController
                     'uploadForm' => $form->createView(),
                 ]);
             }
-            $conceptService->uploadConcept( $user , $concept, $entityManager, $newFilename);
+            $conceptService->uploadConcept($user, $concept, $entityManager, $newFilename);
 
+            $this->addFlash('info', 'Concept created, edit your draft');
             return $this->redirectToRoute('app_concept_component', [
                 'title' => $concept->getTitle()]);
         }
@@ -57,12 +65,10 @@ class ConceptController extends AbstractController
     }
 
     #[Route('/concept/{title}/component', name: 'app_concept_component')]
-    public function addComponentsToConcept(ConceptService $conceptService, Concept $concept): Response
+    public function editDraft(ConceptService $conceptService, Concept $concept): Response
     {
-        if($concept->isIsValidated()) {
-            return $this->redirectToRoute('app_concept_show', [
-                'title' => $concept->getTitle(),
-            ]);
+        if(($response = $this->isValidDraftForUser($concept)) != null) {
+            return $response;
         }
         return $this->render('concept/add_component_to_concept.html.twig', [
             'components' => $conceptService->calculateComponentsWithDefaultTrad($concept),
@@ -73,6 +79,9 @@ class ConceptController extends AbstractController
     #[Route('/concept/{title}/validate', name: 'app_concept_validate', methods: 'POST')]
     public function validateConcept(ConceptService $conceptService, ComponentNameRepository $componentNameRepository, EntityManagerInterface $entityManager, Concept $concept, Request $request): Response
     {
+        if(($response = $this->isValidDraftForUser($concept)) != null) {
+            return $response;
+        }
         if(sizeof($concept->getComponents()) == 0) {
             $this->addFlash('warning', 'You need to specify at least one component');
             return $this->redirectToRoute('app_concept_component', [
@@ -86,6 +95,22 @@ class ConceptController extends AbstractController
         return $this->redirectToRoute('app_concept_show', [
             'title' => $concept->getTitle(),
         ]);
+    }
+
+    private function isValidDraftForUser(Concept $concept) : ?Response {
+        $user = $this->getUser();
+        if($concept->getAuthor()->getId() != $user->getId()) {
+            $this->addFlash('warning', "Impossible to edit this draft, it's not yours");
+            return $this->redirectToRoute('app_terminologio_index');
+        }
+
+        if($concept->isIsValidated()) {
+            $this->addFlash('warning', "Concept has been validated, impossible to edit or validate");
+            return $this->redirectToRoute('app_concept_show', [
+                'title' => $concept->getTitle(),
+            ]);
+        }
+        return null;
     }
 
 

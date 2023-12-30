@@ -1,44 +1,20 @@
 {% extends 'concept/concept_base.html.twig' %}
+{% set form = true %}
+{% set formPath = 'app_concept_translation_save' %}
+{% set formParameter = {title:concept.title, id:concept.defaultLanguage.id} %}
+{% set languageChooser = true %}
+{% set languageChooserFunction = 'getLegendTranslatedEditable' %}
+{% set languages = languages %}
+{% set legendParameter = {'translation': true} %}
+{% set title = ('Edit your translations - ' ~  concept.title) %}
 
 {% block title %}Terminologio - Create a new translation !{% endblock %}
 
-{% block bodyContent %}
-    <div class="align-middle rounded shadow-2xl container mx-auto mt-2 py-1 w-full "
-         style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%)">
-        <div class="flex items-center justify-center m-10">
-            <h1 class="tracking-wide text-3xl drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] text-white font-bold">Edit your translations - {{ concept.title }}</h1>
-        </div>
-        <div class="flex flex-grow justify-center items-center">
-            <div class="flex flex-grow justify-center items-center">
-                <form id="translationForm" class="flex flex-row w-4/5  px-8 pt-6 pb-8 mb-4 align-middle"
-                      method="post"
-                      action="{{ path('app_concept_translation_save', {title:concept.title, id:concept.defaultLanguage.id}) }}">
-                    <div class="flex flex-col size-2/5">
-                        <div class="relative size-full">
-                            {% include('concept/show_concept_with_component_block.html.twig') %}
-                        </div>
-                        <label class="font-bold mt-2">
-                            Choose the language :
-                            <select id="languageChooser" {{ stimulus_action('component', 'getTranslation', 'change') }}>
-                                {% for language in languages%}
-                                    <option value="{{ language.id }}">{{ language.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </label>
-                        <div class="flex flex-col items-center p-4">
-                            <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                                Validate
-                            </button>
-                        </div>
-                    </div>
-                    <div class="mx-5 pb-5 bg-[#8b5cf6] bg-opacity-50 shadow-lg flex flex-col align-right w-3/5 rounded-lg">
-                        <h2 class="tracking-wide text-2xl drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] text-white font-bold text-center">Components : </h2>
-                        <br>
-                        <div {{ stimulus_target('component', 'componentsNames') }}>
-                            {{ include('concept/translation/components_translate_block.html.twig') }}
-                        </div>
-                    </div>
-            </form>
-        </div>
-    </div>
+{% block upButton %}
+    {% if is_granted('ROLE_USER') %}
+        <a href="{{ path('app_concept_show', {'title': concept.title}) }}" class="absolute border border-indigo-900 rounded-lg  text-center flow flow-col
+                                    text-indigo-900 hover:text-white hover:bg-indigo-900 bg-white text-base font-semibold place-content-start py-3 px-4 mt-9 mx-5">
+            Return
+        </a>
+    {% endif %}
 {% endblock %}

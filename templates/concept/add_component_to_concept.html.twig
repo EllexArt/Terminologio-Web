@@ -1,36 +1,10 @@
 {% extends 'concept/concept_base.html.twig' %}
+{% set form = true %}
+{% set formPath = 'app_concept_validate' %}
+{% set formParameter = {title:concept.title} %}
+{% set button = true %}
+{% set buttonFunction = 'addComponent' %}
+{% set legendParameter = {} %}
+{% set title = 'Add your components - ' ~ concept.title %}
 
 {% block title %}Terminologio - Add components' concept !{% endblock %}
-
-{% block bodyContent %}
-
-        <div class="align-middle rounded shadow-2xl container mx-auto mt-2 py-1 w-full "
-             style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%)">
-            <div class="flex items-center justify-center m-10">
-                <h1 class="tracking-wide text-3xl drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] text-white font-bold">Create a new concept</h1>
-            </div>
-            <div class="flex flex-grow justify-center items-center">
-                <form class="flex flex-row w-4/5  px-8 pt-6 pb-8 mb-4 align-middle" method="post" action="{{ path('app_concept_validate', {title:concept.title}) }}">
-                    <div class="flex flex-col size-2/5">
-                        <button type="button" class="relative size-full"{{ stimulus_action('component', 'addComponent', 'click') }}>
-                            {% include('concept/show_concept_with_component_block.html.twig') %}
-                        </button>
-                        <div class="flex flex-col items-center p-4">
-                            <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                                Publish
-                            </button>
-                        </div>
-                    </div>
-                    <div class="mx-5 pb-5 bg-[#8b5cf6] bg-opacity-50 shadow-lg flex flex-col align-right w-3/5 rounded-lg">
-                        <h2 class="tracking-wide text-2xl drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] text-white font-bold text-center">Components : </h2>
-                        <br>
-                        <div {{ stimulus_target('component', 'componentsNames') }}>
-                            {{ include('concept/components/components_add_block.html.twig') }}
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-
-{% endblock %}

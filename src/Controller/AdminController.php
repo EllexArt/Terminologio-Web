@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Category;
+use App\Entity\Component;
 use App\Entity\ComponentName;
 use App\Entity\Concept;
 use App\Entity\Language;
@@ -32,13 +33,13 @@ class AdminController extends AbstractController
     {
         return $this->render('admin/admin_management.html.twig', [
             'users' => $userRepository->findByRoleUser(),
-            'concepts' => $conceptRepository->findAll(),
+            'concepts' => $conceptRepository->findBy(['isValidated' => true]),
             'languages' => $languageRepository->findAll(),
             'categories' => $categoryRepository->findAll()
         ]);
     }
 
-    #[Route('/delete/user/{id}', name: 'app_delete_user')]
+    #[Route('/admin/delete/user/{id}', name: 'app_delete_user')]
     public function deleteUser(EntityManagerInterface $entityManager, User $user) : Response
     {
         foreach ($user->getConcepts() as $concept) {
@@ -50,10 +51,14 @@ class AdminController extends AbstractController
         return $this->redirectToRoute('app_admin');
     }
 
-    #[Route('/delete/concept/{id}/{redirectPath}', name: 'app_delete_concept')]
+    #[Route('/admin/delete/concept/{id}/{redirectPath}', name: 'app_delete_concept')]
     public function deleteConcept(EntityManagerInterface $entityManager, Concept $concept, string $redirectPath,
                                   UploadImageService $uploadImageService) : Response
     {
+        if(!$concept->isIsValidated()) {
+            $this->addFlash('warning', 'Impossible to remove a draft');
+            return $this->redirectToRoute($redirectPath);
+        }
         $filename = $concept->getImage();
         $entityManager->remove($concept);
         $entityManager->flush();
@@ -61,7 +66,7 @@ class AdminController extends AbstractController
         return $this->redirectToRoute($redirectPath);
     }
 
-    #[Route('/add/user', name:'app_add_user')]
+    #[Route('/admin/add/user', name:'app_add_user')]
     public function addUser(Request $request, UserPasswordHasherInterface $userPasswordHasher,
                             EntityManagerInterface $entityManager) : Response
     {
@@ -88,7 +93,7 @@ class AdminController extends AbstractController
         ]);
     }
 
-    #[Route('/delete/language/{id}', name: 'app_delete_language')]
+    #[Route('/admin/delete/language/{id}', name: 'app_delete_language')]
     public function deleteLanguage(EntityManagerInterface $entityManager, ComponentNameRepository $componentNameRepository,
                                    ConceptRepository      $conceptRepository, Language $language) : Response
     {
@@ -105,7 +110,7 @@ class AdminController extends AbstractController
         return $this->redirectToRoute('app_admin');
     }
 
-    #[Route('/add/language', name:'app_add_language')]
+    #[Route('/admin/add/language', name:'app_add_language')]
     public function addLanguage(Request $request, EntityManagerInterface $entityManager) : Response
     {
         $language = new Language();
@@ -117,7 +122,7 @@ class AdminController extends AbstractController
         ]) : $result;
     }
 
-    #[Route('/delete/category/{id}', name: 'app_delete_category')]
+    #[Route('/admin/delete/category/{id}', name: 'app_delete_category')]
     public function deleteCategory(EntityManagerInterface $entityManager, CategoryRepository $categoryRepository,
                                    ConceptRepository $conceptRepository, Category $category) : Response
     {
@@ -133,7 +138,7 @@ class AdminController extends AbstractController
         return $this->redirectToRoute('app_admin');
     }
 
-    #[Route('/add/category', name:'app_add_category')]
+    #[Route('/admin/add/category', name:'app_add_category')]
     public function addCategory(Request $request, EntityManagerInterface $entityManager,
                                 UserRepository $userRepository,
                                 ConceptRepository $conceptRepository,

@@ -1,48 +1,17 @@
 {% extends 'concept/concept_base.html.twig' %}
+{% set languageChooser = true %}
+{% set languageChooserFunction = 'getLegendTranslatedNotEditable' %}
+{% set languages = concept.components[0].componentNames|map(component => component.language) %}
+{% set legendParameter = {'readonly': true} %}
+{% set title = concept.title %}
 
 {% block title %}Terminologio - {{ concept.title }}{% endblock %}
 
-{% block bodyContent %}
-<div class="align-middle rounded shadow-2xl container mx-auto mt-2 py-1 w-full "
-     style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%)">
-    <a href="{{ path('app_concept_translation', {'title': concept.title}) }}">
-        {% if is_granted('ROLE_USER') %}
-        <button type="submit" class="absolute border border-indigo-900 rounded-lg  text-center flow flow-col
+{% block upButton %}
+    {% if is_granted('ROLE_USER') %}
+        <a href="{{ path('app_concept_translation', {'title': concept.title}) }}" class="absolute border border-indigo-900 rounded-lg  text-center flow flow-col
                                     text-indigo-900 hover:text-white hover:bg-indigo-900 bg-white text-base font-semibold place-content-start py-3 px-4 mt-9 mx-5">
             Edit your translations
-        </button>
-        {% endif %}
-    </a>
-    <div class="flex items-center justify-center m-10">
-        <h1 class="tracking-wide text-3xl drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] text-white font-bold">{{ concept.title }}</h1>
-    </div>
-    <div class="flex flex-grow justify-center">
-        <div class="flex flex-row w-4/5  px-8 pt-6 pb-8 mb-4 align-middleflex flex-grow justify-center items-center">
-                <div class="flex flex-row w-4/5 px-8 pt-6 pb-8 mb-4 align-middle">
-                    <div class="flex flex-col size-2/5">
-                        <div class="relative size-full">
-                            {% include('concept/show_concept_with_component_block.html.twig') %}
-                        </div>
-                        <div class="flex flex-col items-center p-4">
-                            <label>
-                                Choose the language :
-                                <select id="languageChooser" {{ stimulus_action('component', 'getShowingNames', 'change') }}>
-                                    {% for componentName in concept.components[0].componentNames %}
-                                        <option value="{{ componentName.language.id }}">{{ componentName.language.name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="mx-5 pb-5 bg-[#8b5cf6] bg-opacity-50 shadow-lg flex flex-col align-right w-3/5 shadow-lg rounded-lg">
-                        <h2 class="tracking-wide text-2xl drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] text-white font-bold text-center">Components : </h2>
-                        <br>
-                        <div {{ stimulus_target('component', 'componentsNames') }}>
-                            {{ include('concept/show/components_show_block.html.twig') }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-</div>
+        </a>
+    {% endif %}
 {% endblock %}

@@ -1,11 +1,12 @@
 {% for component in concept.components %}
     <div id="componentNumber{{ component.number }}" style="
-        width: 2vw;
-        height: 2vw;
+        width: 1.5vw;
+        height: 1.5vw;
         position: absolute;
-        top: calc({{ component.positionY }}% - 1vw);
-        left: calc({{ component.positionX }}% - 1vw);
+        top: calc({{ component.positionY }}% - 0.75vw);
+        left: calc({{ component.positionX }}% - 0.75vw);
             pointer-events: none;
+            font-size: 0.75vw;
         ">
         <svg width="100%" height="100%">
             <ellipse rx="45%" ry="45%" cx="50%" cy="50%" fill="white" stroke="black"></ellipse>

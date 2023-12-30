@@ -8,6 +8,7 @@ use App\Entity\DTO\ProfileEditor;
 use App\Form\ChangePasswordFormType;
 use App\Form\ChangeProfileFieldFormType;
 use App\Repository\UserRepository;
+use App\Service\UploadImageService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
@@ -29,17 +30,27 @@ class UserController  extends AbstractController
     }
 
     #[Route('/profile/delete', name: 'app_profile_delete')]
-    public function deleteAccount(EntityManagerInterface $entityManager): Response
+    public function deleteAccount(EntityManagerInterface $entityManager, UploadImageService $uploadImageService): Response
     {
         $user = $this->getUser();
         if(in_array('ROLE_ADMIN', $user->getRoles())) {
             $this->addFlash('warning', "Impossible to delete admin account");
             return $this->redirectToRoute('app_profile');
         }
+        foreach ($user->getConcepts() as $concept) {
+            if(!$concept->isIsValidated()) {
+                $uploadImageService->deleteImage($this->getParameter('image_directory'), $concept->getImage());
+                $entityManager->remove($concept);
+            } else {
+                $concept->setAuthor(null);
+                $entityManager->persist($concept);
+            }
+        }
         $entityManager->remove($user);
         $entityManager->flush();
         $session = new Session();
         $session->invalidate();
+        $this->addFlash('info', 'Your account has been successfully deleted');
         return $this->redirectToRoute('app_logout');
     }
 

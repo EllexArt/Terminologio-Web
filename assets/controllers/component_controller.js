@@ -2,6 +2,7 @@ import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
     static values = {
+        urlList : String,
         urlComponent: String,
         urlTranslation: String
     }
@@ -26,7 +27,7 @@ export default class extends Controller {
 
         let elements = document.getElementsByClassName('componentText');
         for (let i = 0; i < tabText.length; i++) {
-            elements[i].setAttribute('value', tabText[i]);
+            elements[i].innerHTML = tabText[i];
         }
     }
 
@@ -35,6 +36,11 @@ export default class extends Controller {
         let tabText = this.calculateValuesOfComponents();
 
         const response = await fetch(`${this.urlComponentValue}/delete/${button.params.id}`, {method: "POST"});
+        console.log(response)
+        if(response.status === 204) {
+            location.replace(this.urlListValue);
+            return;
+        }
         if(!response.ok) {
             location.reload()
         } else {
@@ -45,27 +51,27 @@ export default class extends Controller {
         let elements = document.getElementsByClassName('componentText');
         tabText.splice(button.params.number, 1);
         for (let i = 0; i < tabText.length; i++) {
-            elements[i].setAttribute('value', tabText[i]);
+            elements[i].innerHTML = tabText[i];
         }
     }
 
-    async getTranslation() {
-        let languageForm = document.getElementById('translationForm');
+    async getLegendTranslatedEditable() {
+        let languageForm = document.getElementById('form');
         let languageChooser = document.getElementById('languageChooser');
         let languageId = languageChooser.value;
 
         languageForm.setAttribute('action', `${this.urlTranslationValue}/save/${languageId}`);
 
-        const response = await fetch(`${this.urlTranslationValue}/get/${languageId}`, {method: "POST"});
+        const response = await fetch(`${this.urlTranslationValue}/get/editable/${languageId}`, {method: "POST"});
 
         this.componentsNamesTarget.innerHTML = await response.text();
     }
 
-    async getShowingNames() {
+    async getLegendTranslatedNotEditable() {
         let languageChooser = document.getElementById('languageChooser');
         let languageId = languageChooser.value;
 
-        const response = await fetch(`${this.urlTranslationValue}/${languageId}/components/get`, {method: "POST"});
+        const response = await fetch(`${this.urlTranslationValue}/get/notEditable/${languageId}`, {method: "POST"});
         this.componentsNamesTarget.innerHTML = await response.text();
     }
 
@@ -79,7 +85,7 @@ export default class extends Controller {
     }
 
     async updateComponentsToShow() {
-        const response_buttons = await fetch(`${this.urlComponentValue}/buttons`, {method: "POST"});
+        const response_buttons = await fetch(`${this.urlComponentValue}/legend`, {method: "POST"});
         const style = await fetch(`${this.urlComponentValue}/styles`, {method: "POST"});
         this.componentsNamesTarget.innerHTML = await response_buttons.text();
         this.styleTarget.innerHTML = await style.text();

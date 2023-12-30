@@ -49,7 +49,7 @@ class ConceptShowController extends AbstractController
         $componentsTrad = $conceptService->calculateComponentsWithDefaultTrad($concept);
         return $this->render('concept/show/show_concept.html.twig', [
             'concept' => $concept,
-            'components' => $componentsTrad,
+            'components' => $componentsTrad
         ]);
     }
 }
