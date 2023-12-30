@@ -15,10 +15,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[IsGranted('ROLE_USER')]
+
 class TranslationController extends AbstractController
 {
     #[Route('/concept/{title}/translate', name: 'app_concept_translation')]
+    #[IsGranted('ROLE_USER')]
     public function createOrEditTranslation(LanguageRepository $languageRepository, ConceptService $conceptService, Concept $concept) : Response
     {
         $componentsTrad = $conceptService->calculateComponentsWithDefaultTrad($concept);
@@ -30,6 +31,7 @@ class TranslationController extends AbstractController
     }
 
     #[Route('/concept/{title}/translate/save/{id}', name: 'app_concept_translation_save')]
+    #[IsGranted('ROLE_USER')]
     public function saveTranslation(ConceptService $conceptService, ComponentNameRepository $componentNameRepository,
                                     EntityManagerInterface $entityManager,
                                     #[MapEntity(mapping: ['title' => 'title'])] Concept $concept,
@@ -43,6 +45,7 @@ class TranslationController extends AbstractController
     }
 
     #[Route('/concept/{title}/translate/get/editable/{id}', name: 'app_concept_translation_get_language', methods: 'POST')]
+    #[IsGranted('ROLE_USER')]
     public function getTranslationEditableFromConcept(ConceptService $conceptService,
         #[MapEntity(mapping: ['title' => 'title'])] Concept $concept,
         #[MapEntity(id: 'id')] Language $language) : Response
