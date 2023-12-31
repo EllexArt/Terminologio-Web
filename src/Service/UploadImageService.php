@@ -10,6 +10,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 class UploadImageService
 {
 
+    //COMMANDS
     public function uploadImage(SluggerInterface $slugger, mixed $image, string $directory) : ?string
     {
         $originalFilename = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);

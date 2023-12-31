@@ -2,16 +2,13 @@
 
 namespace App\Controller;
 
-use App\Entity\ComponentName;
 use App\Entity\Concept;
-use App\Entity\Language;
 use App\Repository\CategoryRepository;
 use App\Repository\ConceptRepository;
 use App\Repository\LanguageRepository;
 use App\Service\ConceptService;
 use App\Service\UploadImageService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,7 +30,7 @@ class WorkspaceController extends AbstractController
         $languageId = ($request->query->get('language') == null ? -1 : $request->query->get('language'));
         $user = $this->getUser();
         $concepts = $conceptRepository->findBy(['isValidated' => false]);
-        $concepts = $conceptService->getConceptsToShow($concepts, $categoryId, $languageId, $user->getId());
+        $concepts = $conceptService->getConceptsToShow($concepts, $categoryId, $user->getId());
 
         return $this->render('concept/drafts/list_drafts.html.twig',
             [

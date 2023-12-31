@@ -38,7 +38,7 @@ class TranslationController extends AbstractController
                                     #[MapEntity(id: 'id')] Language $language,
                                     Request $request) : Response
     {
-        $conceptService->saveComponentNames($concept, $request, $componentNameRepository, $language, $entityManager);
+        $conceptService->saveComponentNames($concept, $request, $componentNameRepository, $language);
         return $this->redirectToRoute('app_concept_show', [
             'title' => $concept->getTitle(),
         ]);

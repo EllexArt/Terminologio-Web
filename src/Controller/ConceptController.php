@@ -53,7 +53,7 @@ class ConceptController extends AbstractController
                     'uploadForm' => $form->createView(),
                 ]);
             }
-            $conceptService->uploadConcept($user, $concept, $entityManager, $newFilename);
+            $conceptService->uploadConcept($user, $concept, $newFilename);
 
             $this->addFlash('info', 'Concept created, edit your draft');
             return $this->redirectToRoute('app_concept_component', [
@@ -88,7 +88,7 @@ class ConceptController extends AbstractController
                 'title' => $concept->getTitle(),
             ]);
         }
-        $conceptService->saveComponentNames($concept, $request, $componentNameRepository, $concept->getDefaultLanguage(), $entityManager);
+        $conceptService->saveComponentNames($concept, $request, $componentNameRepository, $concept->getDefaultLanguage());
         $concept->setIsValidated(true);
         $entityManager->persist($concept);
         $entityManager->flush();

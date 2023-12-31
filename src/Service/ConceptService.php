@@ -8,81 +8,21 @@ use App\Entity\DTO\ComponentTrad;
 use App\Entity\Language;
 use App\Entity\User;
 use App\Repository\ComponentNameRepository;
-use App\Repository\ConceptRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\String\Slugger\SluggerInterface;
 
 class ConceptService
 {
+    private EntityManagerInterface $entityManager;
 
-    public function uploadConcept(User $user, Concept $concept,
-                                  EntityManagerInterface $entityManager,
-                                  string $newFilename
-    ): void
+    //CONSTRUCTOR
+    function __construct(EntityManagerInterface $entityManager)
     {
-        $concept->setImage($newFilename);
-        $concept->setAuthor($user);
-        $concept->setIsValidated(false);
-        $entityManager->persist($concept);
-        $entityManager->flush();
+        $this->entityManager = $entityManager;
     }
 
-    public function calculateComponentsWithTrad(Concept $concept, Language $language) : array {
-        $componentsTrad = [];
-        foreach ($concept->getComponents() as $component) {
-            $componentNameGoodLanguage = null;
-            foreach ($component->getComponentNames() as $componentName) {
-                if ($componentName->getLanguage()->getName() == $language->getName()) {
-                    $componentNameGoodLanguage = $componentName;
-                }
-            }
-
-            $componentTrad = new ComponentTrad(
-                $component->getId(),
-                $component->getNumber(),
-                $componentNameGoodLanguage == null ? "" : $componentNameGoodLanguage->getValue(),
-                $component->getPositionX(),
-                $component->getPositionY()
-            );
-            $componentsTrad[] = $componentTrad;
-        }
-        return $componentsTrad;
-    }
-
-    public function calculateComponentsWithDefaultTrad(Concept $concept) : array {
-        return $this->calculateComponentsWithTrad($concept, $concept->getDefaultLanguage());
-    }
-
-    public function saveComponentNames(Concept $concept,
-        Request $request,
-        ComponentNameRepository $ComponentNameRepository,
-        Language $language,
-        EntityManagerInterface $entityManager): void
-    {
-        $number = 0;
-        $components = $concept->getComponents();
-        while (($trad = $request->get('componentText'.$number)) != null) {
-            $component_name = $ComponentNameRepository
-                ->getComponentNameFromComponentAndLanguage($components[$number], $language);
-            if($component_name == null) {
-                $component_name = new ComponentName();
-                $component_name->setLanguage($language);
-                $component_name->setComponent($components[$number]);
-            }
-            $component_name->setValue($trad);
-            $entityManager->persist($component_name);
-            $number++;
-        }
-        $entityManager->flush();
-    }
-
-
-
-
-    public function getConceptsToShow(array $concepts, int $categoryNumber, int $languageNumber, int $userId): array
+    //REQUESTS
+    public function getConceptsToShow(array $concepts, int $categoryNumber, int $userId): array
     {
         for ($i = sizeof($concepts) - 1; $i >= 0 ; $i--) {
             if ($this->isConceptNotInCategory($concepts[$i], $categoryNumber)
@@ -114,6 +54,67 @@ class ConceptService
     private function isUserAuthorOfConcept(Concept $concept, int $userId): bool
     {
         return $userId == -1 or $concept->getAuthor()->getId() == $userId;
+    }
+
+    //COMMANDS
+    public function uploadConcept(?User $user, Concept $concept,
+                                  string $newFilename): void
+    {
+        if($user != null) {
+            $concept->setImage($newFilename);
+            $concept->setAuthor($user);
+            $concept->setIsValidated(false);
+            $this->entityManager->persist($concept);
+            $this->entityManager->flush();
+        }
+    }
+
+    public function calculateComponentsWithTrad(Concept $concept, Language $language) : array {
+        $componentsTrad = [];
+        foreach ($concept->getComponents() as $component) {
+            $componentNameGoodLanguage = null;
+            foreach ($component->getComponentNames() as $componentName) {
+                if ($componentName->getLanguage()->getName() == $language->getName()) {
+                    $componentNameGoodLanguage = $componentName;
+                }
+            }
+
+            $componentTrad = new ComponentTrad(
+                $component->getId(),
+                $component->getNumber(),
+                $componentNameGoodLanguage == null ? "" : $componentNameGoodLanguage->getValue(),
+                $component->getPositionX(),
+                $component->getPositionY()
+            );
+            $componentsTrad[] = $componentTrad;
+        }
+        return $componentsTrad;
+    }
+
+    public function calculateComponentsWithDefaultTrad(Concept $concept) : array {
+        return $this->calculateComponentsWithTrad($concept, $concept->getDefaultLanguage());
+    }
+
+    public function saveComponentNames(Concept $concept,
+        Request $request,
+        ComponentNameRepository $ComponentNameRepository,
+        Language $language): void
+    {
+        $number = 0;
+        $components = $concept->getComponents();
+        while (($trad = $request->get('componentText'.$number)) != null) {
+            $component_name = $ComponentNameRepository
+                ->getComponentNameFromComponentAndLanguage($components[$number], $language);
+            if($component_name == null) {
+                $component_name = new ComponentName();
+                $component_name->setLanguage($language);
+                $component_name->setComponent($components[$number]);
+            }
+            $component_name->setValue($trad);
+            $this->entityManager->persist($component_name);
+            $number++;
+        }
+        $this->entityManager->flush();
     }
 
 }

@@ -9,6 +9,7 @@ use App\Form\ChangePasswordFormType;
 use App\Form\ChangeProfileFieldFormType;
 use App\Repository\UserRepository;
 use App\Service\UploadImageService;
+use App\Service\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
@@ -30,7 +31,9 @@ class UserController  extends AbstractController
     }
 
     #[Route('/profile/delete', name: 'app_profile_delete')]
-    public function deleteAccount(EntityManagerInterface $entityManager, UploadImageService $uploadImageService): Response
+    public function deleteAccount(EntityManagerInterface $entityManager,
+                                  UploadImageService $uploadImageService,
+                                  UserService $userService): Response
     {
         $user = $this->getUser();
         if(in_array('ROLE_ADMIN', $user->getRoles())) {
@@ -46,8 +49,7 @@ class UserController  extends AbstractController
                 $entityManager->persist($concept);
             }
         }
-        $entityManager->remove($user);
-        $entityManager->flush();
+        $userService->deleteAccount($user);
         $session = new Session();
         $session->invalidate();
         $this->addFlash('info', 'Your account has been successfully deleted');
@@ -55,7 +57,8 @@ class UserController  extends AbstractController
     }
 
     #[Route('/profile/username', name: 'app_profile_username')]
-    public function selectNewUsername(Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager): Response
+    public function selectNewUsername(Request $request, UserRepository $userRepository,
+                                     UserService $userService): Response
     {
         $profileEditor = new ProfileEditor();
         $form = $this->createForm(ChangeProfileFieldFormType::class, $profileEditor);
@@ -73,9 +76,7 @@ class UserController  extends AbstractController
             }
 
             $user = $this->getUser();
-            $user->setUsername($username);
-            $entityManager->persist($user);
-            $entityManager->flush();
+            $userService->changeUsername($user, $username);
             $this->addFlash('info', 'Username changed');
             return $this->redirectToRoute('app_profile');
         }
@@ -87,7 +88,8 @@ class UserController  extends AbstractController
     }
 
     #[Route('/profile/email', name: 'app_profile_email')]
-    public function selectNewEmail(Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager): Response
+    public function selectNewEmail(Request $request, UserRepository $userRepository,
+                                   UserService $userService): Response
     {
         $profileEditor = new ProfileEditor();
         $form = $this->createForm(ChangeProfileFieldFormType::class, $profileEditor);
@@ -105,9 +107,7 @@ class UserController  extends AbstractController
             }
 
             $user = $this->getUser();
-            $user->setEmail($mail);
-            $entityManager->persist($user);
-            $entityManager->flush();
+            $userService->changeEmail($user, $mail);
             $this->addFlash('info', 'Email changed');
             return $this->redirectToRoute('app_profile');
         }
@@ -119,7 +119,8 @@ class UserController  extends AbstractController
     }
 
     #[Route('/profile/password', name: 'app_profile_password')]
-    public function selectNewPassword(UserPasswordHasherInterface $userPasswordHasher, Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager): Response
+    public function selectNewPassword(UserPasswordHasherInterface $userPasswordHasher, Request $request,
+                                      UserService $userService): Response
     {
         $passwordEditor = new PasswordEditor();
         $form = $this->createForm(ChangePasswordFormType::class, $passwordEditor);
@@ -140,11 +141,8 @@ class UserController  extends AbstractController
                     'form' => $form->createView()
                 ]);
             }
+            $userService->changePassword($user, $userPasswordHasher, $passwordEditor);
 
-            $user->setPassword($userPasswordHasher->hashPassword($user, $passwordEditor->getNewPassword()));
-
-            $entityManager->persist($user);
-            $entityManager->flush();
             $this->addFlash('info', 'Password changed');
             return $this->redirectToRoute('app_profile');
         }

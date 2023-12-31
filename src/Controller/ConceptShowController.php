@@ -2,14 +2,11 @@
 
 namespace App\Controller;
 
-use App\Entity\ComponentName;
 use App\Entity\Concept;
-use App\Entity\Language;
 use App\Repository\CategoryRepository;
 use App\Repository\ConceptRepository;
 use App\Repository\LanguageRepository;
 use App\Service\ConceptService;
-use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,7 +25,7 @@ class ConceptShowController extends AbstractController
         $categoryId = ($request->query->get('category') == null ? -1 : $request->query->get('category'));
         $languageId = ($request->query->get('language') == null ? -1 : $request->query->get('language'));
         $concepts = $conceptRepository->findBy(['isValidated' => true]);
-        $concepts = $conceptService->getConceptsToShow($concepts, $categoryId, $languageId, -1);
+        $concepts = $conceptService->getConceptsToShow($concepts, $categoryId, -1);
 
         return $this->render('concept/list/list_concepts.html.twig',
             [

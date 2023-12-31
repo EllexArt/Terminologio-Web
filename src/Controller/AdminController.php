@@ -3,8 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Category;
-use App\Entity\Component;
-use App\Entity\ComponentName;
 use App\Entity\Concept;
 use App\Entity\Language;
 use App\Entity\User;
@@ -17,9 +15,10 @@ use App\Repository\ConceptRepository;
 use App\Repository\LanguageRepository;
 use App\Repository\UserRepository;
 use App\Service\UploadImageService;
+use App\Service\UserService;
 use Doctrine\ORM\EntityManagerInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -40,14 +39,14 @@ class AdminController extends AbstractController
     }
 
     #[Route('/admin/delete/user/{id}', name: 'app_delete_user')]
-    public function deleteUser(EntityManagerInterface $entityManager, User $user) : Response
+    public function deleteUser(EntityManagerInterface $entityManager, User $user,
+                                UserService $userService) : Response
     {
         foreach ($user->getConcepts() as $concept) {
             $concept->setAuthor(null);
             $entityManager->persist($concept);
         }
-        $entityManager->remove($user);
-        $entityManager->flush();
+        $userService->deleteAccount($user);
         return $this->redirectToRoute('app_admin');
     }
 
@@ -68,7 +67,7 @@ class AdminController extends AbstractController
 
     #[Route('/admin/add/user', name:'app_add_user')]
     public function addUser(Request $request, UserPasswordHasherInterface $userPasswordHasher,
-                            EntityManagerInterface $entityManager) : Response
+                            EntityManagerInterface $entityManager, UserService $userService) : Response
     {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -79,23 +78,13 @@ class AdminController extends AbstractController
             }
         }
         if ($form->isSubmitted() && $form->isValid()) {
-            if($form->get('plainPassword')->getData() != $form->get('confirmPassword')->getData()) {
+            if($userService->isValidPassword($form)) {
                 $this->addFlash('warning', "Password confirmation failed, please retry");
                 return $this->render('registration/register.html.twig', [
                     'registrationForm' => $form->createView(),
                 ]);
             }
-            $user->setPassword(
-                $userPasswordHasher->hashPassword(
-                    $user,
-                    $form->get('plainPassword')->getData()
-                )
-            );
-            $user->setUsername($form->get('username')->getData());
-            $user->setEmail($form->get('email')->getData());
-            $user->addRole("ROLE_USER");
-            $entityManager->persist($user);
-            $entityManager->flush();
+            $userService->register($user, $userPasswordHasher, $form);
             $this->addFlash('notice', 'A new user has been created');
             return $this->redirectToRoute('app_admin');
         }
@@ -165,7 +154,7 @@ class AdminController extends AbstractController
         ]) : $result;
     }
 
-    private function formProcessing($form, $request, $entityManager, $value, $typeValue) {
+    private function formProcessing($form, $request, $entityManager, $value, $typeValue) : ?RedirectResponse {
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $value->setName($form->get('name')->getData());
