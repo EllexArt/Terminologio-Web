@@ -73,7 +73,18 @@ class AdminController extends AbstractController
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
+        if($form->isSubmitted() && !$form->isValid()) {
+            foreach ($form->getErrors(true, true) as $error) {
+                $this->addFlash('warning', $error->getMessage());
+            }
+        }
         if ($form->isSubmitted() && $form->isValid()) {
+            if($form->get('plainPassword')->getData() != $form->get('confirmPassword')->getData()) {
+                $this->addFlash('warning', "Password confirmation failed, please retry");
+                return $this->render('registration/register.html.twig', [
+                    'registrationForm' => $form->createView(),
+                ]);
+            }
             $user->setPassword(
                 $userPasswordHasher->hashPassword(
                     $user,
@@ -82,7 +93,7 @@ class AdminController extends AbstractController
             );
             $user->setUsername($form->get('username')->getData());
             $user->setEmail($form->get('email')->getData());
-            $user->setRoles($user->getRoles());
+            $user->addRole("ROLE_USER");
             $entityManager->persist($user);
             $entityManager->flush();
             $this->addFlash('notice', 'A new user has been created');
