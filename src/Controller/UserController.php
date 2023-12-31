@@ -98,6 +98,14 @@ class UserController  extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $mail = $profileEditor->getFieldToEdit();
 
+            if(!filter_var($mail, FILTER_VALIDATE_EMAIL)) {
+                $this->addFlash('warning', 'Invalid email');
+                return $this->render('profile/changeProfileData.html.twig', [
+                    'field' => 'email',
+                    'form' => $form->createView()
+                ]);
+            }
+
             if($userRepository->findOneBy(['email' => $mail])) {
                 $this->addFlash('warning', 'Email already taken');
                 return $this->render('profile/changeProfileData.html.twig', [
