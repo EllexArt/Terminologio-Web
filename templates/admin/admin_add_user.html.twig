@@ -4,14 +4,14 @@
 
 {% block bodyContent %}
     <div class="grid h-screen place-items-center">
-        <section id="creationForm" class="p-4 flex flex-col justify-center min-h-screen max-w-md mx-auto">
+        <section id="creationForm" class="p-4 flex flex-col justify-center min-h-screen w-3/5 mx-auto">
                 <div class="align-middle rounded shadow-2xl max-w-xl container mx-auto w-full "
                      style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%)">
                 <div class="flex items-center justify-center m-10">
                     <h1 class="tracking-wide text-3xl drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] text-white font-bold">Add a new user</h1>
                 </div>
-                <div class="flex justify-between items-center mb-3">
-                    <div class="w-full max-w-xs flow flow-col grid h-full place-items-center">
+                <div class="flex justify-center w-full items-center mb-6">
+                    <div class="w-full max-w-md flow flow-col grid h-full">
                         <div class="mb-4 mt-10">
                             {{ form_start(registrationForm, {'attr': {'class':"px-8 pt-6 pb-8 mb-4 font-bold"}}) }}
                             <div>
@@ -26,9 +26,16 @@
                                              }
                                     }
                                 ) }}
+                                {{ form_row(registrationForm.confirmPassword,  {'attr' : {'class' : 'text-neutral-600 text-base font-normal flex my-3 items-center justify-between
+                                                bg-zinc-100 rounded-lg'
+                                }
+                                }
+                                ) }}
+                                <div class="hidden">
                                 {{ form_row(registrationForm.agreeTerms,
                                     {'attr' : {'class' : 'text-neutral-600 text-base font-normal flex my-3 items-center justify-between
-                                                bg-zinc-100 rounded-lg'}}) }}
+                                                bg-zinc-100 rounded-lg'}, 'checked': true}) }}
+                                </div>
 
                                 <button type="submit" class="border border-indigo-900 rounded-lg  text-center flow flow-col
                                     text-indigo-900 hover:text-white hover:bg-indigo-900 bg-white text-base font-semibold w-full py-3 mt-9">
