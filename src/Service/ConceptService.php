@@ -8,6 +8,7 @@ use App\Entity\DTO\ComponentTrad;
 use App\Entity\Language;
 use App\Entity\User;
 use App\Repository\ComponentNameRepository;
+use App\Repository\ConceptRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -78,11 +79,29 @@ class ConceptService
         $entityManager->flush();
     }
 
-    public function isConceptNotInCategory(Concept $concept, int $categoryId) {
+
+
+
+    public function getConceptsToShow(ConceptRepository $conceptRepository, int $categoryNumber, int $languageNumber, int $userId): array
+    {
+        $concepts = $conceptRepository->findAll();
+        for ($i = sizeof($concepts) - 1; $i >= 0 ; $i--) {
+            if ($this->isConceptNotInCategory($concepts[$i], $categoryNumber)
+                or $this->isConceptNotTranslated($concepts[$i], $categoryNumber)
+                or !$this->isUserAuthorOfConcept($concepts[$i], $userId)) {
+                array_splice($concepts, $i, 1);
+            }
+        }
+        return $concepts;
+    }
+
+    private function isConceptNotInCategory(Concept $concept, int $categoryId): bool
+    {
         return $concept->getCategory()->getId() <> $categoryId and $categoryId != -1;
     }
 
-    public function isConceptNotTranslated(Concept $concept, int $languageId) {
+    private function isConceptNotTranslated(Concept $concept, int $languageId): bool
+    {
         $firstComponent = $concept->getComponents()[0];
         if($firstComponent == null) {
             return $concept->getDefaultLanguage()->getId() <> $languageId and $languageId != -1;
@@ -93,8 +112,9 @@ class ConceptService
             and !in_array($languageId, $languagesOfConcept) and $languageId != -1 );
     }
 
-    public function isUserAuthorOfConcept(Concept $concept, User $user) {
-        return $concept->getAuthor()->getId() ==$user->getId();
+    private function isUserAuthorOfConcept(Concept $concept, int $userId): bool
+    {
+        return $userId == -1 or $concept->getAuthor()->getId() == $userId;
     }
 
 }

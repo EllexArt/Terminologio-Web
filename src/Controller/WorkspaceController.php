@@ -31,16 +31,9 @@ class WorkspaceController extends AbstractController
     {
         $categoryId = ($request->query->get('category') == null ? -1 : $request->query->get('category'));
         $languageId = ($request->query->get('language') == null ? -1 : $request->query->get('language'));
-        $concepts = $conceptRepository->findBy(['isValidated' => false]);
         $user = $this->getUser();
-        for ($i = sizeof($concepts) - 1; $i >= 0 ; $i--) {
-            if ($conceptService->isConceptNotInCategory($concepts[$i], $categoryId)
-                or $conceptService->isConceptNotTranslated($concepts[$i], $languageId)
-                or !$conceptService->isUserAuthorOfConcept($concepts[$i], $user))
-            {
-                array_splice($concepts, $i, 1);
-            }
-        }
+        $concepts = $conceptService->getConceptsToShow($conceptRepository, $categoryId, $languageId, $user->getId());
+
         return $this->render('concept/drafts/list_drafts.html.twig',
             [
                 'concepts' => $concepts,
