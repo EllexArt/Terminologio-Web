@@ -27,7 +27,8 @@ class ConceptShowController extends AbstractController
     {
         $categoryId = ($request->query->get('category') == null ? -1 : $request->query->get('category'));
         $languageId = ($request->query->get('language') == null ? -1 : $request->query->get('language'));
-        $concepts = $conceptService->getConceptsToShow($conceptRepository, $categoryId, $languageId, -1);
+        $concepts = $conceptRepository->findBy(['isValidated' => true]);
+        $concepts = $conceptService->getConceptsToShow($concepts, $categoryId, $languageId, -1);
 
         return $this->render('concept/list/list_concepts.html.twig',
             [

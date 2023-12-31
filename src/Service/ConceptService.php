@@ -82,9 +82,8 @@ class ConceptService
 
 
 
-    public function getConceptsToShow(ConceptRepository $conceptRepository, int $categoryNumber, int $languageNumber, int $userId): array
+    public function getConceptsToShow(array $concepts, int $categoryNumber, int $languageNumber, int $userId): array
     {
-        $concepts = $conceptRepository->findAll();
         for ($i = sizeof($concepts) - 1; $i >= 0 ; $i--) {
             if ($this->isConceptNotInCategory($concepts[$i], $categoryNumber)
                 or $this->isConceptNotTranslated($concepts[$i], $categoryNumber)
