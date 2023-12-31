@@ -22,38 +22,16 @@ class ConceptService
     }
 
     //REQUESTS
-    public function getConceptsToShow(array $concepts, int $categoryNumber, int $userId): array
+    public function getConceptsToShow(array $concepts, int $categoryNumber, int $languageNumber, int $userId): array
     {
         for ($i = sizeof($concepts) - 1; $i >= 0 ; $i--) {
             if ($this->isConceptNotInCategory($concepts[$i], $categoryNumber)
-                or $this->isConceptNotTranslated($concepts[$i], $categoryNumber)
+                or $this->isConceptNotTranslated($concepts[$i], $languageNumber)
                 or !$this->isUserAuthorOfConcept($concepts[$i], $userId)) {
                 array_splice($concepts, $i, 1);
             }
         }
         return $concepts;
-    }
-
-    private function isConceptNotInCategory(Concept $concept, int $categoryId): bool
-    {
-        return $concept->getCategory()->getId() <> $categoryId and $categoryId != -1;
-    }
-
-    private function isConceptNotTranslated(Concept $concept, int $languageId): bool
-    {
-        $firstComponent = $concept->getComponents()[0];
-        if($firstComponent == null) {
-            return $concept->getDefaultLanguage()->getId() <> $languageId and $languageId != -1;
-        }
-        $languagesOfConcept = array_map( fn(ComponentName $componentName): int => $componentName->getLanguage()->getId() ,
-            $firstComponent->getComponentNames()->toArray());
-        return ($concept->getDefaultLanguage()->getId() <> $languageId
-            and !in_array($languageId, $languagesOfConcept) and $languageId != -1 );
-    }
-
-    private function isUserAuthorOfConcept(Concept $concept, int $userId): bool
-    {
-        return $userId == -1 or $concept->getAuthor()->getId() == $userId;
     }
 
     //COMMANDS
@@ -115,6 +93,30 @@ class ConceptService
             $number++;
         }
         $this->entityManager->flush();
+    }
+
+
+
+    private function isConceptNotInCategory(Concept $concept, int $categoryId): bool
+    {
+        return $concept->getCategory()->getId() <> $categoryId and $categoryId != -1;
+    }
+
+    private function isConceptNotTranslated(Concept $concept, int $languageId): bool
+    {
+        $firstComponent = $concept->getComponents()[0];
+        if($firstComponent == null) {
+            return $concept->getDefaultLanguage()->getId() <> $languageId and $languageId != -1;
+        }
+        $languagesOfConcept = array_map( fn(ComponentName $componentName): int => $componentName->getLanguage()->getId() ,
+            $firstComponent->getComponentNames()->toArray());
+        return ($concept->getDefaultLanguage()->getId() <> $languageId
+            and !in_array($languageId, $languagesOfConcept) and $languageId != -1 );
+    }
+
+    private function isUserAuthorOfConcept(Concept $concept, int $userId): bool
+    {
+        return $userId == -1 or $concept->getAuthor()->getId() == $userId;
     }
 
 }

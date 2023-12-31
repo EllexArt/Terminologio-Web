@@ -30,7 +30,7 @@ class WorkspaceController extends AbstractController
         $languageId = ($request->query->get('language') == null ? -1 : $request->query->get('language'));
         $user = $this->getUser();
         $concepts = $conceptRepository->findBy(['isValidated' => false]);
-        $concepts = $conceptService->getConceptsToShow($concepts, $categoryId, $user->getId());
+        $concepts = $conceptService->getConceptsToShow($concepts, $categoryId, $languageId, $user->getId());
 
         return $this->render('concept/drafts/list_drafts.html.twig',
             [
